@@ -1,0 +1,3333 @@
+# Weather prediction
+- platform: darksky
+  api_key: !secret darksky_api_key
+  latitude: 40.716579
+  longitude: -73.986748
+  forecast:
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    - 7
+  hourly_forecast:
+    - 0
+    - 1
+  scan_interval:
+    # At least one of these must be specified:
+    days: 0
+    hours: 0
+    minutes: 5
+    seconds: 0
+    milliseconds: 0
+  monitored_conditions:
+    - summary
+    - icon
+    - nearest_storm_distance
+    - precip_type
+    - precip_intensity
+    - precip_probability
+    - precip_accumulation
+    - temperature
+    - apparent_temperature
+    - dew_point
+    - wind_speed
+    - wind_bearing
+    - cloud_cover
+    - humidity
+    - pressure
+    - visibility
+    - ozone
+    - moon_phase
+    - minutely_summary
+    - hourly_summary
+    - daily_summary
+    - precip_intensity_max
+    - uv_index
+    - alerts
+
+- platform: season
+
+- platform: template
+  sensors:
+    moonphases:
+      entity_id: sensor.dark_sky_moon_icon
+      friendly_name: 'Moon Phase NYC'
+      entity_picture_template: >
+        {% set mphase = states.sensor.dark_sky_moon_phase_1d.state | int %}
+        {% if mphase == 0.0 -%}
+           /local/images/moonphases/NNewMoon.jpg
+        {% elif mphase > 0.0 -%}
+           /local/images/moonphases/NWaxingCrescent.jpg
+        {% elif mphase == 0.25 -%}
+           /local/images/moonphases/NFirstQuarter.jpg
+        {% elif mphase > 0.25 -%}
+           /local/images/moonphases/NWaxingGibbous.jpg
+        {% elif mphase == 0.5 -%}
+           /local/images/moonphases/NFullMoon.jpg
+        {% elif mphase > 0.5 -%}
+           /local/images/moonphases/NWaningGibbous.jpg
+        {% elif mphase == 0.75 -%}
+           /local/images/moonphases/NLastQuarter.jpg
+        {% elif mphase > 0.75 -%}
+           /local/images/moonphases/NWaningCrescent.jpg
+        {% else %}
+           /local/images/moonphases/NNewMoon.jpg
+        {% endif %}
+      value_template: >
+        {% set mphase = states.sensor.dark_sky_moon_phase.state | int %}
+        {% if mphase == 0.0 -%} "New Moon"
+        {% elif mphase > 0.0 -%} "Waxing Crescent"
+        {% elif mphase == 0.25 -%} "First Quarter"
+        {% elif mphase > 0.25 -%} "Waxing Gibbous"
+        {% elif mphase == 0.5 -%} "Full Moon"
+        {% elif mphase > 0.5 -%} "Waning Gibbous"
+        {% elif mphase == 0.75 -%} "Last Quarter"
+        {% elif mphase > 0.75 -%} "Waning Crescent"
+        {% else %} "Error"
+        {% endif %}
+
+- platform: template
+  sensors:
+    weekday:
+      friendly_name: 'Weekday'
+      value_template: '{{ now().strftime("%A") }}'
+    forecast_today:
+      friendly_name: "Today's Forecast"
+      value_template: >
+        {{states.sensor.dark_sky_daily_high_temperature.state|round(0)}}°/{{states.sensor.dark_sky_daily_low_temperature.state|round(0)}}°/{{states.sensor.dark_sky_precip_probability.state|round(0)}}%
+      icon_template: >-
+        {% if is_state("sensor.dark_sky_icon", "clear-day") %}
+          mdi:weather-sunny
+        {% elif is_state("sensor.dark_sky_icon", "clear-night") %}
+          mdi:weather-night
+        {% elif is_state("sensor.dark_sky_icon", "cloudy") %}
+          mdi:weather-cloudy
+          {% elif is_state("sensor.dark_sky_icon", "rain") %}
+          mdi:weather-pouring
+        {% elif is_state("sensor.dark_sky_icon", "sleet") %}
+          mdi:weather-snowy-rain
+        {% elif is_state("sensor.dark_sky_icon", "snow") %}
+          mdi:weather-snowy
+        {% elif is_state("sensor.dark_sky_icon", "wind") %}
+          mdi:weather-windy
+        {% elif is_state("sensor.dark_sky_icon", "fog") %}
+          mdi:weather-fog
+        {% elif is_state("sensor.dark_sky_icon", "partly-cloudy-day") %}
+          mdi:weather-partlycloudy
+        {% elif is_state("sensor.dark_sky_icon", "partly-cloudy-night") %}
+          mdi:weather-partlycloudy
+        {% else %}
+          error
+        {% endif %}
+    forecast_1:
+      friendly_name_template: >
+        {%- set date = as_timestamp(now()) + (1 * 86400 ) -%}
+        {{ date | timestamp_custom("%A (%-m/%-d)") }}
+      value_template: >
+        {{states.sensor.dark_sky_daily_high_temperature_1.state|round(0)}}°/{{states.sensor.dark_sky_daily_low_temperature_1.state|round(0)}}°/{{states.sensor.dark_sky_precip_probability_1.state|round(0)}}%
+      icon_template: >-
+        {% if is_state("sensor.dark_sky_icon_1", "clear-day") %}
+          mdi:weather-sunny
+        {% elif is_state("sensor.dark_sky_icon_1", "clear-night") %}
+          mdi:weather-night
+        {% elif is_state("sensor.dark_sky_icon_1", "cloudy") %}
+          mdi:weather-cloudy
+        {% elif is_state("sensor.dark_sky_icon_1", "rain") %}
+          mdi:weather-pouring
+        {% elif is_state("sensor.dark_sky_icon_1", "sleet") %}
+          mdi:weather-snowy-rain
+        {% elif is_state("sensor.dark_sky_icon_1", "snow") %}
+          mdi:weather-snowy
+        {% elif is_state("sensor.dark_sky_icon_1", "wind") %}
+          mdi:weather-windy
+        {% elif is_state("sensor.dark_sky_icon_1", "fog") %}
+          mdi:weather-fog
+        {% elif is_state("sensor.dark_sky_icon_1", "partly-cloudy-day") %}
+          mdi:weather-partlycloudy
+        {% elif is_state("sensor.dark_sky_icon_1", "partly-cloudy-night") %}
+          mdi:weather-partlycloudy
+        {% else %}
+          error
+        {% endif %}
+
+    forecast_2:
+      friendly_name_template: >
+        {%- set date = as_timestamp(now()) + (2 * 86400 ) -%}
+        {{ date | timestamp_custom("%A (%-m/%-d)") }}
+      value_template: >
+        {{states.sensor.dark_sky_daily_high_temperature_2.state|round(0)}}°/{{states.sensor.dark_sky_daily_low_temperature_2.state|round(0)}}°/{{states.sensor.dark_sky_precip_probability_2.state|round(0)}}%
+      icon_template: >-
+        {% if is_state("sensor.dark_sky_icon_2", "clear-day") %}
+          mdi:weather-sunny
+        {% elif is_state("sensor.dark_sky_icon_2", "clear-night") %}
+          mdi:weather-night
+        {% elif is_state("sensor.dark_sky_icon_2", "cloudy") %}
+          mdi:weather-cloudy
+        {% elif is_state("sensor.dark_sky_icon_2", "rain") %}
+          mdi:weather-pouring
+        {% elif is_state("sensor.dark_sky_icon_2", "sleet") %}
+          mdi:weather-snowy-rain
+        {% elif is_state("sensor.dark_sky_icon_2", "snow") %}
+          mdi:weather-snowy
+        {% elif is_state("sensor.dark_sky_icon_2", "wind") %}
+          mdi:weather-windy
+        {% elif is_state("sensor.dark_sky_icon_2", "fog") %}
+          mdi:weather-fog
+        {% elif is_state("sensor.dark_sky_icon_2", "partly-cloudy-day") %}
+          mdi:weather-partlycloudy
+        {% elif is_state("sensor.dark_sky_icon_2", "partly-cloudy-night") %}
+          mdi:weather-partlycloudy
+        {% else %}
+          error
+        {% endif %}
+
+    forecast_3:
+      friendly_name_template: >
+        {%- set date = as_timestamp(now()) + (3 * 86400 ) -%}
+        {{ date | timestamp_custom("%A (%-m/%-d)") }}
+      value_template: >
+        {{states.sensor.dark_sky_daily_high_temperature_3.state|round(0)}}°/{{states.sensor.dark_sky_daily_low_temperature_3.state|round(0)}}°/{{states.sensor.dark_sky_precip_probability_3.state|round(0)}}%
+      icon_template: >-
+        {% if is_state("sensor.dark_sky_icon_3", "clear-day") %}
+          mdi:weather-sunny
+        {% elif is_state("sensor.dark_sky_icon_3", "clear-night") %}
+          mdi:weather-night
+        {% elif is_state("sensor.dark_sky_icon_3", "cloudy") %}
+          mdi:weather-cloudy
+        {% elif is_state("sensor.dark_sky_icon_3", "rain") %}
+          mdi:weather-pouring
+        {% elif is_state("sensor.dark_sky_icon_3", "sleet") %}
+          mdi:weather-snowy-rain
+        {% elif is_state("sensor.dark_sky_icon_3", "snow") %}
+          mdi:weather-snowy
+        {% elif is_state("sensor.dark_sky_icon_3", "wind") %}
+          mdi:weather-windy
+        {% elif is_state("sensor.dark_sky_icon_3", "fog") %}
+          mdi:weather-fog
+        {% elif is_state("sensor.dark_sky_icon_3", "partly-cloudy-day") %}
+          mdi:weather-partlycloudy
+        {% elif is_state("sensor.dark_sky_icon_3", "partly-cloudy-night") %}
+          mdi:weather-partlycloudy
+        {% else %}
+          error
+        {% endif %}
+
+    forecast_4:
+      friendly_name_template: >
+        {%- set date = as_timestamp(now()) + (4 * 86400 ) -%}
+        {{ date | timestamp_custom("%A (%-m/%-d)") }}
+      value_template: >
+        {{states.sensor.dark_sky_daily_high_temperature_4.state|round(0)}}°/{{states.sensor.dark_sky_daily_low_temperature_4.state|round(0)}}°/{{states.sensor.dark_sky_precip_probability_4.state|round(0)}}%
+      icon_template: >-
+        {% if is_state("sensor.dark_sky_icon_4", "clear-day") %}
+          mdi:weather-sunny
+        {% elif is_state("sensor.dark_sky_icon_4", "clear-night") %}
+          mdi:weather-night
+        {% elif is_state("sensor.dark_sky_icon_4", "cloudy") %}
+          mdi:weather-cloudy
+        {% elif is_state("sensor.dark_sky_icon_4", "rain") %}
+          mdi:weather-pouring
+        {% elif is_state("sensor.dark_sky_icon_4", "sleet") %}
+          mdi:weather-snowy-rain
+        {% elif is_state("sensor.dark_sky_icon_4", "snow") %}
+          mdi:weather-snowy
+        {% elif is_state("sensor.dark_sky_icon_4", "wind") %}
+          mdi:weather-windy
+        {% elif is_state("sensor.dark_sky_icon_4", "fog") %}
+          mdi:weather-fog
+        {% elif is_state("sensor.dark_sky_icon_4", "partly-cloudy-day") %}
+          mdi:weather-partlycloudy
+        {% elif is_state("sensor.dark_sky_icon_4", "partly-cloudy-night") %}
+          mdi:weather-partlycloudy
+        {% else %}
+          error
+        {% endif %}
+    forecast_5:
+      friendly_name_template: >
+        {%- set date = as_timestamp(now()) + (5 * 86400 ) -%}
+        {{ date | timestamp_custom("%A (%-m/%-d)") }}
+      value_template: >
+        {{states.sensor.dark_sky_daily_high_temperature_5.state|round(0)}}°/{{states.sensor.dark_sky_daily_low_temperature_5.state|round(0)}}°/{{states.sensor.dark_sky_precip_probability_5.state|round(0)}}%
+      icon_template: >-
+        {% if is_state("sensor.dark_sky_icon_5", "clear-day") %}
+          mdi:weather-sunny
+        {% elif is_state("sensor.dark_sky_icon_5", "clear-night") %}
+          mdi:weather-night
+        {% elif is_state("sensor.dark_sky_icon_5", "cloudy") %}
+          mdi:weather-cloudy
+        {% elif is_state("sensor.dark_sky_icon_5", "rain") %}
+          mdi:weather-pouring
+        {% elif is_state("sensor.dark_sky_icon_5", "sleet") %}
+          mdi:weather-snowy-rain
+        {% elif is_state("sensor.dark_sky_icon_5", "snow") %}
+          mdi:weather-snowy
+        {% elif is_state("sensor.dark_sky_icon_5", "wind") %}
+          mdi:weather-windy
+        {% elif is_state("sensor.dark_sky_icon_5", "fog") %}
+          mdi:weather-fog
+        {% elif is_state("sensor.dark_sky_icon_5", "partly-cloudy-day") %}
+          mdi:weather-partlycloudy
+        {% elif is_state("sensor.dark_sky_icon_5", "partly-cloudy-night") %}
+          mdi:weather-partlycloudy
+        {% else %}
+          error
+        {% endif %}
+
+    forecast_6:
+      friendly_name_template: >
+        {%- set date = as_timestamp(now()) + (6 * 86400 ) -%}
+        {{ date | timestamp_custom("%A (%-m/%-d)") }}
+      value_template: >
+          {{states.sensor.dark_sky_daily_high_temperature_6.state|round(0)}}°/{{states.sensor.dark_sky_daily_low_temperature_6.state|round(0)}}°/{{states.sensor.dark_sky_precip_probability_6.state|round(0)}}%
+      icon_template: >-
+        {% if is_state("sensor.dark_sky_icon_6", "clear-day") %}
+          mdi:weather-sunny
+        {% elif is_state("sensor.dark_sky_icon_6", "clear-night") %}
+          mdi:weather-night
+        {% elif is_state("sensor.dark_sky_icon_6", "cloudy") %}
+          mdi:weather-cloudy
+        {% elif is_state("sensor.dark_sky_icon_6", "rain") %}
+          mdi:weather-pouring
+        {% elif is_state("sensor.dark_sky_icon_6", "sleet") %}
+          mdi:weather-snowy-rain
+        {% elif is_state("sensor.dark_sky_icon_6", "snow") %}
+          mdi:weather-snowy
+        {% elif is_state("sensor.dark_sky_icon_6", "wind") %}
+          mdi:weather-windy
+        {% elif is_state("sensor.dark_sky_icon_6", "fog") %}
+          mdi:weather-fog
+        {% elif is_state("sensor.dark_sky_icon_6", "partly-cloudy-day") %}
+          mdi:weather-partlycloudy
+        {% elif is_state("sensor.dark_sky_icon_6", "partly-cloudy-night") %}
+          mdi:weather-partlycloudy
+        {% else %}
+          error
+        {% endif %}
+    forecast_7:
+      friendly_name_template: >
+        {%- set date = as_timestamp(now()) + (7 * 86400 ) -%}
+        {{ date | timestamp_custom("%A (%-m/%-d)") }}
+      value_template: >
+          {{states.sensor.dark_sky_daily_high_temperature_7.state|round(0)}}°/{{states.sensor.dark_sky_daily_low_temperature_7.state|round(0)}}°/{{states.sensor.dark_sky_precip_probability_7.state|round(0)}}%
+      icon_template: >-
+        {% if is_state("sensor.dark_sky_icon_7", "clear-day") %}
+          mdi:weather-sunny
+        {% elif is_state("sensor.dark_sky_icon_7", "clear-night") %}
+          mdi:weather-night
+        {% elif is_state("sensor.dark_sky_icon_7", "cloudy") %}
+          mdi:weather-cloudy
+        {% elif is_state("sensor.dark_sky_icon_7", "rain") %}
+          mdi:weather-pouring
+        {% elif is_state("sensor.dark_sky_icon_7", "sleet") %}
+          mdi:weather-snowy-rain
+        {% elif is_state("sensor.dark_sky_icon_7", "snow") %}
+          mdi:weather-snowy
+        {% elif is_state("sensor.dark_sky_icon_7", "wind") %}
+          mdi:weather-windy
+        {% elif is_state("sensor.dark_sky_icon_7", "fog") %}
+          mdi:weather-fog
+        {% elif is_state("sensor.dark_sky_icon_7", "partly-cloudy-day") %}
+          mdi:weather-partlycloudy
+        {% elif is_state("sensor.dark_sky_icon_7", "partly-cloudy-night") %}
+          mdi:weather-partlycloudy
+        {% else %}
+          error
+        {% endif %}
+
+- platform: darksky
+  api_key: !secret darksky_api_key
+  name: Reef Weather
+  latitude: -8.499113
+  longitude: 115.696371
+  forecast:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+  monitored_conditions:
+    - icon
+    - summary
+    - nearest_storm_distance
+    - nearest_storm_bearing
+    - humidity
+    - temperature
+    - temperature_high
+    - temperature_low
+    - apparent_temperature
+    - apparent_temperature_high
+    - apparent_temperature_low
+    - wind_speed
+    - wind_bearing
+    - precip_type
+    - precip_probability
+    - precip_accumulation
+    - precip_intensity
+    - precip_intensity_max
+    - uv_index
+    - daily_summary
+    - pressure
+    - visibility
+    - moon_phase
+  scan_interval:
+    hours: 2
+
+- platform: darksky
+  api_key: !secret darksky_api_key
+  name: Amazon Weather
+  latitude: -12.653650
+  longitude: -52.946115
+  forecast:
+    - 0
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+  monitored_conditions:
+    - icon
+    - summary
+    - nearest_storm_distance
+    - nearest_storm_bearing
+    - humidity
+    - temperature
+    - temperature_high
+    - temperature_low
+    - apparent_temperature
+    - apparent_temperature_high
+    - apparent_temperature_low
+    - wind_speed
+    - wind_bearing
+    - precip_type
+    - precip_probability
+    - precip_accumulation
+    - precip_intensity
+    - precip_intensity_max
+    - uv_index
+    - daily_summary
+    - pressure
+    - visibility
+    - moon_phase
+  scan_interval:
+    hours: 2
+
+- platform: template
+  sensors:
+    amazon_moonphases:
+      entity_id: sensor.amazon_weather_moon_icon
+      friendly_name: 'Amazon Moon'
+      entity_picture_template: >
+        {% set mphase = states.sensor.amazon_weather_moon_phase_1d.state | int %}
+        {% if mphase == 0.0 -%}
+           /local/images/moonphases/NNewMoon.jpg
+        {% elif mphase > 0.0 -%}
+           /local/images/moonphases/NWaxingCrescent.jpg
+        {% elif mphase == 0.25 -%}
+           /local/images/moonphases/NFirstQuarter.jpg
+        {% elif mphase > 0.25 -%}
+           /local/images/moonphases/NWaxingGibbous.jpg
+        {% elif mphase == 0.5 -%}
+           /local/images/moonphases/NFullMoon.jpg
+        {% elif mphase > 0.5 -%}
+           /local/images/moonphases/NWaningGibbous.jpg
+        {% elif mphase == 0.75 -%}
+           /local/images/moonphases/NLastQuarter.jpg
+        {% elif mphase > 0.75 -%}
+           /local/images/moonphases/NWaningCrescent.jpg
+        {% else %}
+           /local/images/moonphases/NNewMoon.jpg
+        {% endif %}
+      value_template: >
+        {% set mphase = states.sensor.amazon_weather_moon_phase_1d.state | int %}
+        {% if mphase == 0.0 -%} "New Moon"
+        {% elif mphase > 0.0 -%} "Waxing Crescent"
+        {% elif mphase == 0.25 -%} "First Quarter"
+        {% elif mphase > 0.25 -%} "Waxing Gibbous"
+        {% elif mphase == 0.5 -%} "Full Moon"
+        {% elif mphase > 0.5 -%} "Waning Gibbous"
+        {% elif mphase == 0.75 -%} "Last Quarter"
+        {% elif mphase > 0.75 -%} "Waning Crescent"
+        {% else %} "Error"
+        {% endif %}
+
+# Time Date
+- platform: time_date
+  display_options:
+    - 'time'
+    - 'date'
+    - 'date_time'
+    - 'time_date'
+    - 'time_utc'
+    - 'beat'
+
+#World Tides use for fishtanks
+- platform: worldtidesinfo
+  api_key: 07cd8bd9-5e2a-446d-a29a-dbdcd3fdcc84
+  name: Bali Reef Tides
+  latitude: -7.250445
+  longitude: 112.768845
+  scan_interval: 43200
+
+- platform: mqtt
+  state_topic: 'ifttt/reef_data'
+  name: Latest Reef Tests MQTT
+  value_template: "{{ value }}"
+
+- platform: template
+  sensors:
+    ifttt_reef_tests_latest:
+      entity_id: sensor.ifttt_reef_tests_latest
+      friendly_name: "Latest Reef Tests"
+      value_template: '{{ value }}'
+
+- platform: command_line
+  name: Server Temperature
+  command: "cat /sys/class/thermal/thermal_zone1/temp"
+  unit_of_measurement: '°C'
+  value_template: '{{ value | multiply(-0.0001) | int | round(1) }}'
+
+- platform: mqtt
+  name: "HomeCam Motion Raw JSON"
+  state_topic: "homecam/motion/reading"
+  value_template: '{{ value_json.payload }}'
+
+#- platform: rest
+#  name: HomeCam Direct API
+#  username: !secret homecam_username
+#  password: !secret homecam_password
+#  authentication: basic
+#  json_attributes:
+#    - width
+#    - height
+#    - framerate
+#    - text_left
+#    - text_right
+#    - pixels
+#  resource: http://homecam.RollinsNest:7999/1/config/list
+#  headers:
+#      Connection: keep-alive
+#      content-type: application/json
+
+- platform: mqtt
+  state_topic: 'temp-home/reading'
+  name: HomeCam Info Raw
+  value_template: "{{ value }}"
+
+- platform: template
+  sensors:
+    mqtt_topic_home_sysinfo_template:
+      friendly_name: "HomeCam Temperature"
+      value_template: '{{ states.sensor.homecam_info_raw.state | float | round(1) }}'
+      unit_of_measurement: '°C'
+    mqtt_topic_home_sysinfo_template_serverload:
+      friendly_name: "HomeCam Server Load"
+      value_template: '{{ states.sensor.homecam_info_raw.state.split(",")[1] | int | round(3) }}'
+    mqtt_topic_home_sysinfo_template_serverspeed:
+      friendly_name: "HomeCam Server Speed"
+      value_template: '{{ states.sensor.homecam_info_raw.state.split(",")[2].split("k")[0] | int | round(1) }}'
+      unit_of_measurement: 'kB/s'
+    mqtt_topic_home_sysinfo_template_ambient_temperature:
+      friendly_name: "HomeCam Ambient Temperature"
+      value_template: '{{ states.sensor.homecam_info_raw.state.split(",")[3] | multiply(0.001) | round(1) }}'
+      unit_of_measurement: '°C'
+    last_homecam_motion:
+      friendly_name: "Last Homecam Motion"
+      value_template:   >-
+        {% set today = now().day | int %}
+        {% set motion_date = ((as_timestamp(states.binary_sensor.homecam_motion.last_changed) | timestamp_custom("%d")) | int) %}
+        {% if today == motion_date %}
+          {% set day = "Today" %}
+        {% elif (today - 1) == motion_date %}
+          {% set day = "Yesterday" %}
+        {% elif today == 1 and motion_date > 27 %}
+          {% set day = "Yesterday" %}
+        {% else %}
+          {% set day = as_timestamp(states.binary_sensor.homecam_motion.last_changed) | timestamp_custom("%A")%}
+        {% endif %}
+        {% set time = as_timestamp(states.binary_sensor.homecam_motion.last_changed) | timestamp_custom("%l:%M %p")%}
+        {{[day,time]|join(" at ")}}
+
+- platform: template
+  scan_interval: 120
+  sensors:
+    garden_light_manual_state_time:
+      friendly_name: "Garden Light Last Update"
+      value_template: '{{ relative_time (states.switch.garden_light_manual.last_updated) + " ago"}}'
+    mqtt_topic_garden_water_state_template:
+      friendly_name: "Garden Water State"
+      value_template: '{{ states.sensor.garden_waterbot_raw.state.split("at ")[0] }}'
+    mqtt_topic_garden_water_state_time:
+      friendly_name: "Garden Water State Time"
+      value_template: >
+        {%- set my_lastwater = states.sensor.gardenwaterinfo.attributes.current | last -%}
+        {%- set my_lastwatertime =  my_lastwater.time -%}
+        {{ my_lastwatertime }}
+
+#Garden monitor channels
+- platform: mqtt
+  state_topic: 'groot-soil-temp/reading'
+  name: Garden Monitor Soil Temp
+  unit_of_measurement: '°C'
+  value_template: "{{ value }}"
+
+- platform: mqtt
+  state_topic: 'groot-water-level/reading'
+  name: Garden Monitor Water Level
+  unit_of_measurement: '%'
+  value_template: "{{ value }}"
+
+- platform: mqtt
+  state_topic: 'groot-soil-moisture/reading'
+  name: Garden Monitor Soil Moisture
+  unit_of_measurement: '%'
+  value_template: "{{ value }}"
+
+- platform: mqtt
+  state_topic: 'groot-light-level/reading'
+  name: Garden Monitor Light Level
+  unit_of_measurement: '%'
+  value_template: "{{ value }}"
+
+- platform: mqtt
+  name: 'Garden Monitor Temp F'
+  state_topic: 'groot-temp-f/reading'
+  unit_of_measurement: '°F'
+  value_template: "{{ value }}"
+
+- platform: mqtt
+  name: 'Garden Monitor Temp C'
+  state_topic: 'groot-temp-c/reading'
+  unit_of_measurement: '°C'
+  value_template: "{{ value }}"
+
+- platform: mqtt
+  name: 'Garden Monitor Temp H'
+  state_topic: 'groot-temp-h/reading'
+  unit_of_measurement: '%'
+  value_template: "{{ value |round(0)}}"
+
+- platform: mqtt
+  name: 'Garden Monitor HIF'
+  state_topic: 'groot-temp-hif/reading'
+  unit_of_measurement: '°F'
+  value_template: "{{ value }}"
+
+- platform: mqtt
+  name: 'Garden Monitor HIC'
+  state_topic: 'groot-temp-hic/reading'
+  unit_of_measurement: '°C'
+  value_template: "{{ value }}"
+
+#- platform: filter
+#  name: "Filtered Garden Humidity"
+#  entity_id: sensor.mqtt_topic_garden_humidity_template
+#  filters:
+#    - filter: outlier
+#      window_size: 5
+#      radius: 5.0
+#    - filter: lowpass
+#      time_constant: 10
+#      precision: 2
+#- platform: filter
+#  name: "Filtered Garden Temperature"
+#  entity_id: sensor.mqtt_topic_garden_temperature_template
+#  filters:
+#    - filter: outlier
+#      window_size: 5
+#      radius: 5.0
+#    - filter: lowpass
+#      time_constant: 10
+#    - filter: time_simple_moving_average
+#      window_size: 00:05
+#      precision: 2
+
+#Plant monitor channels
+- platform: mqtt
+  state_topic: 'groot2-soil-temp/reading'
+  name: Plant Monitor Soil Temp
+  unit_of_measurement: '°C'
+  value_template: "{{ value }}"
+
+- platform: mqtt
+  state_topic: 'groot2-soil-moisture/reading'
+  name: Plant Monitor Soil Moisture
+  unit_of_measurement: '%'
+  value_template: "{{ value }}"
+
+- platform: mqtt
+  state_topic: 'groot2-light-level/reading'
+  name: Plant Monitor Light Level
+  unit_of_measurement: '%'
+  value_template: "{{ value }}"
+
+- platform: mqtt
+  name: 'Plant Monitor Temp F'
+  state_topic: 'groot2-temp-f/reading'
+  unit_of_measurement: '°F'
+  value_template: "{{ value }}"
+
+- platform: mqtt
+  name: 'Plant Monitor Temp C'
+  state_topic: 'groot2-temp-c/reading'
+  unit_of_measurement: '°C'
+  value_template: "{{ value }}"
+
+- platform: mqtt
+  name: 'Plant Monitor Temp H'
+  state_topic: 'groot2-temp-h/reading'
+  unit_of_measurement: '%'
+  value_template: "{{ value |round(0)}}"
+
+- platform: mqtt
+  name: 'Plant Monitor HIF'
+  state_topic: 'groot2-temp-hif/reading'
+  unit_of_measurement: '°F'
+  value_template: "{{ value }}"
+
+- platform: mqtt
+  name: 'Plant Monitor HIC'
+  state_topic: 'groot2-temp-hic/reading'
+  unit_of_measurement: '°C'
+  value_template: "{{ value }}"
+
+- platform: mqtt
+  state_topic: 'octoprint-dht11/reading'
+  name: OctoPrint Humidity Raw
+  value_template: "{{ value }}"
+
+- platform: template
+  scan_interval: 120
+  sensors:
+    mqtt_topic_octoprint_humidity_template:
+      friendly_name: "OctoPrint Humidity"
+      value_template: '{{ states.sensor.octoprint_humidity_raw.state.split("Humidity=")[1].split("%")[0] }}'
+      unit_of_measurement: '%'
+    mqtt_topic_octoprint_temperature_template:
+      friendly_name: "OctoPrint Temperature"
+      value_template: '{{ states.sensor.octoprint_humidity_raw.state.split("Temp=")[1].split("*")[0] }}'
+      unit_of_measurement: '°C'
+    mqtt_topic_octoprint_humidity_template_time:
+      friendly_name: "OctoPrint Humidity Time"
+      value_template: >
+        {%- set date = as_timestamp(states.sensor.octoprint_humidity_raw.state.split("at ")[1]) -%}
+        {{ date | timestamp_custom("%A, %B %d, %Y at %k:%M %P") }}
+
+#Amazon-pi Data
+- platform: rest
+  name: AmazonPiSysUptime
+  username: !secret amazonpi_username
+  password: !secret amazonpi_password
+  authentication: basic
+  json_attributes:
+    - "name"
+    - "ip"
+    - "uptime"
+    - "cpu_temperature"
+    - "version"
+  resource: http://192.168.50.251/api/info
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.251/
+      Cookie: !secret amazonpi_cookie
+
+- platform: rest
+  name: AmazonCameraLatest
+  username: !secret amazonpi_username
+  password: !secret amazonpi_password
+  authentication: basic
+  json_attributes:
+    - image
+  resource: http://192.168.50.251/api/camera/latest
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.251/
+      Cookie: !secret amazonpi_cookie
+
+- platform: template
+  sensors:
+    octocam_pic_url:
+      value_template: >
+        {% set url = states.sensor.amazoncameralatest.attributes.image %}
+        {% set prefix = "http://192.168.50.251/images/" %}
+        {{ [prefix, url] | join("") }}
+
+- platform: template
+  sensors:
+    amazonsysinfo_template_name:
+      value_template: '{{ states.sensor.amazonpisysuptime.attributes.name }}'
+      friendly_name: Amazon Server Name
+      entity_id: sensor.reefsysinfo_template_name
+    amazonsysinfo_template_version:
+      value_template: '{{ states.sensor.amazonpisysuptime.attributes.version }}'
+      friendly_name: Amazon Server Version
+      entity_id: sensor.rreefsysinfo_template_version
+    amazonsysinfo_template_uptime:
+      value_template: '{{ states.sensor.amazonpisysuptime.attributes.uptime }}'
+      friendly_name: Amazon Server Uptime
+      entity_id: sensor.reefsysinfo_template_uptime
+    amazonsysinfo_template_ip:
+      value_template: '{{ states.sensor.amazonpisysuptime.attributes.ip }}'
+      friendly_name: Amazon Server IP
+      entity_id: sensor.reefsysinfo_template_ip
+    amazonsysinfo_template_cpu_temperature:
+      value_template: '{{ states.sensor.amazonpisysuptime.attributes.cpu_temperature }}'
+      friendly_name: Amazon Server CPU Temp
+      entity_id: sensor.amazonsysinfo_template_cpu_temperature
+
+- platform: rest
+  name: OnlyAmazonPiTemp
+  username: !secret amazonpi_username
+  password: !secret amazonpi_password
+  authentication: basic
+  resource: http://192.168.50.251/api/tcs/1/usage
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.251/
+      Cookie: !secret amazonpi_cookie
+  value_template: '{{ value_json.current[-1].value | round(2) }}'
+  unit_of_measurement: '°F'
+
+- platform: rest
+  name: OnlyAmazonPiTempTime
+  username: !secret amazonpi_username
+  password: !secret amazonpi_password
+  authentication: basic
+  resource: http://192.168.50.251/api/tcs/1/usage
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.251/
+      Cookie: !secret amazonpi_cookie
+  value_template: '{{ value_json.current[-1].time }}'
+
+- platform: rest
+  name: AmazonPiFloat
+  username: !secret amazonpi_username
+  password: !secret amazonpi_password
+  authentication: basic
+  resource: http://192.168.50.251/api/equipment/1
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.251/
+      Cookie: !secret amazonpi_cookie
+  value_template: >-
+    {% set float_status = value_json.on %}
+    {% if float_status == false %}OK
+    {% elif float_status == False %}OK
+    {% elif float_status == true %}Low
+    {% elif float_status == True %}Low
+    {% else %}n/a
+    {% endif %}
+
+- platform: rest
+  name: Amazon Camera Config
+  username: !secret amazonpi_username
+  password: !secret amazonpi_password
+  authentication: basic
+  resource: http://192.168.50.251/api/camera/config
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.251/
+      Cookie: !secret amazonpi_cookie
+
+- platform: rest
+  name: AmazonPi Errors
+  username: !secret amazonpi_username
+  password: !secret amazonpi_password
+  authentication: basic
+  json_attributes:
+    - message
+    - time
+    - count
+    - id
+  resource: http://192.168.50.251/api/errors
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.251/
+      Cookie: !secret amazonpi_cookie
+
+- platform: mqtt
+  name: 'USPS Mail'
+  state_topic: '/usps/mails'
+  value_template: "{{ value }}"
+
+- platform: mqtt
+  name: 'USPS Packages'
+  state_topic: '/usps/packages'
+  value_template: "{{ value }}"
+
+- platform: mqtt
+  name: 'Mailbox Temp F'
+  state_topic: 'mailbox-temp-f/reading'
+  unit_of_measurement: '°F'
+  value_template: "{{ value }}"
+
+- platform: mqtt
+  name: 'Mailbox Temp C'
+  state_topic: 'mailbox-temp-c/reading'
+  unit_of_measurement: '°C'
+  value_template: "{{ value }}"
+
+- platform: mqtt
+  name: 'Mailbox Temp H'
+  state_topic: 'mailbox-temp-h/reading'
+  unit_of_measurement: '%'
+  value_template: "{{ value |round(2)}}"
+
+- platform: mqtt
+  name: 'Mailbox Temp HIF'
+  state_topic: 'mailbox-temp-hif/reading'
+  unit_of_measurement: '°F'
+  value_template: "{{ value }}"
+
+- platform: mqtt
+  name: 'Mailbox Temp HIC'
+  state_topic: 'mailbox-temp-hic/reading'
+  unit_of_measurement: '°C'
+  value_template: "{{ value }}"
+
+- platform: mqtt
+  state_topic: 'mailbox/reading'
+  name: 'Mailbox Firehose'
+  value_template: "{{ value }}"
+
+- platform: filter
+  name: "Mailbox Filtered Humidity"
+  entity_id: sensor.mailbox_temp_h
+  filters:
+    - filter: outlier
+      window_size: 4
+      radius: 4.0
+    - filter: lowpass
+      time_constant: 10
+      precision: 2
+    - filter: range
+      lower_bound: 1
+      upper_bound: 100
+- platform: filter
+  name: "Mailbox Filtered Temperature"
+  entity_id: sensor.mailbox_temp_f
+  filters:
+    - filter: outlier
+      window_size: 4
+      radius: 2.0
+    - filter: lowpass
+      time_constant: 10
+    - filter: time_simple_moving_average
+      window_size: 00:05
+      precision: 2
+    - filter: range
+      lower_bound: 35
+      upper_bound: 120
+
+- platform: template
+  sensors:
+    reef_time_low_tide:
+      friendly_name: "Next Reef Time Low Tide"
+      value_template: '{{ states.sensor.bali_reef_tides.attributes.low_tide_time_utc.split("T")[1].split("+")[0] }}'
+      unit_of_measurement: 'time'
+    reef_time_high_tide:
+      friendly_name: "Next Reef Time High Tide"
+      value_template: '{{ states.sensor.bali_reef_tides.attributes.high_tide_time_utc.split("T")[1].split("+")[0] }}'
+      unit_of_measurement: 'time'
+
+# Track the sun in the Amazon
+#- platform: yweather
+#  woeid: 455833
+#  name: AmazonWeather
+#  monitored_conditions:
+#    - weather
+#    - weather_current
+#    - temp_min
+#    - temp_max
+#    - wind_speed
+#    - pressure
+#    - visibility
+#    - humidity
+#    - temperature
+
+# Track the sun in Bali
+#- platform: yweather
+#  woeid: 2291072
+#  name: ReefWeather
+#  monitored_conditions:
+#    - weather
+#    - weather_current
+#    - temp_min
+#    - temp_max
+#    - wind_speed
+#    - pressure
+#    - visibility
+#    - humidity
+#    - temperature
+
+- platform: template
+  sensors:
+    local_time_ampm:
+      entity_id: sensor.RollinsNest_time_ampm
+      friendly_name: "Local Time AM/PM"
+      value_template: '{{ now().time().strftime("%-I:%M %P") }}'
+
+- platform: template
+  sensors:
+    local_time_24h:
+      entity_id: sensor.RollinsNest_time_24h
+      friendly_name: "Local Time 24h No Zero"
+      value_template: '{{ now().time().strftime("%k:%M") }}'
+
+- platform: template
+  sensors:
+    pretty_date_time:
+      entity_id: sensor.pretty_date_time
+      friendly_name: "Today"
+      value_template: >
+        {%- set date = as_timestamp(now()) -%}
+        {{ date | timestamp_custom("%A, %B %d, %Y at %k:%M %P") }}
+
+- platform: template
+  sensors:
+    pretty_date:
+      entity_id: sensor.pretty_date
+      friendly_name: "Today"
+      value_template: >
+        {%- set date = as_timestamp(now()) -%}
+        {{ date | timestamp_custom("%B %d, %Y") }}
+
+- platform: template
+  sensors:
+    pretty_month:
+      friendly_name: "Month"
+      entity_id: sensor.pretty_month
+      value_template: >
+        {%- set date = as_timestamp(now()) -%}
+        {{ date | timestamp_custom("%B") }}
+
+#Scrape for Amazon Tides
+- platform: scrape
+  resource: https://tides4fishing.com/br/amapa/rio-amazonas-ponta-do-ceu
+  select: "div#grafico_estado_actual_texto_pleamar"
+  name: AmazonNextHighTide
+#  entity_id: sensor.amazonnexthightide
+  scan_interval: 14400
+  value_template: '{{ value.split("de ")[1].split(" h")[0] }}'
+
+- platform: scrape
+  resource: https://tides4fishing.com/br/amapa/rio-amazonas-ponta-do-ceu
+  select: "div#grafico_estado_actual_texto_bajamar"
+  name: AmazonNextLowTide
+#  entity_id: sensor.amazonnextlowtide
+  scan_interval: 14400
+  value_template: '{{ value.split("de ")[1].split(" h")[0] }}'
+
+- platform: scrape
+  resource: https://tides4fishing.com/br/amapa/rio-amazonas-ponta-do-ceu
+  select: "#amanecer_anochecer_datos_salida_sol div.amanecer_anochecer_datos_salida_puesta_sol2"
+  name: AmazonSunriseTides
+#  entity_id: sensor.amazonsunrisetides
+  scan_interval: 7200
+  value_template: '{{ (value.split(" h")[0]) }}'
+#  value_template: "{{ (value.split(' h')[0])|timestamp_custom('%k:%M', false) }}"
+
+- platform: scrape
+  resource: https://tides4fishing.com/br/amapa/rio-amazonas-ponta-do-ceu
+  select: "#amanecer_anochecer_datos_puesta_sol div.amanecer_anochecer_datos_salida_puesta_sol2"
+  name: AmazonSunsetTides
+#  entity_id: sensor.amazonsunsettides
+  scan_interval: 7200
+  value_template: '{{ (value.split(" h")[0]) }}'
+
+- platform: scrape
+  resource: https://tides4fishing.com/br/amapa/rio-amazonas-ponta-do-ceu
+  select: "#c_grafico_temp_agua_fondo #c_grafico_temp_agua_txt_grados_agua_actual"
+  name: AmazonWaterTempTides
+  scan_interval: 7200
+  value_template: '{{ (value.split("°C")[0]) }}'
+
+- platform: command_line
+  command: "cat /home/homeassistant/.homeassistant/scripts/BrancoRiver_CaracaraiWaterTemperature_ltv.txt"
+  name: 'Monthly Amazon Temp MinMax Raw This Month'
+  value_template: >
+        {%- set date = as_timestamp(now()) -%}
+        {%- set month = ( date | timestamp_custom("%B")) -%}
+        {{ (value.split(month)[1].split("\n")[0] ) }}
+
+- platform: template
+  sensors:
+    monthly_amazon_temp_max:
+      friendly_name: "Monthly Amazon Temp Max"
+      value_template: '{{ states.sensor.monthly_amazon_temp_minmax_raw_this_month.state.split(";")[1].split(";")[0] }}'
+      unit_of_measurement: '°C'
+    monthly_amazon_temp_highmed:
+      friendly_name: "Monthly Amazon Temp HighMed"
+      value_template: '{{ states.sensor.monthly_amazon_temp_minmax_raw_this_month.state.split(";")[2].split(";")[0] }}'
+      unit_of_measurement: '°C'
+    monthly_amazon_temp_med:
+      friendly_name: "Monthly Amazon Temp Median"
+      value_template: '{{ states.sensor.monthly_amazon_temp_minmax_raw_this_month.state.split(";")[3].split(";")[0] }}'
+      unit_of_measurement: '°C'
+    monthly_amazon_temp_lowmed:
+      friendly_name: "Monthly Amazon Temp LowMed"
+      value_template: '{{ states.sensor.monthly_amazon_temp_minmax_raw_this_month.state.split(";")[4].split(";")[0] }}'
+      unit_of_measurement: '°C'
+    monthly_amazon_temp_min:
+      friendly_name: "Monthly Amazon Temp Min"
+      value_template: '{{ states.sensor.monthly_amazon_temp_minmax_raw_this_month.state.split(";")[5] }}'
+      unit_of_measurement: '°C'
+#Reef time adjustment of 2 hours
+    reeftime_sunrise_adjustment:
+      friendly_name: "Reeftime Sunrise Adjustment"
+      value_template: >
+        {% set time_string = now().strftime("%Y-%m-%d ")+states('sensor.reefsunrisetides') %}
+        {% set rise_time = strptime(time_string,"%Y-%m-%d %H:%M").timestamp() %}
+        {% set adj_time = (120 * 60) %}
+        {{ ( rise_time + adj_time ) | timestamp_custom("%H:%M") }}
+    reeftime_sunset_adjustment:
+      friendly_name: "Reeftime Sunset Adjustment"
+      value_template: >
+        {% set time_string = now().strftime("%Y-%m-%d ")+states('sensor.reefsunsettides') %}
+        {% set rise_time = strptime(time_string,"%Y-%m-%d %H:%M").timestamp() %}
+        {% set adj_time = (120 * 60) %}
+        {{ ( rise_time + adj_time ) | timestamp_custom("%H:%M") }}
+
+
+#    octocam_tweet_img:
+#      friendly_name: "Latest OctoCam Tweet Image"
+#      value_template: >
+#        {% set octo_tweets = states.sensor.octocambot_feed.attributes | first %}
+#        {% set img = octo_tweets.split("pic.twitter.com/")[1] %}
+#        {% set prefix = "http://pic.twitter.com/" %}
+#        {{ [prefix, img] | join("") }}
+#    octocam_tweet_text:
+#      friendly_name: "Latest OctoCam Tweet Text"
+#      value_template: >
+#        {% set octo_tweets = states.sensor.octocambot_feed.attributes | first %}
+#        {% set twit = octo_tweets.split("pic.twitter.com")[0] %}
+#        {% set prefix = "@Octo_Cam_Bot: " %}
+#        {{ [prefix, twit] | join("") }}
+#    sfgabe_tweet_text:
+#      friendly_name: "Latest SFGabe Tweet Text"
+#      value_template: >
+#        {% set sfgabe_tweets = states.sensor.sfgabe_feed.attributes|first %}
+#        {% set twit = sfgabe_tweets.split("pic.twitter.com")[0] %}
+#        {% set prefix = "@sfgabe: " %}
+#        {{ [prefix, twit] | join("") }}
+
+- platform: command_line
+  name: "Latest Octo Tweet Text"
+  command: "cat /home/homeassistant/.homeassistant/www/images/tweets_octocam.txt"
+  value_template: >
+    {% set tweet_text = (value.split("TWEET")[1].split("DATE")[0] ) %}
+    {% set prefix = "@Octo_Cam_Bot" %}
+    {{ [prefix, tweet_text] | join("") }}
+
+- platform: command_line
+  name: "Latest Octo Tweet Date"
+  command: "cat /home/homeassistant/.homeassistant/www/images/tweets_octocam.txt"
+  value_template: >
+    {% set tweet_date = (value.split("DATE")[1].split("+")[0] ) %}
+    {% set prefix = "Posted" %}
+    {{ [prefix, tweet_date] | join("") }}
+
+- platform: command_line
+  name: "Latest Octo Image Link"
+  command: "cat /home/homeassistant/.homeassistant/www/images/tweets_octocam.txt"
+  value_template: >
+    {% set media_link = (value.split("pbs.twimg.com")[1].split("'")[0] ) %}
+    {% set prefix = "http://pbs.twimg.com" %}
+    {{ [prefix, media_link] | join("") }}
+
+- platform: command_line
+  name: "Latest SFGabe Tweet Text"
+  command: "cat /home/homeassistant/.homeassistant/www/images/tweets_sfgabe.txt"
+  value_template: >
+    {% set tweet_text = (value.split("TWEET")[1].split("DATE")[0] ) %}
+    {% set prefix = "@sfgabe" %}
+    {{ [prefix, tweet_text] | join("") }}
+
+- platform: command_line
+  name: "Latest SFGabe Tweet Date"
+  command: "cat /home/homeassistant/.homeassistant/www/images/tweets_sfgabe.txt"
+  value_template: >
+    {% set tweet_date = (value.split("DATE")[1].split("+")[0] ) %}
+    {% set prefix = "Posted" %}
+    {{ [prefix, tweet_date] | join("") }}
+
+- platform: command_line
+  name: "Latest SFGabe Image Link"
+  command: "cat /home/homeassistant/.homeassistant/www/images/tweets_sfgabe.txt"
+  value_template: >
+    {% set media_link = (value.split("pbs.twimg.com")[1].split("'")[0] ) %}
+    {% set prefix = "http://pbs.twimg.com" %}
+    {{ [prefix, media_link] | join("") }}
+
+#- platform: random
+#  name: Amazon Random Day Temp Number
+#  entity_id: sensor.amazon_random_day_temp
+#    minimum: "{{ states('sensor.monthly_amazon_temp_med') }}"
+#    maximum: "{{ states('sensor.monthly_amazon_temp_max') }}"
+#  unit_of_measurement: '°C'
+#value: '{{ (range[(states.sensor.monthly_amazon_temp_med.state),(states.sensor.monthly_amazon_temp_max.state)] | random )}}'
+
+#- platform: random
+#  name: Amazon Random Night Temp Number
+#  entity_id: sensor.amazon_random_day_temp
+#  minimum: {{ states('sensor.monthly_amazon_temp_min') }}"
+#  maximum: {{ states('sensor.monthly_amazon_temp_med') }}"
+#  unit_of_measurement: '°C'
+
+- platform: file
+  name: 'Monthly Amazon Temp'
+#  entity_id: sensor.monthly_amazon_temp
+  file_path: /home/homeassistant/.homeassistant/scripts/amazon-temp-by-month.txt
+  unit_of_measurement: '°C'
+  value_template: '{{ (value.split(",")[1].split(",")[0]) | round(1) }}'
+
+- platform: file
+  name: 'Monthly Amazon pH'
+  file_path: /home/homeassistant/.homeassistant/scripts/amazon-temp-by-month.txt
+  unit_of_measurement: 'pH'
+  value_template: '{{ (value.split(",")[2]) | round(1) }}'
+
+#Google Sheets Amazon Stats
+- platform: file
+  name: 'Amazon Stats Raw'
+  file_path: /home/homeassistant/.homeassistant/downloads/amazon_stats.csv
+  scan_interval: 3600
+- platform: template
+  sensors:
+    latest_amazon_stats_date:
+      value_template: "{{ (states.sensor.amazon_stats_raw.state.split(',')[0])|timestamp_custom('%m %d, %Y', false) }}"
+      friendly_name: 'Amazon Test Date'
+    latest_amazon_stats_ph:
+      friendly_name: 'Amazon Test pH'
+      value_template: '{{ states.sensor.amazon_stats_raw.state.split(",")[1].split(",")[0] | float }}'
+    latest_amazon_stats_nitrate:
+      friendly_name: 'Amazon Test Nitrate'
+      value_template: '{{ states.sensor.amazon_stats_raw.state.split(",")[2].split(",")[0] | float }}'
+    latest_amazon_stats_nitrite:
+      friendly_name: 'Amazon Test Nitrite'
+      value_template: '{{ states.sensor.amazon_stats_raw.state.split(",")[3].split(",")[0] | float }}'
+    latest_amazon_stats_ammonia:
+      friendly_name: 'Amazon Test Ammonia'
+      value_template: '{{ states.sensor.amazon_stats_raw.state.split(",")[4].split(",")[0] | float }}'
+    latest_amazon_stats_water_change:
+      friendly_name: 'Amazon Test Water Change'
+      value_template: "{{ (states.sensor.amazon_stats_raw.state.split(',')[5])|timestamp_custom('%m %d, %Y', false) }}"
+
+#Scrape For Reef Temp
+- platform: scrape
+  resource: http://www.surf-forecast.com/breaks/Kuta-Beach/seatemp
+  select: "div#contdiv span.temp"
+  name: ReefOceanTemp
+  scan_interval: 3600
+
+#Google Sheets Reef Stats
+- platform: file
+  name: 'Reef Stats Raw'
+  file_path: /home/homeassistant/.homeassistant/downloads/reef_stats.csv
+  scan_interval: 3600
+- platform: template
+  sensors:
+    latest_reef_stats_date:
+      value_template: "{{ (states.sensor.reef_stats_raw.state.split(',')[0])|timestamp_custom('%m %d, %Y', false) }}"
+      friendly_name: 'Reef Test Date'
+    latest_reef_stats_ph:
+      friendly_name: 'Reef Test pH'
+      value_template: '{{ states.sensor.reef_stats_raw.state.split(",")[1].split(",")[0] | float }}'
+    latest_reef_stats_salinity:
+      friendly_name: 'Reef Test Salinity'
+      value_template: '{{ states.sensor.reef_stats_raw.state.split(",")[2].split(",")[0] | float }}'
+    latest_reef_stats_nitrate:
+      friendly_name: 'Reef Test Nitrate'
+      value_template: '{{ states.sensor.reef_stats_raw.state.split(",")[3].split(",")[0] | float }}'
+    latest_reef_stats_nitrite:
+      friendly_name: 'Reef Test Nitrite'
+      value_template: '{{ states.sensor.reef_stats_raw.state.split(",")[4].split(",")[0] | float }}'
+    latest_reef_stats_ammonia:
+      friendly_name: 'Reef Test Ammonia'
+      value_template: '{{ states.sensor.reef_stats_raw.state.split(",")[5].split(",")[0] | float }}'
+    latest_reef_stats_calcium:
+      friendly_name: 'Reef Test Calcium'
+      value_template: '{{ states.sensor.reef_stats_raw.state.split(",")[6].split(",")[0] | float }}'
+    latest_reef_stats_phos:
+      friendly_name: 'Reef Test Phosphates'
+      value_template: '{{ states.sensor.reef_stats_raw.state.split(",")[7].split(",")[0] | float }}'
+    latest_reef_stats_kh:
+      friendly_name: 'Reef Test kH'
+      value_template: '{{ states.sensor.reef_stats_raw.state.split(",")[8].split(",")[0] | float }}'
+    latest_reef_stats_water_change:
+      friendly_name: 'Reef Test Water Change'
+      value_template: "{{ (states.sensor.reef_stats_raw.state.split(',')[9])|timestamp_custom('%m %d, %Y', false) }}"
+
+- platform: file
+  name: 'NOAA Daily Reef Temp Raw'
+  file_path: /home/homeassistant/.homeassistant/www/images/east_java_bali.txt
+
+- platform: file
+  name: 'NOAA Daily Min Reef Temp'
+  file_path: /home/homeassistant/.homeassistant/www/images/east_java_bali.txt
+  unit_of_measurement: '°C'
+  value_template: >
+    {% set rawvalue = states.sensor.noaa_daily_reef_temp_raw.state %}
+    {% set adjvalue =  (rawvalue.split(" ")[3]) | round(1) %}
+    {{ (adjvalue - 3) | round(1) }}
+
+- platform: file
+  name: 'NOAA Daily Max Reef Temp'
+  file_path: /home/homeassistant/.homeassistant/www/images/east_java_bali.txt
+  unit_of_measurement: '°C'
+  value_template: >
+    {% set rawvalue = states.sensor.noaa_daily_reef_temp_raw.state %}
+    {% set adjvalue =  (rawvalue.split(" ")[4]) | round(1) %}
+    {{ (adjvalue - 3) | round(1) }}
+
+- platform: min_max
+  name: reef_avg_daily_temp
+  type: mean
+  entity_ids:
+    - sensor.noaa_daily_min_reef_temp
+    - sensor.noaa_daily_max_reef_temp
+
+- platform: min_max
+  name: reef_high_avg_daily_temp
+  type: mean
+  entity_ids:
+    - sensor.reef_avg_daily_temp
+    - sensor.noaa_daily_max_reef_temp
+
+- platform: min_max
+  name: reef_low_avg_daily_temp
+  type: mean
+  entity_ids:
+    - sensor.reef_avg_daily_temp
+    - sensor.noaa_daily_min_reef_temp
+
+- platform: template
+  sensors:
+    reef_ocean_temp_c:
+      friendly_name: "Reef Ocean Temp Celsius"
+      value_template: '{{ (float(states("sensor.reefoceantemp"))) }}'
+    reef_ocean_temp_f:
+      unit_of_measurement: '°F'
+      friendly_name: "Reef Ocean Temp Fahrenheit"
+      value_template: '{{ ((float(states("sensor.reef_ocean_temp_c")) * 9 / 5 )  +  32) | round(1) }}'
+
+- platform: scrape
+  resource: https://tides4fishing.com/as/west-indonesia/banjuwangi-bali-str
+  select: "#amanecer_anochecer_datos_salida_sol div.amanecer_anochecer_datos_salida_puesta_sol2"
+  name: ReefSunriseTides
+  scan_interval: 7200
+  value_template: '{{ (value.split(" h")[0]) }}'
+
+- platform: scrape
+  resource: https://tides4fishing.com/as/west-indonesia/banjuwangi-bali-str
+  select: "#amanecer_anochecer_datos_puesta_sol div.amanecer_anochecer_datos_salida_puesta_sol2"
+  name: ReefSunsetTides
+  scan_interval: 7200
+  value_template: '{{ (value.split(" h")[0]) }}'
+
+- platform: scrape
+  resource: https://tides4fishing.com/as/west-indonesia/banjuwangi-bali-str
+  select: "div.grafico_salida_puesta_luna_texto div.grafico_estado_actual_texto1 p"
+  name: ReefMoonriseTides
+  scan_interval: 7200
+  value_template: '{{ (value.split("at ")[1].split(" h")[0]) }}'
+
+- platform: scrape
+  resource: https://tides4fishing.com/as/west-indonesia/banjuwangi-bali-str
+  select: "div.grafico_salida_puesta_luna_texto div.grafico_estado_actual_texto1 p"
+  name: ReefMoonsetTides
+  scan_interval: 7200
+  value_template: '{{ (value.split("at ")[2].split(" h")[0]) }}'
+
+- platform: uptime
+  name: Time Online
+  unit_of_measurement: hours
+
+- platform: sql
+  db_url: !secret config_db_fs_url
+  queries:
+    - name: "MariaDB Database Size"
+      query: 'SELECT table_schema "database", Round(Sum(data_length + index_length)/1024/1024, 1) "value" FROM information_schema.tables WHERE table_schema="hass_db" GROUP BY table_schema;'
+      column: 'value'
+      unit_of_measurement: MB
+
+- platform: template
+  sensors:
+    switches_on_count:
+      friendly_name: Switches On
+      value_template: "{{ states.switch|selectattr('state','equalto','on')|list|length }}"
+    lights_on_count:
+      friendly_name: Lights On
+      value_template: >
+        {%- set lights = [
+          states.light.bedroom_desk,
+          states.light.bedroom,
+          states.light.big_o,
+          states.light.desk,
+          states.light.entry_light,
+          states.light.et_figure,
+          states.light.flux_capacitor,
+          states.light.kitchen,
+          states.light.table,
+          states.light.thundercloud
+         ] -%}
+         {{lights | selectattr('state','eq','on') | list | count}}
+    devices_online_count:
+      friendly_name: Devices Online
+      value_template: "{{ states.sensor|selectattr('state','equalto','Online')|list|length }}"
+    switches_count:
+      friendly_name: 'Number of Switches'
+      value_template: >
+        {%- set domains = ['switch'] -%}
+        {%- for domain in domains -%}
+          {%- for item in states[domain] -%}
+            {% if loop.first %}
+              {{loop.length}}
+            {% endif %}
+          {%- endfor -%}
+        {%- endfor -%}
+    lights_count:
+      friendly_name: 'Number of Lights'
+      value_template: >
+        {%- set domains = ['light'] -%}
+        {%- for domain in domains -%}
+          {%- for item in states[domain] -%}
+            {% if loop.first %}
+              {{loop.length}}
+            {% endif %}
+          {%- endfor -%}
+        {%- endfor -%}
+    devices_count:
+      friendly_name: 'Number of Devices'
+      value_template: >
+        {%- set domains = ['device_tracker'] -%}
+        {%- for domain in domains -%}
+          {%- for item in states[domain] -%}
+            {% if loop.first %}
+              {{loop.length}}
+            {% endif %}
+          {%- endfor -%}
+        {%- endfor -%}
+
+#Empire State Colors White
+- platform: scrape
+  name: empire_state_lights_info_white
+  resource: http://www.esbnyc.com/explore/tower-lights
+  select: 'div.view-empty h1#page-title.title'
+  scan_interval: 10800
+
+- platform: scrape
+  resource: http://www.esbnyc.com/explore/tower-lights
+  select: 'div.view-empty p img'
+  attribute: src
+  name: empire_state_lights_pic_url
+  scan_interval: 10800
+  value_template: >
+    {% set url = value.split("sites/")[1] %}
+    {% set prefix = "http://www.esbnyc.com/sites/" %}
+    {{ [prefix, url] | join("") }}
+
+#Empire State Colors Other
+- platform: scrape
+  name: empire_state_lights_info_color
+  resource: http://www.esbnyc.com/explore/tower-lights
+  select: 'div.views-row h1#page-title.title'
+  scan_interval: 10800
+
+- platform: scrape
+  resource: http://www.esbnyc.com/explore/tower-lights
+  select: 'div.field--type-image picture img'
+  attribute: src
+  name: empire_state_lights_pic_url_color
+  scan_interval: 10800
+  value_template: >
+    {% set url = value.split("sites/")[1] %}
+    {% set prefix = "http://www.esbnyc.com/sites/" %}
+    {{ [prefix, url] | join("") }}
+
+#Calendars
+- platform: template
+  sensors:
+    template_calendar_next:
+      friendly_name: Next Event
+      value_template: '{{ states.calendar.gabethisisgabescom.attributes.message }}'
+
+- platform: template
+  sensors:
+    nextcal_location:
+      value_template: '{{ states.calendar.gabethisisgabescom.attributes.location }}'
+      friendly_name: 'Calendar Location'
+      unit_of_measurement: 'address'
+    nextcal_start_time:
+      value_template: '{{ states.calendar.gabethisisgabescom.attributes.start_time| timestamp_custom("%h %d, %Y %k:%M %P")}}'
+      friendly_name: 'Start Time'
+    nextcal_end_time:
+      value_template: '{{ states.calendar.gabethisisgabescom.attributes.end_time| timestamp_custom("%h %d, %Y %k:%M %P") }}'
+      friendly_name: 'End Time'
+    nextcal_start_day:
+      value_template: >
+        {%- set date = as_timestamp(states.calendar.gabethisisgabescom.attributes.start_time) -%}
+        {{ date | timestamp_custom("%A, %B %d") }}
+      friendly_name: 'Start Day'
+    nextcal_start_time_short:
+      value_template:  >
+        {%- set date = as_timestamp(states.calendar.gabethisisgabescom.attributes.start_time) -%}
+        {{ date | timestamp_custom("%k:%M %P") }}
+      friendly_name: 'Start Time Short'
+    nextcal_end_time_short:
+      value_template: >
+        {%- set date = as_timestamp(states.calendar.gabethisisgabescom.attributes.end_time) -%}
+        {{ date | timestamp_custom("%k:%M %P") }}
+      friendly_name: 'End Time Short'
+    nextcal_message:
+      value_template: '{{ states.calendar.gabethisisgabescom.attributes.message }}'
+      friendly_name: 'Event'
+    new_nextcal_location:
+      value_template: '{% if is_state("sensor.nextcal_location", "None") %}{{ zone.home }}{% else %}{{ states.calendar.gabethisisgabescom.attributes.location }}{% endif %}'
+      friendly_name: 'Location'
+    nextcal_calc_leave_time:
+      value_template: '{{ (as_timestamp(states.calendar.gabethisisgabescom.attributes.start_time) - states.sensor.home_to_next_appt.attributes.duration.split(" ")[0] | int *60 ) | timestamp_custom("%m %d, %Y %-I:%M %p") }}'
+      friendly_name: 'Leave Time'
+    nextcal_sys_time:
+      value_template: '{{ (now().strftime("%s") | int | timestamp_custom("%A %h %d, %Y %k:%M %P")) }}'
+
+- platform: template
+  sensors:
+    template_calendar_birthday:
+       friendly_name: Upcoming Birthday
+       value_template: '{{ states.calendar.contacts.attributes.message }}'
+    template_calendar_birthday_date:
+      value_template: '{{ states.calendar.contacts.attributes.start_time| timestamp_custom("%h %d, %Y %k:%M %P")}}'
+      friendly_name: 'Date'
+
+#Bustime Sensors
+#- platform: gtfs_realtime
+#  name: Next Bus
+#  trip_update_url: !secret gtfs_bus_trip_update_url
+#  vehicle_position_url: !secret gtfs_bus_trip_position_url
+#  offset: 7
+#  departures:
+#  - name: M14A Crosstown at Clinton Street
+#    route: M14A
+#    stopid: 401150
+#  - name: 'M15SBS Uptown Allen at Grand'
+#    route: "M15-SBS"
+#    stopid: 405320
+#  - name: M15 Local Uptown Allen at Grand
+#    route: M15
+#    stopid: 405320
+
+#Bus M15
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=405320&LineRef=MTA%20NYCT_M15&version=2&StopMonitoringDetailLevel=minimum
+  name: SIRI Bus M15 Stops 0 Local Uptown Allen at Grand
+  select: "ArrivalProximityText"
+  index: 0
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=405320&LineRef=MTA%20NYCT_M15&version=2&StopMonitoringDetailLevel=minimum
+  name: SIRI Bus M15 0 Distance Local Uptown Allen at Grand
+  select: "DistanceFromStop"
+  index: 0
+  unit_of_measurement: meters
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=405320&LineRef=MTA%20NYCT_M15&version=2&StopMonitoringDetailLevel=minimum
+  name: SIRI Bus M15 0 Destination Local Uptown Allen at Grand
+  select: "DestinationName"
+  index: 0
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=405320&LineRef=MTA%20NYCT_M15&version=2&StopMonitoringDetailLevel=minimum
+  name: SIRI Bus M15 0 Name Local Uptown Allen at Grand
+  select: "PublishedLineName"
+  index: 0
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=405320&LineRef=MTA%20NYCT_M15&version=2&StopMonitoringDetailLevel=minimum
+  name: SIRI Bus M15 Stops 1 Local Uptown Allen at Grand
+  select: "ArrivalProximityText"
+  index: 1
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=405320&LineRef=MTA%20NYCT_M15&version=2&StopMonitoringDetailLevel=minimum
+  name: SIRI Bus M15 1 Distance Local Uptown Allen at Grand
+  select: "DistanceFromStop"
+  index: 1
+  unit_of_measurement: meters
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=405320&LineRef=MTA%20NYCT_M15&version=2&StopMonitoringDetailLevel=minimum
+  name: SIRI Bus M15 1 Name Local Uptown Allen at Grand
+  select: "PublishedLineName"
+  index: 1
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=405320&LineRef=MTA%20NYCT_M15&version=2&StopMonitoringDetailLevel=minimum
+  name: SIRI Bus M15 1 Destination Local Uptown Allen at Grand
+  select: "DestinationName"
+  index: 1
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=405320&LineRef=MTA%20NYCT_M15&version=2&StopMonitoringDetailLevel=minimum
+  name: SIRI Bus M15 2 Stops Local Uptown Allen at Grand
+  select: "ArrivalProximityText"
+  index: 2
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=405320&LineRef=MTA%20NYCT_M15&version=2&StopMonitoringDetailLevel=minimum
+  name: SIRI Bus M15 2 Distance Local Uptown Allen at Grand
+  select: "DistanceFromStop"
+  index: 2
+  unit_of_measurement: meters
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=405320&LineRef=MTA%20NYCT_M15&version=2&StopMonitoringDetailLevel=minimum
+  name: SIRI Bus M15 2 Name Local Uptown Allen at Grand
+  select: "PublishedLineName"
+  index: 2
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=405320&LineRef=MTA%20NYCT_M15&version=2&StopMonitoringDetailLevel=minimum
+  name: SIRI Bus M15 2 Destination Local Uptown Allen at Grand
+  select: "DestinationName"
+  index: 2
+
+#Bus M15SBS
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=405320&LineRef=MTA%20NYCT_M15%2B&version=2&StopMonitoringDetailLevel=minimum
+  name: SIRI Bus M15SBS Local 0 Stop Uptown Allen at Grand
+  select: "ArrivalProximityText"
+  index: 0
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=405320&LineRef=MTA%20NYCT_M15%2B&version=2&StopMonitoringDetailLevel=minimum
+  name: SIRI Bus M15SBS Local 0 Distance Uptown Allen at Grand
+  select: "DistanceFromStop"
+  index: 0
+  unit_of_measurement: meters
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=405320&LineRef=MTA%20NYCT_M15%2B&version=2&StopMonitoringDetailLevel=minimum
+  name: SIRI Bus M15SBS Local 0 Name Uptown Allen at Grand
+  select: "PublishedLineName"
+  index: 0
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=405320&LineRef=MTA%20NYCT_M15%2B&version=2&StopMonitoringDetailLevel=minimum
+  name: SIRI Bus M15SBS Local 0 Destination Uptown Allen at Grand
+  select: "DestinationName"
+  index: 0
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=405320&LineRef=MTA%20NYCT_M15%2B&version=2&StopMonitoringDetailLevel=minimum
+  name: SIRI Bus M15SBS Local 1 Stop Uptown Allen at Grand
+  select: "ArrivalProximityText"
+  index: 1
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=405320&LineRef=MTA%20NYCT_M15%2B&version=2&StopMonitoringDetailLevel=minimum
+  name: SIRI Bus M15SBS Local 1 Distance Uptown Allen at Grand
+  select: "DistanceFromStop"
+  index: 1
+  unit_of_measurement: meters
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=405320&LineRef=MTA%20NYCT_M15%2B&version=2&StopMonitoringDetailLevel=minimum
+  name: SIRI Bus M15SBS Local 1 Name Uptown Allen at Grand
+  select: "PublishedLineName"
+  index: 1
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=405320&LineRef=MTA%20NYCT_M15%2B&version=2&StopMonitoringDetailLevel=minimum
+  name: SIRI Bus M15SBS Local 1 Destination Uptown Allen at Grand
+  select: "DestinationName"
+  index: 1
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=405320&LineRef=MTA%20NYCT_M15%2B&version=2&StopMonitoringDetailLevel=minimum
+  name: SIRI Bus M15SBS Local 2 Stop Uptown Allen at Grand
+  select: "ArrivalProximityText"
+  index: 2
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=405320&LineRef=MTA%20NYCT_M15%2B&version=2&StopMonitoringDetailLevel=minimum
+  name: SIRI Bus M15SBS Local 2 Distance Uptown Allen at Grand
+  select: "DistanceFromStop"
+  index: 2
+  unit_of_measurement: meters
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=405320&LineRef=MTA%20NYCT_M15%2B&version=2&StopMonitoringDetailLevel=minimum
+  name: SIRI Bus M15SBS Local 2 Name Uptown Allen at Grand
+  select: "PublishedLineName"
+  index: 2
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=405320&LineRef=MTA%20NYCT_M15%2B&version=2&StopMonitoringDetailLevel=minimum
+  name: SIRI Bus M15SBS Local 2 Destination Uptown Allen at Grand
+  select: "DestinationName"
+  index: 2
+
+#Bus M14A
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=401150&version=2&StopMonitoringDetailLevel=minimum&LineRef=MTA%20NYCT_M14A%2B
+  name: SIRI Bus M14A 0 Stop Crosstown at Clinton
+  select: "ArrivalProximityText"
+  index: 0
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=401150&version=2&StopMonitoringDetailLevel=minimum&LineRef=MTA%20NYCT_M14A%2B
+  name: SIRI Bus M14A 0 Distance Crosstown at Clinton
+  select: "DistanceFromStop"
+  index: 0
+  unit_of_measurement: meters
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=401150&version=2&StopMonitoringDetailLevel=minimum&LineRef=MTA%20NYCT_M14A%2B
+  name: SIRI Bus M14A 0 Name Crosstown at Clinton
+  select: "PublishedLineName"
+  index: 0
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=401150&version=2&StopMonitoringDetailLevel=minimum&LineRef=MTA%20NYCT_M14A%2B
+  name: SIRI Bus M14A 0 Destination Crosstown at Clinton
+  select: "DestinationName"
+  index: 0
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=401150&version=2&StopMonitoringDetailLevel=minimum&LineRef=MTA%20NYCT_M14A%2B
+  name: SIRI Bus M14A 1 Stop Crosstown at Clinton
+  select: "ArrivalProximityText"
+  index: 1
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=401150&version=2&StopMonitoringDetailLevel=minimum&LineRef=MTA%20NYCT_M14A%2B
+  name: SIRI Bus M14A 1 Distance Crosstown at Clinton
+  select: "DistanceFromStop"
+  index: 1
+  unit_of_measurement: meters
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=401150&version=2&StopMonitoringDetailLevel=minimum&LineRef=MTA%20NYCT_M14A%2B
+  name: SIRI Bus M14A 1 Name Crosstown at Clinton
+  select: "PublishedLineName"
+  index: 1
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=401150&version=2&StopMonitoringDetailLevel=minimum&LineRef=MTA%20NYCT_M14A%2B
+  name: SIRI Bus M14A 1 Destination Crosstown at Clinton
+  select: "DestinationName"
+  index: 1
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=401150&version=2&StopMonitoringDetailLevel=minimum&LineRef=MTA%20NYCT_M14A%2B
+  name: SIRI Bus M14A 2 Stop Crosstown at Clinton
+  select: "ArrivalProximityText"
+  index: 2
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=401150&version=2&StopMonitoringDetailLevel=minimum&LineRef=MTA%20NYCT_M14A%2B
+  name: SIRI Bus M14A 2 Distance Crosstown at Clinton
+  select: "DistanceFromStop"
+  index: 2
+  unit_of_measurement: meters
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=401150&version=2&StopMonitoringDetailLevel=minimum&LineRef=MTA%20NYCT_M14A%2B
+  name: SIRI Bus M14A 2 Name Crosstown at Clinton
+  select: "PublishedLineName"
+  index: 2
+
+- platform: scrape
+  resource: http://bustime.mta.info/api/siri/stop-monitoring.xml?key=5c0f0368-aa51-42db-adf0-a437063038bb&OperatorRef=MTA&MonitoringRef=401150&version=2&StopMonitoringDetailLevel=minimum&LineRef=MTA%20NYCT_M14A%2B
+  name: SIRI Bus M14A 2 Destination Crosstown at Clinton
+  select: "DestinationName"
+  index: 2
+
+#- platform: gtfs_realtime
+#  name: Essex Subway B D F M
+#  trip_update_url: !secret gtfs_subway1_trip_update_url
+#  offset: 10
+#  departures:
+#  - name: Northbound F Delancey St
+#    stopid: F15N
+#    route: F
+#  - name: Northbound M Essex St
+#    stopid: M18N
+#    route: M
+#  - name: Northbound B Grand St
+#    stopid: D22N
+#    route: B
+#  - name: Northbound D Grand St
+#    stopid: D22N
+#    route: D
+#  - name: Southbound F East Broadway
+#    stopid: F16S
+#    route: F
+
+#- platform: gtfs_realtime
+#  name: Essex Subway J Z
+#  trip_update_url: !secret gtfs_subway2_trip_update_url
+#  offset: 10
+#  departures:
+#  - name: Northbound J Essex St
+#    stopid: M18N
+#    route: J
+#  - name: Northbound Z Essex St
+#    stopid: M18N
+#    route: Z
+
+#- platform: google_travel_time
+#  name: Home to Work
+#  api_key: !secret google_travel_time_api_key
+#  origin: !secret google_travel_time_origin
+#  destination: !secret google_travel_time_destination
+#  options:
+#    mode: transit
+
+#- platform: google_travel_time
+#  name: Work to Home
+#  api_key: !secret google_travel_time_api_key
+#  destination: !secret google_travel_time_origin
+#  origin: !secret google_travel_time_destination
+#  options:
+#    mode: transit
+
+#- platform: google_travel_time
+#  name: Home to Next Appt
+#  api_key: !secret google_travel_time_api_key
+#  origin: !secret google_travel_time_origin
+#  destination: sensor.new_nextcal_location
+#  options:
+#    arrival_time: "{{ states('sensor.nextcal_start_time') }}"
+#    mode: transit
+
+#- platform: template
+#  scan_interval: 240
+#  sensors:
+#    battery_gabes_mate:
+#      friendly_name: "Battery Status"
+#      value_template: '{{ states.device_tracker.5re0217120001465.attributes.battery | default(0) |int() }}'
+#      entity_id: sensor.battery_gabes_mate
+#      unit_of_measurement: "%"
+#      icon_template: >
+#        {% set battery_level = states.device_tracker.5re0217120001465.attributes.battery|default(0)|int %}
+#        {% set battery_round = (battery_level / 10) |int * 10 %}
+#        {% if battery_round >= 100 %}
+#          mdi:battery
+#        {% elif battery_round > 0 %}
+#          mdi:battery-{{ battery_round }}
+#        {% else %}
+#          mdi:battery-alert
+#        {% endif %}
+#    altitude_gabes_mate:
+#      friendly_name: "Altitude"
+#      value_template: '{{ states.device_tracker.5re0217120001465.attributes.altitude | round(1) }}'
+#      entity_id: sensor.gps_altitude_gabes_mate
+#      unit_of_measurement: "m"
+#    activity_gabes_mate:
+#      friendly_name: "Activity"
+#      value_template: '{{ states.device_tracker.5re0217120001465.attributes.activity }}'
+#      entity_id: sensor.activity_gabes_mate
+#    direction_gabes_mate:
+#      friendly_name: "Direction"
+#      value_template: '{{ states.device_tracker.5re0217120001465.attributes.direction }}'
+#      entity_id: sensor.direction_gabes_mate
+#    speed_gabes_mate:
+#      friendly_name: "Speed"
+#      value_template: '{{ states.device_tracker.5re0217120001465.attributes.speed | round(1) }}'
+#      entity_id: sensor.speed_gabes_mate
+#      unit_of_measurement: "mph"
+#    accuracy_gabes_mate:
+#      friendly_name: "Accuracy"
+#      value_template: '{{ states.device_tracker.5re0217120001465.attributes.gps_accuracy | round(1) }}'
+#      entity_id: sensor.gps_accuracy_gabes_mate
+#      unit_of_measurement: "m"
+#    provider_gabes_mate:
+#      friendly_name: "Provider"
+#      value_template: {{ states("device_tracker.5re0217120001465.attributes.provider") }}
+#      entity_id: sensor.net_provider_gabes_mate
+#    source_type_gabes_mate:
+#      friendly_name: "Source Type"
+#      value_template: '{{ states.device_tracker.5re0217120001465.attributes.source_type }}'
+#      entity_id: sensor.source_type_gabes_mate
+#    last_seen_gabes_mate:
+#      friendly_name: "Last Seen"
+#      value_template: '{{ relative_time (states.device_tracker.5re0217120001465.last_updated) + " ago"}}'
+#      entity_id: sensor.last_seen_gabes_mate
+
+- platform: template
+  sensors:
+    gabe_status:
+      value_template: '{{ states.input_select.gabe_status_dropdown.state }}'
+      friendly_name: 'Gabe'
+
+#System Monitor
+- platform: version
+  name: HA Installed Version
+  scan_interval: 86400
+
+# cpu speed raspberry device
+- platform: cpuspeed
+
+# system monitor raspberry device
+- platform: systemmonitor
+  resources:
+    - type: disk_use_percent
+      arg: /
+    - type: disk_use_percent
+      arg: /var/log
+    - type: memory_use_percent
+    - type: memory_use
+    - type: memory_free
+    - type: processor_use
+    - type: swap_use_percent
+    - type: swap_use
+    - type: swap_free
+    - type: last_boot
+## LAN Adapter
+    - type: network_in
+      arg: eth0
+    - type: network_out
+      arg: eth0
+    - type: packets_in
+      arg: eth0
+    - type: packets_out
+      arg: eth0
+    - type: ipv4_address
+      arg: eth0
+    - type: ipv6_address
+      arg: eth0
+## WLAN Adapter
+    - type: network_in
+      arg: wlan0
+    - type: network_out
+      arg: wlan0
+    - type: packets_in
+      arg: wlan0
+    - type: packets_out
+      arg: wlan0
+    - type: ipv4_address
+      arg: wlan0
+    - type: ipv6_address
+      arg: wlan0
+
+- platform: rpi_power
+#  name: RPi Power Status
+  text_state: true
+
+- platform: synologydsm
+  host: !secret synology_host
+  username: !secret synology_username
+  password: !secret synology_password
+  monitored_conditions:
+    - cpu_total_load
+    - memory_real_usage
+    - cpu_system_load
+    - memory_available_real
+    - memory_available_swap
+    - memory_total_swap
+    - network_up
+    - disk_device
+    - disk_name
+    - disk_temp
+    - disk_status
+    - volume_size_total
+    - volume_size_used
+    - volume_percentage_used
+
+- platform: command_line
+  name: "HA Uptime"
+  command: !secret config_db_uptime_command
+  scan_interval: 720
+  value_template: >-
+    {% set uptime = value | int %}
+    {% set seconds = uptime % 60 %}
+    {% set minutes = ((uptime % 3600) / 60) | int %}
+    {% set hours = ((uptime % 86400) / 3600) | int %}
+    {% set days = (uptime / 86400) | int %}
+    {%- if days > 0 -%}
+      {%- if days == 1 -%}
+        1 day
+      {%- else -%}
+        {{ days }} days
+      {%- endif -%}
+      {{ ', ' }}
+    {%- endif -%}
+    {%- if hours > 0 -%}
+      {%- if hours == 1 -%}
+        1 hour
+      {%- else -%}
+        {{ hours }} hours
+      {%- endif -%}
+      {{ ', ' }}
+    {%- endif -%}
+    {%- if minutes > 0 -%}
+      {%- if minutes == 1 -%}
+        1 minute
+      {%- else -%}
+        {{ minutes }} minutes
+      {%- endif -%}
+    {%- endif -%}
+
+- platform: dnsip
+  name: "IP Address"
+
+#PiHole
+- platform: rest
+  name: PiHoleSystem
+  username: !secret pihole_username
+  password: !secret pihole_password
+  authentication: basic
+  json_attributes:
+    - domains_being_blocked
+    - dns_queries_today
+    - ads_blocked_today
+    - ads_percentage_today
+    - unique_domains
+    - queries_forwarded
+    - queries_cached
+    - clients_ever_seen
+    - unique_clients
+    - dns_queries_all_types
+    - reply_NODATA
+    - reply_NXDOMAIN
+    - reply_CNAME
+    - reply_IP
+    - privacy_level
+    - status
+  resource: https://localhost/admin/api.php
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      X-Pi-hole-Authenticate: !secret pihole_password
+
+- platform: command_line
+  name: Pi-hole
+  scan_interval: 10
+  command: curl -X GET 'http://localhost/admin/api.php?status'
+  value_template: >
+    {{ value_json.status }}
+
+- platform: template
+  sensors:
+    npr_news_mp3_link:
+      friendly_name: 'NPR News mp3 link'
+      value_template: >
+        {{ states.sensor.news_npr_audio.attributes.entries[0].link }}
+
+- platform: template
+  sensors:
+    npr_news_mp3_date:
+      friendly_name: 'NPR News mp3 date'
+      value_template: >
+        {{ states.sensor.news_npr_audio.attributes.entries[0].title }}
+
+- platform: feedparser
+  name: news_npr_audio
+  feed_url: 'https://www.npr.org/rss/podcast.php?id=500005'
+  date_format: '%a, %d %b %I:%M %p'
+  inclusions:
+    - title
+    - link
+    - description
+    - pubDate
+
+#- platform: feedparser
+#  name: sfgabe Feed
+#  feed_url: 'https://twitrss.me/twitter_user_to_rss/?user=sfgabe'
+#  date_format: '%a, %d %b %I:%M %p'
+#  inclusions:
+#    - title
+#    - link
+#    - description
+#    - image
+#    - pubDate
+
+#- platform: feedparser
+#  name: OctoCamBot Feed
+#  feed_url: 'https://twitrss.me/twitter_user_to_rss/?user=octo_cam_bot'
+#  date_format: '%a, %d %b %I:%M %p'
+#  inclusions:
+#    - title
+#    - link
+#    - description
+#    - image
+#    - pubDate
+
+- platform: history_stats
+  name: stats_work
+  entity_id: device_tracker.5re0217120001465
+  state: 'Work'
+  type: time
+  end: '{{ now() }}'
+  duration:
+    days: 7
+
+- platform: history_stats
+  name: stats_bed
+  entity_id: input_boolean.bed_occupancy
+  state: 'on'
+  type: time
+  end: '{{ now() }}'
+  duration:
+    days: 7
+
+- platform: history_stats
+  name: stats_home
+  entity_id: device_tracker.5re0217120001465
+  state: 'home'
+  type: time
+  end: '{{ now() }}'
+  duration:
+    days: 7
+
+#OctoPrint 3D Printer
+- platform: octoprint
+  name: OctoPrint
+  monitored_conditions:
+    - Current State
+    - Temperatures
+    - Job Percentage
+    - Time Elapsed
+    - Time Remaining
+
+#######################################################################
+### Other OCTOPRINT ###
+#################
+- platform: rest
+  resource: !secret octoprint_fileinfo
+  name: "Octoprint Name"
+  value_template: '{{value_json.job.file.display}}'
+
+- platform: rest
+  resource: !secret octoprint_fileinfo
+  name: "Octoprint Filament Used"
+  value_template: '{{ value_json.job.filament.tool0.length | float / 1000 }}'
+  unit_of_measurement: 'm'
+
+- platform: rest
+  resource: !secret octoprint_fileinfo
+  name: "Octoprint File Size"
+  value_template: '{{ value_json.job.file.size | float / 1000000 }}'
+  unit_of_measurement: 'MB'
+
+- platform: template
+  sensors:
+    octoprint_filament_use:
+      friendly_name: "Octoprint Filament Use"
+      unit_of_measurement: 'm'
+      value_template: "{{ states('sensor.octoprint_filament_used') | round(1) }}"
+    octoprint_file_size_mb:
+      friendly_name: "Octoprint File Size"
+      unit_of_measurement: 'MB'
+      value_template: "{{ states('sensor.octoprint_file_size') | round(1) }}"
+    octoprint_filament_cost:
+### 1kg = 18€ und ca.345m Filament = 0.052€
+      friendly_name: "Octoprint Filament Cost"
+      unit_of_measurement: '€'
+      value_template: "{{ states('sensor.octoprint_filament_use') | multiply(0.052) }}"
+
+- platform: rest
+  name: Octoprint Power
+  resource: !secret octoprint_enclosure
+  headers:
+      content-type: application/json
+  json_attributes:
+    - status
+    - index_id
+
+- platform: rest
+  name: Octoprint Power Switch 1 Status
+  resource: http://octopi/plugin/enclosure/outputs/2
+  value_template: '{{ value_json }}'
+
+- platform: rest
+  name: Octoprint Power Switch 2 Status
+  resource: http://octopi/plugin/enclosure/outputs/3
+  value_template: '{{ value_json }}'
+
+- platform: rest
+  name: Octoprint Bedlight Switch Status
+  resource: http://octopi/plugin/enclosure/outputs/5
+  value_template: '{{ value_json }}'
+
+- platform: rest
+  name: Octoprint 12v External Switch Status
+  resource: http://octopi/plugin/enclosure/outputs/6
+  value_template: '{{ value_json }}'
+
+- platform: rest
+  name: Octoprint Timelapse Name
+  resource: !secret octoprint_timelapse
+  value_template: "{{ (value_json.files | sort(attribute='date'))[-1].name  }}"
+
+- platform: rest
+  name: Octoprint Timelapse URL
+  resource: !secret octoprint_timelapse
+  value_template: "{{(value_json.files | sort(attribute='date'))[-1].url }}"
+
+- platform: rest
+  name: Octoprint Timelapse Date
+  resource: !secret octoprint_timelapse
+  value_template: "{{(value_json.files | sort(attribute='date'))[-1].date }}"
+
+- platform: template
+  sensors:
+    octoprint_timelapse_url_full:
+      value_template: >-
+        {% set url = states.sensor.octoprint_timelapse_url.state %}
+        {% set prefix = "http://octopi" %}
+        {% set suffix = "?apikey=D46893BD9B1E40E8B7137F5BDDDD614E" %}
+        {{ [prefix, url, suffix] | join("") }}
+
+- platform: template
+  sensors:
+    octoprint_hotend:
+      friendly_name: 'Hotend Actual'
+      value_template: "{{ ((states.sensor.octoprint_actual_tool0_temp.state | float-32) | float*(5/9)) | round(2) }} °C"
+    octoprint_bed:
+      friendly_name: 'Bed Actual'
+      value_template: "{{ ((states.sensor.octoprint_actual_bed_temp.state | float-32) | float*(5/9)) | round(2) }} °C"
+    octoprint_hotend_target:
+      friendly_name: 'Hotend Target'
+      value_template: "{{ ((states.sensor.octoprint_target_tool0_temp.state | float-32) | float*(5/9)) | round(2) }} °C"
+    octoprint_bed_target:
+      friendly_name: 'Bed Target'
+      value_template: "{{ ((states.sensor.octoprint_target_bed_temp.state | float-32) | float*(5/9)) | round(2) }} °C"
+    octoprint_time_elapsed_format:
+      friendly_name: 'Printing Time Elapsed'
+      value_template: >-
+        {% set etime = states.sensor.octoprint_time_elapsed.state | int %}
+        {% set seconds = etime % 60 %}
+        {% set minutes = ((etime % 3600) / 60) | int %}
+        {% set hours = ((etime % 86400) / 3600) | int %}
+        {% set days = (etime / 86400) | int %}
+        {%- if days > 0 -%}
+          {%- if days == 1 -%}
+            1 day
+          {%- else -%}
+            {{ days }} days
+          {%- endif -%}
+          {{ ', ' }}
+        {%- endif -%}
+        {%- if hours > 0 -%}
+          {%- if hours == 1 -%}
+            1 hour
+          {%- else -%}
+            {{ hours }} hours
+          {%- endif -%}
+          {{ ', ' }}
+        {%- endif -%}
+        {%- if minutes > 0 -%}
+          {%- if minutes == 1 -%}
+            1 minute
+          {%- else -%}
+            {{ minutes }} minutes
+          {%- endif -%}
+        {%- endif -%}
+    octoprint_time_remaining_format:
+      friendly_name: 'Printing Time Remaining'
+      value_template: >-
+        {% set rtime = states.sensor.octoprint_time_remaining.state | int %}
+        {% set seconds = rtime % 60 %}
+        {% set minutes = ((rtime % 3600) / 60) | int %}
+        {% set hours = ((rtime % 86400) / 3600) | int %}
+        {% set days = (rtime / 86400) | int %}
+        {%- if days > 0 -%}
+          {%- if days == 1 -%}
+            1 day
+          {%- else -%}
+            {{ days }} days
+          {%- endif -%}
+          {{ ', ' }}
+        {%- endif -%}
+        {%- if hours > 0 -%}
+          {%- if hours == 1 -%}
+            1 hour
+          {%- else -%}
+            {{ hours }} hours
+          {%- endif -%}
+          {{ ', ' }}
+        {%- endif -%}
+        {%- if minutes > 0 -%}
+          {%- if minutes == 1 -%}
+            1 minute
+          {%- else -%}
+            {{ minutes }} minutes
+          {%- endif -%}
+        {%- endif -%}
+
+#Amazon ATO Level
+- platform: rest
+  name: Amazon ATO Level
+  resource: http://esp_b7c590/checklevel
+  scan_interval: 170000
+  headers:
+      content-type: application/json
+
+#ReefControlPi Data
+- platform: rest
+  name: ReefControlPiSysUptime
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  authentication: basic
+  json_attributes:
+    - name
+    - ip
+    - uptime
+    - cpu_temperature
+    - version
+  resource: http://192.168.50.250/api/info
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+
+- platform: template
+  sensors:
+    reefsysinfo_template_name:
+      value_template: '{{ states.sensor.reefcontrolpisysuptime.attributes.name }}'
+      friendly_name: Reef Server Name
+      entity_id: sensor.reefsysinfo_template_name
+    reefsysinfo_template_version:
+      value_template: '{{ states.sensor.reefcontrolpisysuptime.attributes.version }}'
+      friendly_name: Reef Server Version
+      entity_id: sensor.rreefsysinfo_template_version
+    reefsysinfo_template_uptime:
+      value_template: '{{ states.sensor.reefcontrolpisysuptime.attributes.uptime }}'
+      friendly_name: Reef Server Uptime
+      entity_id: sensor.reefsysinfo_template_uptime
+    reefsysinfo_template_ip:
+      value_template: '{{ states.sensor.reefcontrolpisysuptime.attributes.ip }}'
+      friendly_name: Reef Server IP
+      entity_id: sensor.reefsysinfo_template_ip
+    reefsysinfo_template_cpu_temperature:
+      value_template: '{{ states.sensor.reefcontrolpisysuptime.attributes.cpu_temperature }}'
+      friendly_name: Reef Server CPU Temp
+      entity_id: sensor.reefsysinfo_template_cpu_temperature
+
+- platform: rest
+  name: OnlyReefControlPiTemp
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  authentication: basic
+  resource: http://192.168.50.250/api/tcs/2/usage
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+  value_template: '{{ value_json.current[-1].value | round(2) }}'
+  unit_of_measurement: '°F'
+
+- platform: rest
+  name: OnlyReefControlPiTempTime
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  authentication: basic
+  resource: http://192.168.50.250/api/tcs/2/usage
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+  value_template: '{{ value_json.current[-1].time }}'
+
+- platform: rest
+  name: ReefControlPiLightName
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  authentication: basic
+  resource: http://192.168.50.250/api/lights/3
+  json_attributes:
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+  value_template: '{{ value_json.name }}'
+
+- platform: rest
+  name: ReefControlPiLightBrightness
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  authentication: basic
+  resource: http://192.168.50.250/api/lights/3
+  value_template: '{{ value_json }}'
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+
+- platform: rest
+  name: ReefControlPiLightColor
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  authentication: basic
+  resource: http://192.168.50.250/api/lights/3
+  value_template: '{{ value_json }}'
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+
+- platform: rest
+  name: ReefControlPiPump1Name
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  authentication: basic
+  resource: http://192.168.50.250/api/doser/pumps/1
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+  value_template: '{{ value_json.name }}'
+
+- platform: rest
+  name: ReefControlPiPump1Status
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  authentication: basic
+  resource: http://192.168.50.250/api/doser/pumps/1
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+  value_template: >-
+    {% set pump_1_status = value_json.id["2"].enable %}
+    {% if pump_1_status == "true" %}Scheduled
+    {% elif pump_1_status == "false" %}Off
+    {% else %}n/a
+    {% endif %}
+
+- platform: rest
+  name: ReefControlPiPump2Forward
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  authentication: basic
+  resource: http://192.168.50.250/api/equipment/5
+  json_attributes:
+    - name
+    - on
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+
+- platform: rest
+  name: ReefControlPiPump1Forward
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  authentication: basic
+  resource: http://192.168.50.250/api/equipment/4
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+  value_template: '{{ value_json.on }}'
+
+- platform: rest
+  name: ReefControlPiPump1StatusReverse
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  authentication: basic
+  resource: http://192.168.50.250/api/equipment/3
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+  value_template: '{{ value_json.on }}'
+
+- platform: rest
+  name: ReefControlPiLatestDoser
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  authentication: basic
+  resource: http://192.168.50.250/api/doser/pumps/1/usage
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+  value_template: '{{ value_json.current[-1].time }}'
+
+- platform: rest
+  name: ReefControlPiLatestTopOff
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  authentication: basic
+  json_attributes:
+    - current
+  resource: http://192.168.50.250/api/doser/pumps/4/usage
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+  value_template: '{{ value_json.current[-1].time }}'
+
+- platform: rest
+  name: ReefControlPiRefugiumLight
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  authentication: basic
+  resource: http://192.168.50.250/api/equipment/2
+  json_attributes:
+    - name
+    - on
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+
+- platform: rest
+  name: ReefControlPiRelay2
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  authentication: basic
+  resource: http://192.168.50.250/api/equipment/1
+  json_attributes:
+    - name
+    - on
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+
+- platform: rest
+  name: ReefControlPiPump2Name
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  authentication: basic
+  resource: http://192.168.50.250/api/doser/pumps/4
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+  value_template: '{{ value_json.name }}'
+
+- platform: rest
+  name: ReefControlPiPump2Power
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  authentication: basic
+  resource: http://192.168.50.250/api/doser/pumps/4
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+  value_template: '{{ value_json.on }}'
+
+- platform: rest
+  name: ReefControlPiFloat
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  authentication: basic
+  resource: http://192.168.50.250/api/equipment/7
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+  value_template: >-
+    {% set float_status = value_json.on %}
+    {% if float_status == false %}OK
+    {% elif float_status == False %}OK
+    {% elif float_status == true %}Low
+    {% elif float_status == True %}Low
+    {% else %}n/a
+    {% endif %}
+
+- platform: template
+  sensors:
+    reef_moonphases:
+      entity_id: sensor.reef_weather_moon_icon
+      friendly_name: 'Reef Moon'
+      value_template: '{{ states.sensor.reef_weather_moon_phase_0d.state }}'
+      entity_picture_template: >
+        {% set mphase = states.sensor.reef_weather_moon_phase_0d.state | float %}
+        {% if mphase == 0.0 -%}
+           /local/images/moonphases/NNewMoon.jpg
+        {% elif mphase == 0.25 -%}
+           /local/images/moonphases/NFirstQuarter.jpg
+        {% elif mphase == 0.5 -%}
+           /local/images/moonphases/NFullMoon.jpg
+        {% elif mphase == 0.75 -%}
+           /local/images/moonphases/NLastQuarter.jpg
+        {% elif mphase == 1 -%}
+           /local/images/moonphases/NNewMoon.jpg
+        {% elif mphase > 0.75 -%}
+           /local/images/moonphases/NWaningCrescent.jpg
+        {% elif mphase > 0.5 -%}
+           /local/images/moonphases/NWaningGibbous.jpg
+        {% elif mphase > 0.25 -%}
+           /local/images/moonphases/NWaxingGibbous.jpg
+        {% elif mphase > 0.0 -%}
+           /local/images/moonphases/NWaxingCrescent.jpg
+        {% else %}
+           n/a
+        {% endif %}
+
+#alarm clock
+- platform: template
+  sensors:
+    alarm_time_off_day:
+      friendly_name: Alarm Time Off Day
+      value_template: '{{ "%0.02d:%0.02d" | format(states("input_number.alarm_hour") | int, states("input_number.alarm_minutes") | int) }}'
+
+- platform: template
+  sensors:
+    alarm_time_work_day:
+      friendly_name: Alarm Time Work Day
+      value_template: '{{ "%0.02d:%0.02d" | format(states("input_number.alarm_hour") | int, states("input_number.alarm_minutes") | int) }}'
+
+#Greeting card
+- platform: template
+  sensors:
+    time_of_day:
+      value_template: >
+        {% set current_hour = strptime(states('sensor.time'), "%H:%M").hour %}
+        {% if current_hour < 12 %}
+          Good Morning, Gabe
+        {% elif 12 <= current_hour < 18 %}
+          Good Afternoon, Gabe
+        {% elif 18 <= current_hour < 23 %}
+          Good Evening, Gabe
+        {% else %}
+          Good Night, Gabe
+        {% endif %}
+
+- platform: template
+  sensors:
+    greeter_card_info:
+      value_template: >
+        Next Event:{{ as_timestamp(states.calendar.gabethisisgabescom.attributes.start_time) | timestamp_custom('%Y/%m/%d at %H:%M') }}
+        {{ states.calendar.gabethisisgabescom.attributes.message }}
+
+- platform: template
+  sensors:
+    weather_alert_active_nyc:
+      value_template: >-
+        {% if states.sensor.new_york_2.state == "unknown" %}Off
+        {% elif states.sensor.new_york_2.state == "0" %}Off
+        {% else %}On
+        {% endif %}
+    weather_alert_active_hbg:
+      value_template: >-
+        {% if states.sensor.dauphin_2.state == "unknown" %}Off
+        {% elif states.sensor.dauphin_2.state == "0" %}Off
+        {% else %}On
+        {% endif %}
+    outside_alerts:
+      value_template: >
+        Current Location: {{ states('device_tracker.5re0217120001465') }}
+        ({{ (as_timestamp (now()) -as_timestamp (states.device_tracker.gabes_mate.last_changed)) }})
+    gps_occupancy_chance:
+      value_template: >-
+        {%- if is_state("device_tracker.5re0217120001465", "home") %}
+            100
+        {% elif is_state("device_tracker.5re0217120001465", "work") %}
+            0
+        {% elif is_state("device_tracker.5re0217120001465", "away") %}
+            0
+        {% else %}
+            0
+        {% endif -%}
+    gps_occupancy_float:
+      unit_of_measurement: '%'
+      value_template: >-
+        {{ (states.sensor.gps_occupancy_chance.state | float | round(0)) }}
+
+- platform: weatheralerts
+  zone: 72
+  state: NY
+  county: 61
+
+- platform: weatheralerts
+  zone: 57
+  state: PA
+  county: 43
+
+- platform: cert_expiry
+  host: !secret cert_expiry_host
+  port: !secret cert_expiry_port
+
+#- platform: pilight
+#  name: 'Some Inside Temperature Sensor'
+#  variable: 'temperature'
+#  payload:
+#    protocol: tcm
+#  unit_of_measurement: '°C'
+
+#- platform: pilight
+#  name: 'Some Smoke Detector'
+#  variable: 'state'
+#  payload:
+#    protocol: secudo_smoke_sensor
+
+#- platform: pilight
+#  name: 'Some Screen Sensor'
+#  variable: 'state'
+#  payload:
+#    protocol: arctech_screen_old
+
+#- platform: pilight
+#  name: 'Some Daycom Sensor'
+#  variable: 'state'
+#  payload:
+#    protocol: daycom
+
+#- platform: pilight
+#  name: 'Some Gas Detector'
+#  variable: 'state'
+#  payload:
+#    protocol: mumbi
+
+#- platform: pilight
+#  name: 'Maybe Closet Motion Detector'
+#  variable: 'state'
+#  payload:
+#    protocol: rc101
+
+#- platform: pilight
+#  name: 'Maybe Hallway Motion Detector'
+#  variable: 'state'
+#  payload:
+#    protocol: heitech
+
+#- platform: pilight
+#  name: 'Some Energy Sensor'
+#  variable: 'state'
+#  payload:
+#    protocol: cleverwatts
+
+#- platform: pilight
+#  name: 'Some Weird Temp Sensor'
+#  variable: 'temperature'
+#  payload:
+#    protocol: tfa
+#  unit_of_measurement: '°F'
+
+#- platform: pilight
+#  name: 'Maybe Stove Temp Sensor'
+#  variable: 'temperature'
+#  payload:
+#    protocol: auriol
+#  unit_of_measurement: '°F'
+
+- platform: template
+  sensors:
+    outside_temp:
+      friendly_name: "Outside Temperature"
+      unit_of_measurement: '°F'
+      value_template: "{{ states.sensor.dark_sky_temperature.state }}"
+      icon_template: >
+        {% if is_state("sensor.dark_sky_icon", "clear-day") -%}
+           mdi:weather-sunny
+        {% elif is_state("sensor.dark_sky_icon", "clear-night") -%}
+           mdi:weather-night
+        {% elif is_state("sensor.dark_sky_icon", "rain") -%}
+           mdi:weather-rainy
+        {% elif is_state("sensor.dark_sky_icon", "snow") -%}
+           mdi:weather-snowy
+        {% elif is_state("sensor.dark_sky_icon", "sleet") -%}
+           mdi:weather-snowy-rainy
+        {% elif is_state("sensor.dark_sky_icon", "wind") -%}
+           mdi:weather-windy-variant
+        {% elif is_state("sensor.dark_sky_icon", "fog") -%}
+           mdi:weather-fog
+        {% elif is_state("sensor.dark_sky_icon", "cloudy") -%}
+           mdi:weather-cloudy
+        {% elif is_state("sensor.dark_sky_icon", "partly-cloudy-day") -%}
+           mdi:weather-partlycloudy
+        {% elif is_state("sensor.dark_sky_icon", "partly-cloudy-night") -%}
+           mdi:weather-partlycloudy
+        {% elif is_state("sensor.dark_sky_icon", "hail") -%}
+           mdi:weather-hail
+        {% elif is_state("sensor.dark_sky_icon", "thunderstorm") -%}
+           mdi:weather-lightning
+        {% else %}
+           mdi:help-circle
+        {% endif %}
+      entity_picture_template: >
+        {% if is_state("sensor.dark_sky_icon", "clear-day") -%}
+           /local/images/icons/weather_icons/animated/day.svg
+        {% elif is_state("sensor.dark_sky_icon", "clear-night") -%}
+           /local/images/icons/weather_icons/animated/night.svg
+        {% elif is_state("sensor.dark_sky_icon", "rain") -%}
+           /local/images/icons/weather_icons/animated/rainy-1.svg
+        {% elif is_state("sensor.dark_sky_icon", "snow") -%}
+           /local/images/icons/weather_icons/animated/snowy-6.svg
+        {% elif is_state("sensor.dark_sky_icon", "sleet") -%}
+           /local/images/icons/weather_icons/animated/rainy-7.svg
+        {% elif is_state("sensor.dark_sky_icon", "wind") -%}
+           /local/images/icons/weather_icons/animated/cloudy.svg
+        {% elif is_state("sensor.dark_sky_icon", "fog") -%}
+           /local/images/icons/weather_icons/animated/cloudy.svg
+        {% elif is_state("sensor.dark_sky_icon", "cloudy") -%}
+           /local/images/icons/weather_icons/animated/cloudy.svg
+        {% elif is_state("sensor.dark_sky_icon", "partly-cloudy-day") -%}
+           /local/images/icons/weather_icons/animated/cloudy-day-3.svg
+        {% elif is_state("sensor.dark_sky_icon", "partly-cloudy-night") -%}
+           /local/images/icons/weather_icons/animated/cloudy-night-3.svg
+        {% elif is_state("sensor.dark_sky_icon", "hail") -%}
+           /local/images/icons/weather_icons/animated/rainy-7.svg
+        {% elif is_state("sensor.dark_sky_icon", "thunderstorm") -%}
+           /local/images/icons/weather_icons/animated/thunder.svg
+        {% else %}
+           /local/images/icons/weather_icons/animated/weather.svg
+        {% endif %}
+
+# Fitbit
+- platform: fitbit
+  clock_format: 12H
+  monitored_resources:
+      - "activities/heart"
+      - "activities/steps"
+      - "activities/minutesFairlyActive"
+      - "activities/minutesSedentary"
+      - "activities/steps"
+      - "activities/floors"
+      - "activities/elevation"
+      - "activities/floors"
+      - "activities/distance"
+      - "activities/tracker/floors"
+      - "activities/tracker/elevation"
+      - "activities/tracker/floors"
+      - "activities/tracker/distance"
+      - "activities/tracker/minutesVeryActive"
+      - "activities/tracker/minutesSedentary"
+      - "activities/tracker/minutesLightlyActive"
+      - "activities/tracker/minutesFairlyActive"
+      - "activities/tracker/steps"
+      - "devices/battery"
+      - "sleep/awakeningsCount"
+      - "sleep/efficiency"
+      - "sleep/minutesAfterWakeup"
+      - "sleep/minutesAsleep"
+      - "sleep/minutesAwake"
+      - "sleep/minutesToFallAsleep"
+      - "sleep/startTime"
+      - "sleep/timeInBed"
+
+- platform: template
+  sensors:
+    fitbit_steps:
+      friendly_name: 'Steps'
+      value_template: >
+        {{ states.sensor.steps.state | replace(",","") }}
+      unit_of_measurement: 'steps'
+#    fitbit_calories:
+#      friendly_name: 'Calories'
+#      value_template: >
+#        {{ states.sensor.calories.state | replace(",","") }}
+#      unit_of_measurement: 'calories'
+#    weight_loss:
+#      friendly_name: 'Weight Loss'
+#      value_template: "{{ '%.1f' | format(245.0 - (states.sensor.weight.state | float)) }}"
+#      unit_of_measurement: 'lbs'
+
+#Kiosk
+- platform: template
+  sensors:
+    kiosk_screen:
+      friendly_name: 'Kiosk Screen'
+      value_template: '{{ states.light.dashboard_screen.state }}'
+      entity_id: sensor.kiosk_screen
+    kiosk_charging:
+      friendly_name: 'Kiosk Charging'
+      value_template: '{{ states.light.dashboard_screen.attributes.charging }}'
+      entity_id: sensor.kiosk_charging
+    kiosk_battery:
+      friendly_name: 'Kiosk Battery'
+      value_template: '{{ states.light.dashboard_screen.attributes.battery_level }}'
+      entity_id: sensor.kiosk_battery
+    kiosk_brightness:
+      friendly_name: 'Kiosk Brightness'
+      value_template: '{{ states.light.dashboard_screen.attributes.brightness }}'
+      entity_id: sensor.kiosk_brightness
+#Soundbar Connection
+    soundbar_connected:
+      friendly_name: 'Soundbar Connected'
+      value_template: >
+        {%- if state_attr('media_player.gabe_s_alexa', 'source') == '[AV] Samsung Soundbar K360 K-Series' %}
+         on
+        {%- else -%}
+         off
+        {%- endif %}
+      entity_id: sensor.soundbar_connected
+
+- platform: template
+  sensors:
+    tablet_screen:
+      friendly_name: 'Tablet Screen'
+      value_template: '{{ states.light.tablet_screen.state }}'
+      entity_id: sensor.tablet_screen
+    tablet_charging:
+      friendly_name: 'Tablet Charging'
+      value_template: '{{ states.light.tablet_screen.attributes.charging }}'
+      entity_id: sensor.tablet_charging
+    tablet_battery:
+      friendly_name: 'Tablet Battery'
+      value_template: '{{ states.light.tablet_screen.attributes.battery_level }}'
+      entity_id: sensor.tablet_battery
+    tablet_brightness:
+      friendly_name: 'Tablet Brightness'
+      value_template: '{{ states.light.tablet_screen.attributes.brightness }}'
+      entity_id: sensor.tablet_brightness
+
+- platform: mqtt
+  state_topic: "et/reading"
+  name: ET
+  value_template: "{{ value }}"
+
+#Desk buttons
+- platform: mqtt
+  state_topic: "button_a/reading"
+  name: Desk Button A
+  value_template: "{{ value }}"
+
+- platform: mqtt
+  state_topic: "button_b/reading"
+  name: Desk Button B
+  value_template: "{{ value }}"
+
+- platform: mqtt
+  state_topic: "button_c/reading"
+  name: Desk Button C
+  value_template: "{{ value }}"
+
+- platform: mqtt
+  state_topic: "button_d/reading"
+  name: Desk Button D
+  value_template: "{{ value }}"
+
+- platform: mqtt
+  state_topic: "button_e/reading"
+  name: Desk Button E
+  value_template: "{{ value }}"
+
+#Bed Sensor
+- platform: mqtt
+  state_topic: "bed_occupancy/reading/load"
+  name: Bed Occupancy Load
+  value_template: "{{ value }}"
+  unit_of_measurement: "oz"
+
+- platform: mqtt
+  state_topic: "bed_occupancy/reading/tare"
+  name: Bed Occupancy Tare
+  value_template: "{{ value }}"
+  unit_of_measurement: "oz"
+
+- platform: template
+  sensors:
+    bed_occupancy_load_percent:
+      value_template: '{{ states("sensor.bed_occupancy_load") | float / 10 | round(0) }}'
+      unit_of_measurement: "%"
+    bed_occupancy_count:
+      icon_template: >-
+        {% set bed_load = states.sensor.bed_occupancy_load.state | int %}
+        {% if bed_load < 300 %}
+          icon: mdi:bed-empty
+        {% elif 301 <= bed_load < 1700 %}
+          icon: mdi:bed-king
+        {% elif 1701 <= bed_load < 3000 %}
+          icon: mdi:account-multiple
+        {% elif 3001 <= bed_load < 10000 %}
+          icon: mdi:party-popper
+        {% else %}
+          icon: mdi:help-circle
+        {% endif %}
+      value_template: >
+        {% set bed_load = states.sensor.bed_occupancy_load.state | int %}
+        {% if bed_load < 300 %}
+          Empty
+        {% elif 301 <= bed_load < 1100 %}
+          Single
+        {% elif 1101 <= bed_load < 2000 %}
+          Double
+        {% elif 2001 <= bed_load < 10000 %}
+          Party Time!
+        {% else %}
+          N/A
+        {% endif %}
+
+#This is to use the remote
+#- platform: huesensor
+
+#monitor devices
+- platform: template
+  sensors:
+    online_device_bluray_player:
+      friendly_name: "BluRay Player"
+      value_template: >-
+        {% if is_state('device_tracker.104fa8d6e235', 'home') %}
+          Online
+        {% else %}
+          Offline
+        {% endif %}
+    online_device_amazon_echo:
+      friendly_name: "Amazon Echo Dot"
+      value_template: >-
+        {% if states.device_tracker.amazon_9dff0b9a7 %}
+        {% if is_state('device_tracker.amazon_9dff0b9a7', 'home') %}
+          Online
+        {% else %}
+          Offline
+        {% endif %}
+        {% else %}
+          Unknown
+        {% endif %}
+    online_device_samsung_soundbar:
+      friendly_name: "Samsung Soundbar"
+      value_template: >-
+        {% if states.device_tracker.av_samsung_soundbar_k360_kseries %}
+        {% if is_state('device_tracker.av_samsung_soundbar_k360_kseries', 'home') %}
+          Online
+        {% else %}
+          Offline
+        {% endif %}
+        {% else %}
+          Unknown
+        {% endif %}
+    online_device_roku_dongle:
+      friendly_name: "Roku Dongle"
+      value_template: >-
+        {% if states.device_tracker.d04d2c107c33 %}
+        {% if is_state('device_tracker.d04d2c107c33', 'home') %}
+          Online
+        {% else %}
+          Offline
+        {% endif %}
+        {% else %}
+          Unknown
+        {% endif %}
+    online_device_mailbox:
+      friendly_name: "Smart Mailbox"
+      value_template: >-
+        {% if states.device_tracker.esp_2fdf0d %}
+        {% if is_state('device_tracker.esp_2fdf0d', 'home') %}
+          Online
+        {% else %}
+          Offline
+        {% endif %}
+        {% else %}
+          Unknown
+        {% endif %}
+    online_device_white_macbook:
+      friendly_name: "White MacBook"
+      value_template: >-
+        {% if states.device_tracker.gabes_macbook %}
+        {% if is_state('device_tracker.gabes_macbook', 'home') %}
+          Online
+        {% else %}
+          Offline
+        {% endif %}
+        {% else %}
+          Unknown
+        {% endif %}
+    online_device_harmony_hub:
+      friendly_name: "Harmony Hub"
+      value_template: >-
+        {% if states.device_tracker.harmonyhub %}
+        {% if is_state('device_tracker.harmonyhub', 'home') %}
+          Online
+        {% else %}
+          Offline
+        {% endif %}
+        {% else %}
+          Unknown
+        {% endif %}
+    online_device_homecam_pi:
+      friendly_name: "Home Cam"
+      value_template: >-
+        {% if states.device_tracker.homecam %}
+        {% if is_state('device_tracker.homecam', 'home') %}
+          Online
+        {% else %}
+          Offline
+        {% endif %}
+        {% else %}
+          Unknown
+        {% endif %}
+    online_device_huawei_mate:
+      friendly_name: "Huawei Mate"
+      value_template: >-
+        {% if states.device_tracker.huawei_mate_9_92528f2b1a5 %}
+        {% if is_state('device_tracker.huawei_mate_9_92528f2b1a5', 'home') %}
+          Online
+        {% else %}
+          Offline
+        {% endif %}
+        {% else %}
+          Unknown
+        {% endif %}
+    online_device_octoprint:
+      friendly_name: "OctoPrint Server"
+      value_template: >-
+        {% if states.device_tracker.octopi_2 %}
+        {% if is_state('device_tracker.octopi_2', 'home') %}
+          Online
+        {% else %}
+          Offline
+        {% endif %}
+        {% else %}
+          Unknown
+        {% endif %}
+    online_device_phillips_hue:
+      value_template: >-
+        {% if states.device_tracker.philipshue %}
+        {% if is_state('device_tracker.philipshue', 'home') %}
+          Online
+        {% else %}
+          Offline
+        {% endif %}
+        {% else %}
+          Unknown
+        {% endif %}
+      friendly_name: 'Phillips Hue'
+    online_device_entry_pi:
+      value_template: >-
+        {% if states.device_tracker.lightswitch_pi %}
+        {% if is_state('device_tracker.lightswitch_pi', 'home') %}
+          Online
+        {% else %}
+          Offline
+        {% endif %}
+        {% else %}
+          Unknown
+        {% endif %}
+      friendly_name: 'Entry Pi'
+    online_device_reefcam_pantilt:
+      value_template: >-
+        {% if states.device_tracker.reefcam_pantilt %}
+        {% if is_state('device_tracker.reefcam_pantilt', 'home') %}
+          Online
+        {% else %}
+          Offline
+        {% endif %}
+        {% else %}
+          Unknown
+        {% endif %}
+      friendly_name: 'Pan Tilt ReefCam'
+    online_device_reef_pi:
+      value_template: >-
+        {% if states.device_tracker.reefcontrolpi %}
+        {% if is_state('device_tracker.reefcontrolpi', 'home') %}
+          Online
+        {% else %}
+          Offline
+        {% endif %}
+        {% else %}
+          Unknown
+        {% endif %}
+      friendly_name: 'Reef Pi'
+    online_device_entry_kiosk:
+      value_template: >-
+        {% if states.device_tracker.android_ac43312d0683f1c6 %}
+        {% if is_state('device_tracker.android_ac43312d0683f1c6', 'home') %}
+          Online
+        {% else %}
+          Offline
+        {% endif %}
+        {% else %}
+          Unknown
+        {% endif %}
+      friendly_name: 'Entry Kiosk'
+    online_device_flux_capacitor:
+      value_template: >-
+        {% if states.device_tracker.esp_2fdf0d %}
+        {% if is_state('device_tracker.esp_2fdf0d', 'home') %}
+          Online
+        {% else %}
+          Offline
+        {% endif %}
+        {% else %}
+          Unknown
+        {% endif %}
+      friendly_name: 'Flux Capacitor'
+    online_device_music_server:
+      value_template: >-
+        {% if states.device_tracker.gabesmusic %}
+        {% if is_state('device_tracker.gabesmusic', 'home') %}
+          Online
+        {% else %}
+          Offline
+        {% endif %}
+        {% else %}
+          Unknown
+        {% endif %}
+      friendly_name: 'Music Server'
+    online_device_gardenbot:
+      value_template: >-
+        {% if states.device_tracker.octocam %}
+        {% if is_state('device_tracker.octocam', 'home') %}
+          Online
+        {% else %}
+          Offline
+        {% endif %}
+        {% else %}
+          Unknown
+        {% endif %}
+      friendly_name: 'Garden Robot'
+    online_device_plant_monitor_1:
+      value_template: >-
+        {% if states.device_tracker.esp_55f8c6 %}
+        {% if is_state('device_tracker.esp_55f8c6', 'home') %}
+          Online
+        {% else %}
+          Offline
+        {% endif %}
+        {% else %}
+          Unknown
+        {% endif %}
+      friendly_name: 'Plant Monitor 1'
+    online_device_plant_monitor_2:
+      value_template: >-
+        {% if states.device_tracker.esp_55f7c6 %}
+        {% if is_state('device_tracker.esp_55f7c6', 'home') %}
+          Online
+        {% else %}
+          Offline
+        {% endif %}
+        {% else %}
+          Unknown
+        {% endif %}
+      friendly_name: 'Plant Monitor 2'
+    harmony_activity:
+      value_template: >
+        {% if is_state("remote.gabes_harmony_hub", 'on') %}
+          {{ states.remote.gabes_harmony_hub.attributes.current_activity }}
+        {% else %}
+          PowerOff
+        {% endif %}
+
+# Alexa
+- platform: template
+  sensors:
+    last_alexa:
+      entity_id:
+        - media_player.gabe_s_alexa
+      value_template: >
+        {{ states.media_player | selectattr('attributes.last_called','eq',True) | map(attribute='entity_id') | first }}
+
+# Presence Monitor
+- platform: mqtt
+  state_topic: 'monitor/home-assistant/ionic'
+  value_template: '{{ value_json.confidence }}'
+  unit_of_measurement: '%'
+  name: 'Ionic BT Hass'
+
+- platform: mqtt
+  state_topic: 'monitor/home-assistant/gabes_macbook'
+  value_template: '{{ value_json.confidence }}'
+  unit_of_measurement: '%'
+  name: 'Gabes Macbook BT Hass'
+
+- platform: mqtt
+  state_topic: 'monitor/home-assistant/gabes_mate_hotspot'
+  value_template: '{{ value_json.confidence }}'
+  unit_of_measurement: '%'
+  name: 'Gabes Mate Hotspot BT Hass'
+
+- platform: mqtt
+  state_topic: 'monitor/octocam/ionic'
+  value_template: '{{ value_json.confidence }}'
+  unit_of_measurement: '%'
+  name: 'Ionic BT OctoCam'
+
+- platform: mqtt
+  state_topic: 'monitor/octocam/gabes_macbook'
+  value_template: '{{ value_json.confidence }}'
+  unit_of_measurement: '%'
+  name: 'Gabes Macbook BT OctoCam'
+
+- platform: mqtt
+  state_topic: 'monitor/octocam/gabes_mate_hotspot'
+  value_template: '{{ value_json.confidence }}'
+  unit_of_measurement: '%'
+  name: 'Gabes Mate Hotspot BT OctoCam'
+
+- platform: mqtt
+  state_topic: 'monitor/reefcontrolpi/ionic'
+  value_template: '{{ value_json.confidence }}'
+  unit_of_measurement: '%'
+  name: 'Ionic BT ReefPi'
+
+- platform: mqtt
+  state_topic: 'monitor/reefcontrolpi/gabes_macbook'
+  value_template: '{{ value_json.confidence }}'
+  unit_of_measurement: '%'
+  name: 'Gabes Macbook BT ReefPi'
+
+- platform: mqtt
+  state_topic: 'monitor/reefcontrolpi/gabes_mate_hotspot'
+  value_template: '{{ value_json.confidence }}'
+  unit_of_measurement: '%'
+  name: 'Gabes Mate Hotspot BT ReefPi'
+
+- platform: min_max
+  name: "Home Occupancy Confidence"
+  type: max
+  round_digits: 0
+  entity_ids:
+    - sensor.gps_occupancy_float
+    - sensor.gabes_macbook_bt_reefpi
+    - sensor.ionic_bt_reefpi
+    - sensor.gabes_mate_hotspot_bt_reefpi
+    - sensor.gabes_macbook_bt_octocam
+    - sensor.ionic_bt_octocam
+    - sensor.gabes_mate_hotspot_bt_octocam
+    - sensor.gabes_macbook_bt_hass
+    - sensor.ionic_bt_hass
+    - sensor.gabes_mate_hotspot_bt_hass
+
+#Roomba
+- platform: template
+  sensors:
+    roomba_batt:
+      value_template: '{{ states.vacuum.roomba.attributes.battery_level }}'
+      friendly_name: 'Roomba Battery'
+      unit_of_measurement: '%'
+      device_class: battery
+    roomba_last_run:
+      value_template: >-
+        {% set today = now().day | int %}
+        {% set roomba_date = ((as_timestamp(states.input_boolean.roomba_ran.last_changed) | timestamp_custom("%d")) | int) %}
+        {% if today == roomba_date %}
+          {% set day = "Today" %}
+        {% elif (today - 1) == roomba_date %}
+          {% set day = "Yesterday" %}
+        {% elif today == 1 and roomba_date > 27 %}
+          {% set day = "Yesterday" %}
+        {% else %}
+          {% set day = as_timestamp(states.input_boolean.roomba_ran.last_changed) | timestamp_custom("%A")%}
+        {% endif %}
+        {% set time = as_timestamp(states.input_boolean.roomba_ran.last_changed) | timestamp_custom("%l:%M %p")%}
+        {{[day,time]|join(" at ")}}
+      friendly_name: 'Roomba Last Run'

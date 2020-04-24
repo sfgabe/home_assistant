@@ -1,0 +1,23 @@
+herbs:
+  sensors:
+    moisture: sensor.garden_monitor_soil_moisture
+    temperature: sensor.garden_monitor_soil_temp
+    brightness: sensor.garden_monitor_light_level
+  min_moisture: 10
+  max_moisture: 100
+  min_temperature: 50
+  max_temperature: 90
+  min_brightness: 10
+  max_brightness: 100
+
+bedroom:
+  sensors:
+    moisture: sensor.plant_monitor_soil_moisture
+    temperature: sensor.plant_monitor_soil_temp
+    brightness: sensor.plant_monitor_light_level
+  min_moisture: 15
+  max_moisture: 100
+  min_temperature: 50
+  max_temperature: 90
+  min_brightness: 10
+  max_brightness: 100

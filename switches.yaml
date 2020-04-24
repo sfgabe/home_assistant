@@ -1,0 +1,585 @@
+#Switch for Entry Light
+- platform: mqtt
+  name: Entry Light
+  command_topic: "lightswitch/reading/set"
+  state_topic: "lightswitch/reading/current"
+  state_on: "ON"
+  payload_on: "P"
+  state_off: "OFF"
+  payload_off: "3"
+  value_template: '{{ value_json.state }}'
+
+#Switch for Entry Hello
+- platform: command_line
+  switches:
+    entry_hello:
+      friendly_name: Entry Hello
+      command_on: !secret switches_entry_hello_on
+
+#Hounds Alarm
+- platform: command_line
+  switches:
+    call_the_hounds:
+      friendly_name: Call the Hounds
+      command_on: !secret switches_kiosk_sound_hounds
+
+#- platform: command_line
+#  switches:
+#    reef_cooler_pump_switch:
+#      friendly_name: Reef Cooler Pump
+#      command_on: !secret switches_pump_on
+#      command_off: !secret switches_pump_off
+
+- platform: template
+  switches:
+    harmony_fishtank_evening:
+      value_template: "{{ is_state('input_boolean.reeftank_evening_begin_boolean','on') }}"
+      friendly_name: Reef Tank Light On/Off
+      turn_on:
+        - service: remote.send_command
+          entity_id: remote.gabes_harmony_hub
+          data:
+            command: '1'
+            device: 'Generic LED'
+      turn_off:
+        - service: remote.send_command
+          entity_id: remote.gabes_harmony_hub
+          data:
+            command: '2'
+            device: 'Generic LED'
+
+- platform: template
+  switches:
+    reeftank_light_switch:
+      value_template: "{{ is_state('input_boolean.reeftank_morning_begin_boolean','on') }}"
+      friendly_name: Reef Tank Light On/Off
+      turn_on:
+        - service: remote.send_command
+          entity_id: remote.gabes_harmony_hub
+          data:
+            command: ['PowerToggle','2']
+            device: 'Generic LED'
+      turn_off:
+        - service: remote.send_command
+          entity_id: remote.gabes_harmony_hub
+          data:
+            command: 'Stop'
+            device: 'Generic LED'
+
+- platform: template
+  switches:
+    harmony_watch_roku:
+      value_template: "{{ is_state('input_boolean.watch_roku_switch_boolean','on') }}"
+      friendly_name: Watch Roku
+      turn_on:
+        service: remote.turn_on
+        entity_id: remote.gabes_harmony_hub
+        data:
+          activity: '26106880'
+      turn_off:
+        service: remote.turn_off
+        entity_id: remote.gabes_harmony_hub
+
+#- platform: template
+#  switches:
+#    harmony_turn_on_roomba:
+#      value_template: "{{ is_state('input_boolean.turn_on_roomba_switch_boolean','on') }}"
+#      friendly_name: Turn Roomba On/Off
+#      turn_on:
+#        - service: remote.send_command
+#          entity_id: remote.gabes_harmony_hub
+#          data:
+#            command: 'Medium'
+#            device: 55925028
+#      turn_off:
+#        - service: remote.send_command
+#          entity_id: remote.gabes_harmony_hub
+#          data:
+#            command: 'Pause'
+#            device: 55925028
+#      entity_picture_template: 'images/roomba.jpg'
+
+#Switch for PanTilt
+- platform: command_line
+  switches:
+    pantilt_down:
+      friendly_name: PanTilt Down
+      command_on: !secret switches_pantilt_down
+    pantilt_up:
+      friendly_name: PanTilt Up
+      command_on: !secret switches_pantilt_up
+    pantilt_left:
+      friendly_name: PanTilt Left
+      command_on: !secret switches_pantilt_left
+    pantilt_right:
+      friendly_name: PanTilt Right
+      command_on: !secret switches_pantilt_right
+    pantilt_center:
+      friendly_name: PanTilt Center
+      command_on: !secret switches_pantilt_center
+    pantilt_snap:
+      friendly_name: PanTilt Snap
+      command_on: !secret switches_pantilt_snap
+
+- platform: template
+  switches:
+    harmony_fishtank_morning:
+      value_template: "{{ is_state('input_boolean.reeftank_light_switch_boolean','on') }}"
+      friendly_name: Reef Tank Light On/Off
+      turn_on:
+        - service: remote.send_command
+          entity_id: remote.gabes_harmony_hub
+          data:
+            command: ['PowerToggle','2','FastForward','FastForward','FastForward','FastForward','FastForward','FastForward','FastForward','FastForward']
+            device: 'Generic LED'
+      turn_off:
+        - service: remote.send_command
+          entity_id: remote.gabes_harmony_hub
+          data:
+            command: ['1','Rewind','Rewind','Rewind','Rewind','Rewind','Rewind','Stop']
+            device: 'Generic LED'
+
+- platform: rest
+  name: Reef Doser Scheduled
+  resource: http://192.168.50.250/api/doser/pumps/1
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  body_on: '{"id":"1","name":"Doser","jack":"3","pin":7,"regiment":{"enable":true,"schedule":{"day":"*","hour":"13","minute":"0","second":"0","week":"*","month":"*"},"duration":1,"speed":100}}'
+  body_off: '{"id":"1","name":"Doser","jack":"3","pin":7,"regiment":{"enable":false,"schedule":{"day":"*","hour":"13","minute":"0","second":"0","week":"*","month":"*"},"duration":1,"speed":100}}'
+  is_on_template: '{{ value_json.regiment.enable }}'
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+
+- platform: rest
+  name: Reef ATO Scheduled
+  resource: http://192.168.50.250/api/doser/pumps/4
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password 
+  body_on: '{"id":"4","name":"ATO Pump","jack":"2","pin":2,"regiment":{"enable":true,"schedule":{"day":"*","hour":"23","minute":"30","second":"0","week":"*","month":"*"},"duration":14,"speed":100}}'
+  body_off: '{"id":"4","name":"ATO Pump","jack":"2","pin":2,"regiment":{"enable":false,"schedule":{"day":"*","hour":"23","minute":"30","second":"0","week":"*","month":"*"},"duration":14,"speed":100}}'
+  is_on_template: '{{ value_json.regiment.enable }}'
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+
+- platform: rest
+  name: Reef ATO Switch
+  resource: http://192.168.50.250/api/equipment/8
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  body_on: '{"id":"8","name":"ATO Manual","outlet":"8","on":true}'
+  body_off: '{"id":"8","name":"ATO Manual","outlet":"8","on":false}'
+  is_on_template: '{{ value_json.on }}'
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+
+- platform: rest
+  name: Refugium Light Switch
+  resource: http://192.168.50.250/api/equipment/11
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  body_on: '{"id":"11","name":"Refugium Light 2","outlet":"10","on":true}'
+  body_off: '{"id":"11","name":"Refugium Light 2","outlet":"10","on":false}'
+  is_on_template: '{{ value_json.on }}'
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+
+- platform: rest
+  name: Relay 2 Switch
+  resource: http://192.168.50.250/api/equipment/1
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  body_on: '{"id":"1","name":"Relay 1","outlet":"1","on":true}'
+  body_off: '{"id":"1","name":"Relay 1","outlet":"1","on":false}'
+  is_on_template: '{{ value_json.on }}'
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+
+- platform: rest
+  name: Kessil Color Level
+  resource: http://192.168.50.250/api/lights/14
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  body_on: '{"id":"14","name":"Kessil","channels":{"14":{"name":"Color","on":true,"min":1,"max":99,"pin":14,"color":"#0010ff","manual":true,"value":{{ states.input_number.kessil_color.state }},"profile":{"name":"","type":"diurnal","config":{"start":"06:53:00","end":"19:26:00"},"min":0,"max":0}},"15":{"name":"Brightness","on":true,"min":1,"max":99,"pin":15,"color":"#f0ff00","manual":true,"value":{{ states.input_number.kessil_brightness.state }},"profile":{"name":"","type":"diurnal","config":{"start":"06:53:00","end":"19:26:00"},"min":0,"max":0}}},"jack":"9","enable":true}'
+  body_off: '{"id":"14","name":"Kessil","channels":{"14":{"name":"Color","on":true,"min":1,"max":99,"pin":14,"color":"#0010ff","manual":true,"value":0,"profile":{"name":"","type":"diurnal","config":{"start":"06:53:00","end":"19:26:00"},"min":0,"max":0}},"15":{"name":"Brightness","on":true,"min":1,"max":99,"pin":15,"color":"#f0ff00","manual":true,"value":0,"profile":{"name":"","type":"diurnal","config":{"start":"06:53:00","end":"19:26:00"},"min":0,"max":0}}},"jack":"9","enable":true}'
+  is_on_template: '{{ value_json.channels["14"].manual }}'
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+
+- platform: rest
+  name: Kessil Brightness Level
+  resource: http://192.168.50.250/api/lights/14
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  body_on: '{"id":"14","name":"Kessil","channels":{"14":{"name":"Color","on":true,"min":1,"max":99,"pin":14,"color":"#0010ff","manual":true,"value":{{ states.input_number.kessil_color.state }},"profile":{"name":"","type":"diurnal","config":{"start":"06:53:00","end":"19:26:00"},"min":0,"max":0}},"15":{"name":"Brightness","on":true,"min":1,"max":99,"pin":15,"color":"#f0ff00","manual":true,"value":{{ states.input_number.kessil_brightness.state }},"profile":{"name":"","type":"diurnal","config":{"start":"06:53:00","end":"19:26:00"},"min":0,"max":0}}},"jack":"9","enable":true}'
+  body_off: '{"id":"14","name":"Kessil","channels":{"14":{"name":"Color","on":true,"min":1,"max":99,"pin":14,"color":"#0010ff","manual":true,"value":0,"profile":{"name":"","type":"diurnal","config":{"start":"06:53:00","end":"19:26:00"},"min":0,"max":0}},"15":{"name":"Brightness","on":true,"min":1,"max":99,"pin":15,"color":"#f0ff00","manual":true,"value":0,"profile":{"name":"","type":"diurnal","config":{"start":"06:53:00","end":"19:26:00"},"min":0,"max":0}}},"jack":"9","enable":true}'
+  is_on_template: '{{ value_json.channels["15"].profile.type == "fixed" }}'
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+
+- platform: rest
+  name: Garden Brightness Level
+  resource: http://192.168.50.251/api/lights/1
+  username: !secret amazonpi_username
+  password: !secret amazonpi_password
+  body_on: '{"id":"1","name":"Plant Lights","channels":{"0":{"name":"Channel-1","on":true,"min":0,"max":100,"pin":0,"color":"","manual":false,"value":0,"profile":{"name":"","type":"fixed","config":{"start":"00:00:00","end":"23:59:00","value":{{ states.input_number.garden_brightness.state }},"min":0,"max":0}}},"jack":"3","enable":true}'
+  body_off: '{"id":"1","name":"Plant Lights","channels":{"0":{"name":"Channel-1","on":true,"min":0,"max":100,"pin":0,"color":"","manual":false,"value":0,"profile":{"name":"","type":"fixed","config":{"start":"00:00:00","end":"23:59:00","value":84},"min":0,"max":0}}},"jack":"3","enable":true}'
+  is_on_template: '{{ value_json.channels["0"].profile.type == "fixed" }}'
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.251/
+      Cookie: !secret amazonpi_cookie
+
+- platform: rest
+  name: Garden Water Scheduled
+  resource: http://192.168.50.251/api/timers/1
+  username: !secret amazonpi_username
+  password: !secret amazonpi_password
+  body_on: '{"id":"1","name":"Plant Water","enable":true,"type":"equipment","month":"*","week":"*","day":"*","hour":"11,12,13,14,15,16,17,18","minute":"15","second":"0","target":{"id":"3","on":true,"duration":5,"revert":true}}'
+  body_off: '{"id":"1","name":"Plant Water","enable":true,"type":"equipment","month":"*","week":"*","day":"*","hour":"11,12,13,14,15,16,17,18","minute":"15","second":"0","target":{"id":"3","on":false,"duration":5,"revert":true}}'
+  is_on_template: '{{ value_json.target.on }}'
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.251/
+      Cookie: !secret amazonpi_cookie
+
+- platform: rest
+  name: Garden Water Switch
+  resource: http://192.168.50.251/api/equipment/3
+  username: !secret amazonpi_username
+  password: !secret amazonpi_password
+  body_on: '{"id":"3","name":"Plant Water","outlet":"2","on":true}'
+  body_off: '{"id":"3","name":"Plant Water","outlet":"2","on":false}'
+  is_on_template: '{{ value_json.on }}'
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.251/
+      Cookie: !secret amazonpi_cookie
+
+- platform: rest
+  name: Garden Light Switch
+  resource: http://192.168.50.251/api/equipment/2
+  username: !secret amazonpi_username
+  password: !secret amazonpi_password
+  body_on: '{"id":"2","name":"Plant Light","outlet":"5","on":true}'
+  body_off: '{"id":"2","name":"Plant Light","outlet":"5","on":false}'
+  is_on_template: '{{ value_json.on }}'
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.251/
+      Cookie: !secret amazonpi_cookie
+
+#3d Printer
+- platform: command_line
+  switches:
+    3dprinter_power_1:
+      friendly_name: 3D Printer Power 1
+      command_on:  !secret octoprint_power1on
+      command_off: !secret octoprint_power1off
+    3dprinter_power_2:
+      friendly_name: 3D Printer Power 2
+      command_on:  !secret octoprint_power2on
+      command_off: !secret octoprint_power2off
+    3dprinter_power_all:
+      friendly_name: 3D Printer Power All
+      command_on:  !secret octoprint_power_all
+      command_off: !secret octoprint_power_all
+    3dprinter_bedlight:
+      friendly_name: 3D Printer Bedlight
+      command_on:  !secret octoprint_bedlight_on
+      command_off: !secret octoprint_bedlight_off
+
+- platform: rest
+  name: 3DPrinter Rest Power Switch All
+  resource: !secret octoprint_enclosure
+  body_on: '[{"status": true, "index_id": 2}, {"status": true, "index_id": 3}, {"status": true, "index_id": 5}, {"status": false, "index_id": 6}]'
+  body_off: '[{"status": false, "index_id": 2}, {"status": false, "index_id": 3}, {"status": false, "index_id": 5}, {"status": false, "index_id": 6}]'
+  is_on_template: '[{"status": true, "index_id": 2}, {"status": true, "index_id": 3}, {"status": true, "index_id": 5}, {"status": false, "index_id": 6}]'
+  headers:
+      Connection: keep-alive
+      X-Api-Key: !secret octoprint_apikey
+      content-type: application/json
+
+#    3dprinter_light:
+#      friendly_name: 3D Printer Light
+#      command_on:  !secret switches_printer_light_on
+#      command_off: !secret switches_printer_light_off
+
+#Switch for OctoFishFeeder
+- platform: command_line
+  switches:
+    octofishfeeder:
+      friendly_name: Octo Fish Feeder
+      command_on: !secret switches_octofishfeeder_on
+      command_off: !secret switches_octofishfeeder_off
+
+- platform: mqtt
+  name: Birdfeed Flappy
+  command_topic: "birdfeed/reading"
+  state_on: "ON"
+  payload_on: "ON"
+  state_off: "OFF"
+  payload_off: "OFF"
+
+- platform: mqtt
+  name: Mailbox Red Light
+  command_topic: "mailbox/reading"
+  state_on: "0"
+  payload_on: "0"
+  state_off: "1"
+  payload_off: "1"
+
+- platform: mqtt
+  name: Mailbox Temp Request
+  command_topic: "mailbox/reading"
+  state_on: "8"
+  payload_on: "8"
+  state_off: "9"
+  payload_off: "9"
+
+- platform: mqtt
+  name: Mailbox Green Light
+  command_topic: "mailbox/reading"
+  state_on: "4"
+  payload_on: "4"
+  state_off: "5"
+  payload_off: "5"
+
+- platform: mqtt
+  name: Mailbox Flag
+  command_topic: "mailbox/reading"
+  state_on: "7"
+  payload_on: "7"
+  state_off: "6"
+  payload_off: "6"
+
+- platform: mqtt
+  name: ET Eyes
+  state_topic: "et-both-eye/reading"
+  command_topic: "et/reading"
+  state_on: "ON"
+  payload_on: "C"
+  state_off: "OFF"
+  payload_off: "D"
+
+- platform: mqtt
+  name: ET Blink
+  command_topic: "et/reading"
+  state_topic: "et-eyeblinks/reading"
+  state_on: "ON"
+  payload_on: "F"
+  state_off: "OFF"
+  payload_off: "D"
+
+- platform: mqtt
+  name: ET Chest
+  command_topic: "et/reading"
+  state_topic: "et-body/reading"
+  state_on: "ON"
+  payload_on: "0"
+  state_off: "OFF"
+  payload_off: "1"
+
+- platform: mqtt
+  name: ET Heartbeat
+  command_topic: "et/reading"
+  state_topic: "et-heartbeat/reading"
+  state_on: "ON"
+  payload_on: "E"
+  state_off: "OFF"
+  payload_off: "1"
+
+- platform: mqtt
+  name: ET Finger
+  command_topic: "et/reading"
+  state_topic: "et-finger/reading"
+  state_on: "ON"
+  payload_on: "2"
+  state_off: "OFF"
+  payload_off: "3"
+
+- platform: mqtt
+  name: ET Finger Blink
+  command_topic: "et/reading"
+  state_topic: "et-fingerblinks/reading"
+  state_on: "ON"
+  payload_on: "G"
+  state_off: "OFF"
+  payload_off: "2"
+
+- platform: mqtt
+  name: ET Arm
+  command_topic: "et/reading"
+  state_topic: "et-arm/reading"
+  state_on: "ON"
+  payload_on: "9"
+  state_off: "OFF"
+  payload_off: "8"
+
+- platform: mqtt
+  name: ET Limb
+  command_topic: "et/reading"
+  state_topic: "et-limb/reading"
+  state_on: "ON"
+  payload_on: "A"
+  state_off: "OFF"
+  payload_off: "B"
+
+- platform: mqtt
+  name: Desk Switch 1
+  command_topic: "desk_switch/reading"
+  state_topic: "desk_switch/reading"
+  state_on: "ON"
+  payload_on: "1_ON"
+  state_off: "OFF"
+  payload_off: "1_OFF"
+
+- platform: mqtt
+  name: Desk Switch 2
+  command_topic: "desk_switch/reading"
+  state_topic: "desk_switch/reading"
+  state_on: "ON"
+  payload_on: "2_ON"
+  state_off: "OFF"
+  payload_off: "2_OFF"
+
+- platform: mqtt
+  name: Desk Switch 3
+  command_topic: "desk_switch/reading"
+  state_topic: "desk_switch/reading"
+  state_on: "ON"
+  payload_on: "3_ON"
+  state_off: "OFF"
+  payload_off: "3_OFF"
+
+#Switch for Motion Detection
+# This should change to notify on motion
+#- platform: command_line
+#  switches:
+#    motion_detect:
+#      friendly_name: Motion Detection
+#      value_template: '{{ value_json.status }}'
+#      command_on: !secret switches_motion_on
+#      command_off: !secret switches_motion_off
+
+- platform: command_line
+  switches:
+    motion_text_change:
+      friendly_name: HomeCam Text Change
+      command_on: !secret switches_homecam_motion_text
+      command_off: !secret switches_homecam_no_motion_text
+
+- platform: template
+  switches:
+    pi_hole_switch:
+      friendly_name: "Pi-hole Enabled"
+      value_template: "{{ is_state('sensor.pi_hole', 'enabled') }}"
+      turn_on:
+        service: pi_hole.enable
+      turn_off:
+        service: pi_hole.disable
+        data:
+          duration: '12:00:00'
+
+#Harmony
+- platform: template
+  switches:
+    samsung_soundbar_power:
+      friendly_name: Samsung Soundbar Power
+      value_template: "{{ is_state('switch.samsung_soundbar_power', 'on') }}"
+      turn_on:
+        - service: remote.send_command
+          data:
+            entity_id: remote.gabes_harmony_hub
+            command:
+              - PowerToggle
+            device: 'Samsung Amp'
+      turn_off:
+        - service: remote.send_command
+          data:
+            entity_id: remote.gabes_harmony_hub
+            command:
+              - PowerToggle
+            device: 'Samsung Amp'
+    samsung_soundbar_input:
+      friendly_name: Samsung Soundbar Input
+      value_template: "{{ is_state('switch.samsung_soundbar_input', 'on') }}"
+      turn_on:
+        - service: remote.send_command
+          data:
+            entity_id: remote.gabes_harmony_hub
+            command:
+              - Source
+            device: 'Samsung Amp'
+        - delay: 00:00:02
+        - service: switch.turn_off 
+          entity_id: switch.samsung_soundbar_input
+      turn_off:
+        - service: remote.send_command
+          data:
+            entity_id: remote.gabes_harmony_hub
+            command:
+              - null
+            device: 'Samsung Amp'
+    samsung_soundbar_bt_input:
+      friendly_name: Samsung Soundbar Bluetooth Input
+      value_template: "{{ is_state('switch.samsung_soundbar_input', 'on') }}"
+      turn_on:
+        - service: remote.send_command
+          data:
+            entity_id: remote.gabes_harmony_hub
+            command:
+              - InputBT
+            device: 'Samsung Amp'
+        - delay: 00:00:02
+        - service: switch.turn_off 
+          entity_id: switch.samsung_soundbar_input
+      turn_off:
+        - service: remote.send_command
+          data:
+            entity_id: remote.gabes_harmony_hub
+            command:
+              - null
+            device: 'Samsung Amp'
+    samsung_soundbar_mute:
+      friendly_name: Samsung Soundbar Mute
+      value_template: "{{ is_state('switch.samsung_soundbar_input', 'on') }}"
+      turn_on:
+        - service: remote.send_command
+          data:
+            entity_id: remote.gabes_harmony_hub
+            command:
+              - Mute
+            device: 'Samsung Amp'
+          entity_id: switch.samsung_soundbar_input
+      turn_off:
+        - service: remote.send_command
+          data:
+            entity_id: remote.gabes_harmony_hub
+            command:
+              - Mute
+            device: 'Samsung Amp'

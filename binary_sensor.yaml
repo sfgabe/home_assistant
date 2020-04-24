@@ -1,0 +1,192 @@
+#HomeCam
+- platform: mqtt
+  name: homecam_motion
+  state_topic: 'homecam/motion/reading'
+  value_template: '{{ states.sensor.homecam_motion_raw_json.state.split("status\": \"")[1].split("\"")[0] }}'
+  payload_on: "MOTION"
+  payload_off: "NO MOTION"
+  device_class: motion
+
+- platform: template
+  sensors:
+    room_occupied:
+      friendly_name: "HomeCam Triggered"
+      device_class: occupancy
+      delay_off: 350
+      entity_id:
+        - binary_sensor.homecam_motion
+      value_template: >-
+         {{ is_state( 'binary_sensor.homecam_motion', 'on' ) }}
+
+#Kiosk
+- platform: mqtt
+  name: dashboard_motion
+  state_topic: note3/kiosk
+  device_class: motion
+
+- platform: mqtt
+  name: tablet_motion
+  state_topic: tablet/kiosk
+  device_class: motion
+
+- platform: template
+  sensors:
+    kiosk_att_motion:
+      friendly_name: "Kiosk Motion Detect"
+      device_class: motion
+      value_template: >-
+        {% if states('states.sensor.kiosk_atts.attributes.motionDetectorState') | float == 2 %}
+          On
+        {% elif states('states.sensor.kiosk_atts.attributes.motionDetectorState') | float == 0 %}
+          Off
+        {% else %}
+          Unknown
+        {% endif %}
+      icon_template: >-
+        {% if states('states.sensor.kiosk_atts.attributes.motionDetectorState') | float == 2 %}
+          mdi:motion-sensor
+        {% elif states('states.sensor.kiosk_atts.attributes.motionDetectorState') | float == 0 %}
+          mdi:sleep
+        {% else %}
+          mdi:close-circle-outline
+        {% endif %}
+    kiosk_att_screen:
+      friendly_name: "Kiosk Screen On"
+      device_class: light
+      value_template: >-
+        {% if is_state("sensor.kiosk_atts", "True") %}
+          On
+        {% elif is_state("sensor.kiosk_atts", "False") %}
+          Off
+        {% else %}
+          Unknown
+        {% endif %}
+      icon_template: >-
+        {% if is_state("sensor.kiosk_atts", "True") %}
+          mdi:cellphone
+        {% elif is_state("sensor.kiosk_atts", "False") %}
+          mdi:cellphone-erase
+        {% else %}
+          mdi:close-circle-outline
+        {% endif %}
+
+#Mailbox
+- platform: mqtt
+  state_topic: "mailbox-flag/reading"
+  name: Mailbox Flag
+  device_class: light
+
+- platform: mqtt
+  state_topic: "mailbox-green/reading"
+  name: Mailbox Green Light
+  device_class: light
+
+- platform: mqtt
+  state_topic: "mailbox-red/reading"
+  name: Mailbox Red Light
+  device_class: light
+
+#Entry Motion
+- platform: mqtt
+  name: entry_motion
+  state_topic: 'lightswitch/reading/current'
+  value_template: '{{ value_json.motion }}'
+  payload_on: "motion detected"
+  payload_off: "standby"
+  device_class: motion
+  expire_after: 120
+  off_delay: 120
+
+- platform: mqtt
+  name: birdfeed_motion
+  state_topic: 'birdfeed/reading/current'
+  value_template: '{{ value_json.motion }}'
+  payload_on: "motion detected"
+  payload_off: "standby"
+  device_class: motion
+  expire_after: 30
+  off_delay: 30
+
+- platform: mqtt
+  name: bedroom_motion
+  state_topic: "homeassistant/binary_sensor/motion_battery/state"
+#  availability_topic: "homeassistant/binary_sensor/motion_battery/config"
+  expire_after: 120
+  off_delay: 120
+  device_class: motion
+#  device:
+#    via_device: device_tracker.esp_25fa65
+#    connections:
+#      mac: BC:DD:C2:25:FA:65
+#    model: "Wemos D1 Mini"
+
+- platform: huesensor
+
+- platform: template
+  sensors:
+    garden_sun:
+      friendly_name: "Garden Grow Lights"
+      device_class: light
+      value_template: >-
+        {% if states('sensor.garden_monitor_light_level') | float > 20 %}
+          On
+        {% elif states('sensor.garden_monitor_light_level') | float < 20 %}
+          Off
+        {% else %}
+          Unknown
+        {% endif %}
+      icon_template: >-
+        {% if states('sensor.garden_monitor_light_level') | float > 20 %}
+          mdi:lightbulb-on
+        {% elif states('sensor.garden_monitor_light_level') | float < 20 %}
+          mdi:lightbulb
+        {% else %}
+          mdi:close-circle-outline
+        {% endif %}
+    garden_reservoir:
+      friendly_name: "Garden Drain"
+      device_class: light
+      value_template: >-
+        {% if states('sensor.garden_reservoir') | float > 49 %}
+          On
+        {% elif states('sensor.garden_reservoir') | float < 49 %}
+          Off
+        {% else %}
+          Unknown
+        {% endif %}
+      icon_template: >-
+        {% if states('sensor.garden_reservoir') | float > 49 %}
+          mdi:cup-water
+        {% elif states('sensor.garden_reservoir') | float < 49 %}
+          mdi:flask-empty-outline
+        {% else %}
+          mdi:close-circle-outline
+        {% endif %}
+    people_home:
+      friendly_name: "People Home"
+      value_template: >-
+         {{ is_state('group.gabe', 'home') or is_state('input_boolean.guest_mode', 'on') }}
+    recent_motion_trigger:
+      friendly_name: "Recent Motion Trigger"
+      value_template: >-
+        {{ (as_timestamp(now()) - (as_timestamp(states.automation.motion_detection_alert_on.attributes.last_triggered)) < 0) and (as_timestamp(now()) - (as_timestamp(states.automation.motion_detection_alert_on.attributes.last_triggered)) > 64800) }}
+    water_plant_alarm_ferns:
+      friendly_name: "Water Alert Ferns"
+      value_template: >-
+        {% if states('sensor.plant_monitor_soil_moisture') | float > 16 %}
+          Off
+        {% elif states('sensor.plant_monitor_soil_moisture') | float < 16 %}
+          On
+        {% else %}
+          Unknown
+        {% endif %}
+    water_alarm_garden_res:
+      friendly_name: "Water Alert Garden Res"
+      value_template: >-
+        {% if states('sensor.garden_monitor_water_level') | float > 60 %}
+          On
+        {% elif states('sensor.garden_monitor_water_level') | float < 60 %}
+          Off
+        {% else %}
+          Unknown
+        {% endif %}

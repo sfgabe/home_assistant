@@ -1,0 +1,52 @@
+ambient_temp_graph:
+  name: Air Temperature
+  entities:
+    - sensor.mqtt_topic_home_sysinfo_template_ambient_temperature
+    - sensor.dark_sky_temperature
+
+reef_temp_graph:
+  name: Reef Water Temp Sync
+  entities:
+    - sensor.onlyreefcontrolpitemp
+    - sensor.noaa_daily_max_reef_temp
+    - sensor.reef_high_avg_daily_temp
+    - sensor.reef_avg_daily_temp
+    - sensor.reef_low_avg_daily_temp
+    - sensor.noaa_daily_min_reef_temp
+  refresh: 300
+
+amazon_temp_graph:
+  name: Amazon Water Temp Sync
+  entities:
+    - sensor.mqtt_topic_octo_sysinfo_template_watertemp
+    - sensor.monthly_amazon_temp
+
+reef_tides_graph:
+  name: Reef Tides
+  entities:
+    - sensor.bali_reef_tides
+  refresh: 300
+
+speedtest_graph:
+  name: Fios Speed
+  entities:
+    - sensor.speedtest_download
+    - sensor.speedtest_upload
+  refresh: 300
+  hours_to_show: 72
+
+current_temp_graph:
+  name: Temperature
+  entities:
+    - sensor.dark_sky_apparent_temperature
+    - sensor.dark_sky_temperature
+    - sensor.dark_sky_dew_point
+  refresh: 300
+  hours_to_show: 168
+
+bitcoin_graph:
+  name: Bitcoin
+  entities:
+    - sensor.btc_exchange_rate
+  refresh: 300
+  hours_to_show: 168

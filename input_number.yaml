@@ -1,0 +1,38 @@
+alarm_hour:
+  name: Hour
+  icon: mdi:timer
+  initial: 6
+  min: 0
+  max: 20
+  step: 1
+alarm_minutes:
+  name: Minutes
+  icon: mdi:timer
+  initial: 25
+  min: 0
+  max: 55
+  step: 1
+kiosk_brightness:
+  name: kiosk_brightness
+  initial: 128
+  min: 0
+  max: 255
+  step: 1
+kessil_brightness:
+  name: Kessil Brightness
+  initial: 99
+  min: 1
+  max: 99
+  step: 1
+kessil_color:
+  name: Kessil Color
+  initial: 99
+  min: 1
+  max: 99 
+  step: 1
+garden_brightness:
+  name: Garden Brightness
+  initial: 100
+  min: 0
+  max: 100
+  step: 1

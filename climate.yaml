@@ -1,0 +1,69 @@
+- platform: generic_thermostat
+  name: Reef Tank Therm
+  heater: switch.06200940dc4f22cbb94b_3
+  target_sensor: sensor.onlyreefcontrolpitemp
+  min_temp: 74
+  max_temp: 86
+  ac_mode: False
+  target_temp: 78
+  cold_tolerance: 0.2
+  hot_tolerance: 0.2
+  min_cycle_duration:
+    seconds: 60
+  keep_alive:
+    minutes: 3
+  initial_hvac_mode: heat
+  away_temp: 78
+  precision: 0.1
+
+- platform: generic_thermostat
+  name: Octo Tank Therm
+  heater: switch.06200940dc4f22cbb432_2
+  target_sensor: sensor.onlyamazonpitemp
+  min_temp: 74
+  max_temp: 88
+  ac_mode: False
+  target_temp: 82
+  cold_tolerance: 0.2
+  hot_tolerance: 0.2
+  min_cycle_duration:
+    seconds: 60
+  keep_alive:
+    minutes: 3
+  initial_hvac_mode: heat
+  away_temp: 80
+  precision: 0.1
+
+#- platform: generic_thermostat
+#  name: Bedroom Therm
+#  heater: input_boolean.bedroom_ac_toggle
+#  target_sensor: sensor.plant_monitor_temp_f
+#  min_temp: 65
+#  max_temp: 90
+#  initial_hvac_mode: cool
+#  ac_mode: true
+#  target_temp: 76
+#  cold_tolerance: 0.2
+#  hot_tolerance: 0.2
+#  min_cycle_duration:
+#    minutes: 3
+#  keep_alive:
+#    minutes: 3
+#  away_temp: 82
+
+#- platform: generic_thermostat
+#  name: Living Room Therm
+#  heater: input_boolean.bedroom_ac_toggle
+#  target_sensor: sensor.garden_monitor_temp_f
+#  min_temp: 65
+#  max_temp: 90
+#  initial_hvac_mode: cool
+#  ac_mode: true
+#  target_temp: 77
+#  cold_tolerance: 0.2
+#  hot_tolerance: 0.2
+#  min_cycle_duration:
+#    minutes: 3
+#  keep_alive:
+#    minutes: 3
+#  away_temp: 82

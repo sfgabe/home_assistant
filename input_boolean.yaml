@@ -1,0 +1,165 @@
+fishtank_blacklight_switch_boolean:
+  initial: on
+fishtank_wavemaker_switch_boolean:
+  initial: on
+fishtank_skimmer_switch_boolean:
+  initial: on
+fishtank_heater_switch_boolean:
+  initial: on
+reeftank_morning_begin_boolean:
+  initial: on
+reeftank_evening_begin_boolean:
+  initial: on
+reeftank_light_switch_boolean:
+  initial: on
+watch_roku_switch_boolean:
+  initial: on
+
+# Switches for setting day reef night temp
+reef_temp_daytime_state:
+  name: Set Reef State to Daytime
+  initial: off
+  icon: mdi:weather-sunny
+reef_temp_nightime_state:
+  name: Set Reef State to Nightime
+  initial: on
+  icon: mdi:weather-night
+alarm_clock:
+  name: Alarm On/Off
+  icon: mdi:alarm
+alarm_clock_loop:
+  name: Alarm Clock Loop
+  icon: mdi:alarm
+alarm_clock_work_day:
+  name: Work Alarm On/Off
+  icon: mdi:alarm
+alarm_clock_off_day:
+  name: Off Day Alarm On/Off
+  icon: mdi:alarm
+start_alarm_clock_work_day:
+  name: Start Alarm Clock Work Day
+  initial: off
+  icon: mdi:alarm
+start_alarm_clock_off_day:
+  name: Start Alarm Clock Off Day
+  initial: off
+  icon: mdi:alarm
+
+#Home Stuff
+work_day:
+  name: Work Day
+  icon: mdi:briefcase
+bedroom_alarm_clock_status:
+  name: Activate Alarm
+bedroom_alarm_clock_repeat:
+  name: Repeat?
+  icon: mdi:autorenew
+samsung_soundbar_power:
+  name: Soundbar Power
+  icon: mdi:power
+humidifier_toggle:
+  name: Humidifier Toggle
+  icon: mdi:power
+  initial: off
+bedroom_ac_toggle:
+  name: Bedroom AC Toggle
+  icon: mdi:air-conditioner
+  initial: off
+livingroom_ac_toggle:
+  name: Living Room AC Toggle
+  icon: mdi:air-conditioner
+  initial: off
+bedroom_ac_hilow:
+  name: Bedroom AC HighLow
+  icon: mdi:air-conditioner
+  initial: off
+livingroom_ac_hilow:
+  name: Living Room AC HighLow
+  icon: mdi:air-conditioner
+  initial: off
+homecam_snapshot:
+  name: Homecam Snapshot Toggle
+  icon: mdi:camera
+  initial: off
+
+#Aircraft Radio
+aircraft_radio_power_toggle:
+  name: Aircraft Radio Power Toggle
+  icon: mdi:power
+  initial: off
+aircraft_radio_mute_toggle:
+  name: Aircraft Radio Mute Toggle
+  icon: mdi:volume-off
+  initial: off
+aircraft_radio_play_toggle:
+  name: Aircraft Radio Play Toggle
+  icon: mdi:play-pause
+  initial: off
+aircraft_radio_stop_toggle:
+  name: Aircraft Radio Stop Toggle
+  icon: mdi:stop
+  initial: off
+aircraft_radio_eq_toggle:
+  name: Aircraft Radio EQ Toggle
+  icon: mdi:speaker-wireless
+  initial: off
+aircraft_radio_mode_toggle:
+  name: Aircraft Radio Mode Toggle
+  icon: mdi:radio
+  initial: off
+aircraft_radio_back_toggle:
+  name: Aircraft Radio Back Toggle
+  icon: mdi:arrow-left
+  initial: off
+aircraft_radio_fwd_toggle:
+  name: Aircraft Radio Fwd Toggle
+  icon: mdi:fast-forward
+  initial: off
+aircraft_radio_rwd_toggle:
+  name: Aircraft Radio Rwd Toggle
+  icon: mdi:rewind
+  initial: off
+aircraft_radio_volume_up_toggle:
+  name: Aircraft Radio Volume Up Toggle
+  icon: mdi:volume-high
+  initial: off
+aircraft_radio_volume_down_toggle:
+  name: Aircraft Radio Volume Down Toggle
+  icon: mdi:volume-medium
+  initial: off
+
+#Amazon ATO
+amazon_ato:
+  name: Amazon ATO
+  icon: mdi:pipes
+  initial: off
+
+#BT occupancy Sensor
+occupancy:
+  name: Occupancy
+  icon: mdi:account-check
+alarm_went_off:
+  name: Alarm Went Off
+  icon: mdi:alarm
+  initial: off
+
+#Bed Occupancy
+bed_occupancy:
+  name: Bed Occupancy
+  icon: mdi:bed-king
+  initial: off
+
+#Roomba
+disable_roomba:
+  name: Disable Roomba
+  initial: off
+  icon: mdi:stop
+roomba_ran:
+  name: Roomba Ran
+  initial: off
+  icon: mdi:robot-vacuum
+
+#Automation Disable for Guests
+guest_mode:
+  name: Guest Mode
+  initial: off

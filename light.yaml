@@ -1,0 +1,114 @@
+- platform: template
+  lights:
+#kiosk
+    dashboard_screen:
+      friendly_name: "Kiosk"
+      turn_on:
+        service: rest_command.kiosk_screen_on
+      turn_off:
+        service: rest_command.kiosk_screen_off
+      set_level:
+        service: script.kiosk_screen_value
+        data_template:
+          brightness: "{{ brightness }}"
+
+    tablet_screen:
+      friendly_name: "Tablet Screen"
+      turn_on:
+        service: rest_command.tablet_screen_on
+      turn_off:
+        service: rest_command.tablet_screen_off
+      set_level:
+        service: script.tablet_screen_value
+        data_template:
+          brightness: "{{ brightness }}"
+
+    et_figure:
+      friendly_name: "ET Figure"
+      turn_on:
+        service: script.et_lightshow
+      turn_off:
+        service: script.et_off
+
+#entry light
+- platform: switch
+  name: "Entry Light"
+  entity_id: switch.entry_light
+
+#kitchen light
+- platform: switch
+  name: "Kitchen Overhead Light"
+  entity_id: switch.10048470bcddc2e0d678
+
+#thundercloud
+- platform: mqtt
+  schema: json
+  command_topic: "thundercloud/reading/set"
+  state_topic: "thundercloud/reading/current" 
+  name: "Thundercloud"
+  optimistic: true
+  retain: true
+  brightness: true
+  effect: true
+  rgb: true
+  effect_list:
+    - "solid"
+    - "rainbow"
+    - "rainbow with glitter"
+    - "candy cane"
+    - "bpm"
+    - "confetti"
+    - "noise"
+    - "ripple"
+    - "fire"
+    - "twinkle"
+    - "lightning"
+    - "dots"
+    - "glitter"
+    - "juggle"
+    - "police all"
+
+#flux_capacitor
+- platform: mqtt
+  schema: json
+  command_topic: "flux-capacitor/set"
+  state_topic: "flux-capacitor/current" 
+  name: "Flux Capacitor"
+  optimistic: true
+  retain: true
+  brightness: true
+  effect: true
+  rgb: true
+  effect_list:
+    - "solid"
+    - "flux"
+    - "rainbow"
+    - "rainbow with glitter"
+    - "candy cane"
+    - "bpm"
+    - "confetti"
+    - "noise"
+    - "ripple"
+    - "fire"
+    - "twinkle"
+    - "lightning"
+    - "dots"
+    - "glitter"
+    - "juggle"
+    - "police all"
+
+#Big O Light
+- platform: mqtt
+  schema: json
+  name: "Big O"
+  state_topic: "big_o/reading/current"
+  command_topic: "big_o/reading/set"
+  brightness: true
+  rgb: true
+  effect: true
+  effect_list: 
+    - "colorfade_slow"
+    - "colorfade_fast"
+    - "flash"
+  optimistic: false
+  qos: 0

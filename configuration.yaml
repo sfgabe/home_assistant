@@ -1,0 +1,488 @@
+homeassistant:
+  name: !secret config_name
+  latitude: !secret config_lat
+  longitude: !secret config_long
+  elevation: !secret config_elev
+  unit_system: imperial
+  time_zone: !secret config_tz
+  customize: !include customize.yaml
+  customize_glob: !include customize_glob.yaml
+  packages: !include_dir_named packages
+  whitelist_external_dirs:
+      - /home/homeassistant/.homeassistant/scripts
+      - /home/homeassistant/.homeassistant/www/images/
+      - /home/homeassistant/.homeassistant/www/images/icons/
+      - /home/homeassistant/.homeassistant/www/mail_images/
+      - /home/homeassistant/.homeassistant/www/sounds/
+      - /home/homeassistant/.homeassistant/www/sounds/farts/
+      - /home/homeassistant/.homeassistant/downloads/
+
+# Enables the frontend
+frontend:
+  themes: !include_dir_merge_named themes
+#  themes: !include configuration_themes.yaml
+
+# Enables configuration UI
+config:
+
+http:
+  base_url: !secret config_base_url
+  ssl_key: !secret config_ssl_key
+  ssl_certificate: !secret config_ssl_cert
+
+lovelace:
+  mode: yaml
+  # Include external resources only add when mode is yaml, otherwise manage in the resources in the lovelace configuration panel.
+  resources:
+    - url: /hacsfiles/lovelace-card-preloader/lovelace-card-preloader.js
+      type: module
+    - url: /local/custom_ui/dark-sky-weather-card.js?v=0.10.3
+      type: module
+    - url: /local/custom_ui/monster-card.js?v=5
+      type: module
+    - url: /local/custom_ui/color-glance-card.js?v=5
+      type: module
+    - url: /local/custom_ui/column-card.js?v=5
+      type: module
+    - url: /hacsfiles/lovelace-fold-entity-row/fold-entity-row.js
+      type: module
+    - url: /hacsfiles/lovelace-multiple-entity-row/multiple-entity-row.js
+      type: module
+#    - url: /hacsfiles/entities-attribute-card/entities-attribute-card.js
+#      type: module
+    - url: /local/custom_ui/markdown-mod.js?v=1.2
+      type: module
+    - url: /hacsfiles/lovelace-card-mod/card-mod.js
+      type: module
+    - url: /hacsfiles/lovelace-card-templater/lovelace-card-templater.js
+      type: module
+    - url: /local/custom_ui/auto-entities.js?v=1.0
+      type: module
+    - url: /hacsfiles/atomic_calendar/atomic_calendar.js
+      type: module
+    - url: /hacsfiles/light-entity-card/light-entity-card.js
+      type: module
+    - url: /hacsfiles/light-entity-row/light-entity-row.js
+      type: module
+    - url: /hacsfiles/button-card/button-card.js
+      type: module
+    - url: /hacsfiles/button-entity-row/button-entity-row.js
+      type: module
+    - url: /local/custom_ui/light-card.js?v=5
+      type: module
+    - url: /hacsfiles/dual-gauge-card/dual-gauge-card.js
+      type: module
+    - url: /hacsfiles/gauge-card/gauge-card.js
+      type: module
+#    - url: /hacsfiles/slider-entity-row/slider-entity-row.js
+#      type: module
+    - url: /local/custom_ui/graph-card.js?v=5
+      type: module
+    - url: https://unpkg.com/moment@2.22.2/moment.js
+      type: js
+    - url: /hacsfiles/custom-header/custom-header.js
+      type: module
+    - url: /hacsfiles/lovelace-state-switch/state-switch.js
+      type: module
+    - url: /local/custom_ui/calendar-card.js?v=5
+      type: module
+    - url: /hacsfiles/state-attribute-element/state-attribute-element.js
+      type: js
+    - url: /hacsfiles/text-element/text-element.js
+      type: module
+    - url: /hacsfiles/travel-time-card/travel-time-card.js
+      type: module
+    - url: /local/custom_ui/tracker-card.js?v=0.1
+      type: module
+    - url: /local/custom_ui/state-element.js
+      type: module
+    - url: /local/custom_ui/flower-card.js?v=0.1
+      type: module
+    - url: /hacsfiles/vertical-stack-in-card/vertical-stack-in-card.js
+      type: module
+    - url: /hacsfiles/roku-card/roku-card.js
+      type: module
+    - url: /hacsfiles/circle-sensor-card/circle-sensor-card.js
+      type: module
+    - url: /hacsfiles/lovelace-home-feed-card/lovelace-home-feed-card.js
+      type: js
+    - url: /hacsfiles/lovelace-card-tools/card-tools.js
+      type: module
+    - url: /hacsfiles/swipe-card/swipe-card.js
+      type: module
+    - url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js
+      type: module
+    - url: /hacsfiles/simple-thermostat/simple-thermostat.js
+      type: module
+    - url: /hacsfiles/bar-card/bar-card.js
+      type: js
+    - url: /hacsfiles/radial-menu/radial-menu.js
+      type: module
+    - url: /local/custom_ui/camera-card.js?v=0.1.0
+      type: module
+    - url: /hacsfiles/lovelace-animated-background/animated-background.js
+      type: module
+    - url: /hacsfiles/lovelace-swipe-navigation/swipe-navigation.js
+      type: js
+    - url: /hacsfiles/harmony-card/harmony-card.js
+      type: module
+    - url: /hacsfiles/fitbit-card/fitbit-card.js
+      type: js
+    - url: /hacsfiles/garbage-collection-card/garbage-collection-card.js
+      type: module
+    - url: /hacsfiles/mini-media-player/mini-media-player-bundle.js
+      type: module
+    - url: /hacsfiles/lovelace-thermostat-card/main.js
+      type: module
+  # Add more dashboards
+#  dashboards:
+#    lovelace-generated: # Needs to contain a hyphen (-)
+#      mode: yaml
+#      filename: notexist.yaml
+#      title: Generated
+#      icon: mdi:tools
+#      show_in_sidebar: true
+#      require_admin: true
+
+hacs:
+  token: !secret hacs_token
+
+mqtt:
+  broker: localhost
+  port: 1883
+  username: !secret mqtt_username
+  password: !secret mqtt_password
+  discovery: true
+  discovery_prefix: homeassistant
+
+speedtestdotnet:
+  scan_interval:
+    minutes: 30
+  monitored_conditions:
+    - ping
+    - download
+    - upload
+
+updater:
+
+# Discover some devices automatically
+discovery:
+
+# Allows you to issue voice commands from the frontend in enabled browsers
+conversation:
+
+# Enables support for tracking state changes over time
+history:
+
+# What to put in error logs - comment this out for debugging
+logger:
+  default: error
+  logs:
+#    homeassistant.components: info
+#    homeassistant.components.sensor.rest: warning
+    homeassistant.components.camera.generic: critical
+    homeassistant.helpers.template: critical
+    homeassistant.core: error
+#    homeassistant.components.websocket_api: debug
+
+weather:
+  - platform: darksky
+    api_key: !secret darksky_api_key
+    mode: daily
+
+# Enables a map showing the location of tracked devices
+map:
+
+# Track the sun
+sun:
+
+# Text to speech
+tts:
+  - platform: google_cloud
+    key_file: hass_tts_key.json
+    base_url: !secret config_tts_base_url
+    service_name: google_translate_say
+    cache: true
+    time_memory: 300
+#    language: en-US
+    voice: en-US-Wavenet-F
+    encoding: mp3
+    speed: 1.2
+    pitch: -2.0
+    gain: 0.0
+    profiles:
+      - large-home-entertainment-class-device
+
+browser_mod:
+  prefix: "browser_"
+  devices:
+    8824fbbc_0ef10c06:
+      name: browser_gabes_mate
+    7c7b6ea9-a0a3d9e6:
+      name: browser_gabes_macbook
+    fb4e04e9-2f0affc3:
+      name: browser_note_kiosk
+    5c2aa88a-e7e0a9be:
+      name: browser_tablet_kiosk
+
+# Cloud
+cloud:
+
+nextcloud:
+  url: !secret nextcloud_url
+  username: !secret nextcloud_username
+  password: !secret nextcloud_account_password
+
+#Roomba
+vacuum:
+  - platform: roomba
+    host: !secret roomba_hostname
+    name: Roomba
+    username: !secret roomba_blid
+    password: ':1:1576348049:tScgKyHyeEO4zzPc'
+#    password: !secret roomba_password
+
+#Alexa
+alexa:
+
+#plex:
+#  token: !secret plex_token
+#  host: !secret plex_host
+#  port: 32400
+#  ssl: true
+#  verify_ssl: true
+#  media_player:
+#    use_episode_art: true
+#    ignore_new_shared_users: false
+
+#IFTTT
+ifttt:
+  key: !secret ifttt_key
+
+#NRF Sensor
+#mysensors:
+#  gateways:
+#    - device: '192.168.50.111'
+#  optimistic: true
+#  persistence: false
+
+#Pilight 433mhz receiver
+#pilight:
+#  host: 192.168.50.111
+#  port: 5000
+
+#Tuya Smart Switches
+tuya:
+  username: !secret tuya_username
+  password: !secret tuya_password
+  country_code: 1
+
+#Homebridge for AC
+homekit:
+
+#OctoPrint 3D Printer
+octoprint:
+  host: octopi.RollinsNest
+  api_key: !secret octoprint_apikey
+  bed: true
+  number_of_tools: 2
+
+# Google Calendar
+google:
+  client_id: !secret google_client_id
+  client_secret: !secret google_client_secret
+
+#Foursquare
+foursquare:
+  access_token: !secret foursquare_access_token
+  push_secret: !secret foursquare_pushsecret
+
+coinbase:
+  api_key: !secret coinbase_api_key
+  api_secret: !secret coinbase_api_secret
+  exchange_rate_currencies:
+    - BTC
+    - ETH
+    - LTC
+
+# lovelace theme notification
+input_text:
+  notification_text:
+    name: Notification Text
+    pattern: '[a-fA-F0-9]*'
+    initial: No Message
+
+python_script:
+
+hue:
+  bridges:
+    - host: !secret hue_bridge_ip
+      allow_unreachable: true
+      allow_hue_groups: true
+
+# alexa integration
+emulated_hue: !include emulated_hue.yaml
+
+asuswrt:
+  host: !secret asuswrt_host
+  username: !secret asuswrt_username
+#  password: !secret asuswrt_password
+  protocol: ssh
+  port: 1025
+  ssh_key: !secret asuswrt_ssh_key
+  sensors:
+    - upload
+    - download
+    - upload_speed
+    - download_speed
+
+downloader:
+  download_dir: www/images/
+
+shopping_list:
+
+system_health:
+
+## cpu speed raspberry device
+- platform: cpuspeed
+
+## system monitor raspberry device
+- platform: systemmonitor
+  resources:
+  - type: disk_use_percent
+    arg: /
+  - type: disk_use_percent
+    arg: /var/log
+  - type: memory_use_percent
+  - type: memory_use
+  - type: memory_free
+  - type: processor_use
+  - type: swap_use_percent
+  - type: swap_use
+  - type: swap_free
+  - type: last_boot
+  - type: since_last_boot
+## LAN Adapter
+  - type: network_in
+    arg: eth0
+  - type: network_out
+    arg: eth0
+  - type: packets_in
+    arg: eth0
+  - type: packets_out
+    arg: eth0
+  - type: ipv4_address
+    arg: eth0
+  - type: ipv6_address
+    arg: eth0
+## WLAN Adapter
+  - type: network_in
+    arg: wlan0
+  - type: network_out
+    arg: wlan0
+  - type: packets_in
+    arg: wlan0
+  - type: packets_out
+    arg: wlan0
+  - type: ipv4_address
+    arg: wlan0
+  - type: ipv6_address
+    arg: wlan0
+
+#pihole
+#pi_hole:
+#  - host: !secret pihole_host
+#    api_key: !secret pihole_apikey
+#    ssl: true
+#    verify_ssl: false
+
+#for cameras
+ffmpeg:
+  ffmpeg_bin: /usr/bin/ffmpeg
+
+stream:
+
+#esphome:
+#  name: bedroom
+#  platform: ESP8266
+#  board: nodemcuv2
+
+person:
+  - name: Gabe
+    id: Gabe
+    user_id: d67d3576bc7748e199a827dd23d2588b
+    device_trackers:
+      - device_tracker.5re0217120001465
+      - device_tracker.gabesmatehotspot
+      - device_tracker.google_maps_114555423860561989456
+      - device_tracker.huawei_mate_9_92528f2b1a5
+  - name: Berny
+    id: Berny
+    device_trackers:
+      - device_tracker.bernys_iphone
+  - name: Aaron
+    id: Aaron
+    device_trackers:
+      - device_tracker.magickal_guy
+#  - name: Janet
+#    id: Note3
+#    user_id: 64c2fc466cb843f6a6a3454d926e2c22
+#    device_trackers:
+#      - device_tracker.android-c42e1d9b846bb1c6
+
+# Lightning
+#wwlln:
+#  window: 3600
+#  radius: 300
+#  latitude: !secret config_lat
+#  longitude: !secret config_long
+
+#sonoff:
+#  username: !secret sonoff_username
+#  password: !secret sonoff_password
+#  scan_interval: 60
+#  grace_period: 600
+#  debug: true
+
+#gpodder:
+#  username: !secret gpodder_udername
+#  password: !secret gpodder_password
+#  sensor:
+#    - enabled: true
+#      name: homeassistant
+#      device: kiosk
+
+#feedreader:
+#  urls:
+#    - https://twitrss.me/twitter_user_to_rss/?user=octo_cam_bot
+#    - https://twitrss.me/twitter_user_to_rss/?user=sfgabe
+#  scan_interval:
+#    minutes: 20
+#  max_entries: 1
+
+geo_location: !include geolocation.yaml
+media_player: !include media_player.yaml
+notify: !include notify.yaml
+logbook: !include logbook.yaml
+recorder: !include recorder.yaml
+plant: !include plants.yaml
+scene: !include scenes.yaml
+zone: !include zone.yaml
+input_datetime: !include input_datetime.yaml
+input_boolean: !include input_boolean.yaml
+input_number: !include input_number.yaml
+input_select: !include input_select.yaml
+# history_graph: !include history_graph.yaml
+climate: !include climate.yaml
+rest_command: !include rest_command.yaml
+#device_tracker: !include device_tracker.yaml
+switch: !include switches.yaml
+camera: !include cameras.yaml
+sensor: !include sensors.yaml
+group: !include groups.yaml
+automation: !include automations.yaml
+script: !include scripts.yaml
+shell_command: !include shell_commands.yaml
+intent_script: !include intent_script.yaml
+binary_sensor: !include binary_sensor.yaml
+light: !include light.yaml

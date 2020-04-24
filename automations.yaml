@@ -1,0 +1,3650 @@
+- alias: Backup HA Configuration Files
+  id: backup_config_files
+  trigger:
+    platform: time_pattern
+    hours: 1
+    minutes: 1
+    seconds: 0
+  condition:
+    condition: time
+    weekday:
+      - wed
+  action:
+    - service: shell_command.backup_configuration
+
+#Set Theme
+- alias: 'Set Theme to Midnight'
+  initial_state: 'on'
+  trigger:
+  - platform: homeassistant
+    event: start
+  action:
+  - service: frontend.set_theme
+    data:
+      name: midnight
+
+- alias: Occupancy On
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.people_home
+      from: "off"
+      to: "on"
+  action:
+    - service: input_boolean.turn_on
+      data:
+        entity_id: input_boolean.occupancy
+
+- alias: Occupancy Off
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.people_home
+      from: "on"
+      to: "off"
+  action:
+    - service: input_boolean.turn_off
+      data:
+        entity_id: input_boolean.occupancy
+
+- alias: Turn Off Lights on Leaving Home Zone
+  id: gabe_out_of_home_zone_lights_off
+  trigger:
+#    - platform: state
+#      entity_id: device_tracker.huawei_mate_9_92528f2b1a5
+#      from: 'home'
+#      to: 'not_home'
+    - platform: state
+      entity_id: binary_sensor.people_home
+      from: 'on'
+      to: 'off'
+      for:
+          hours: 0
+          minutes: 15
+          seconds: 0
+    - platform: numeric_state
+      entity_id: sensor.home_occupancy_confidence
+      below: 51
+      for:
+          hours: 0
+          minutes: 15
+          seconds: 0
+  action:
+    - service: light.turn_off
+      entity_id:
+        - light.bedroom_desk
+        - light.bed_light
+        - light.desk
+        - light.entry_light
+        - light.kitchen
+        - light.kitchen_2
+        - light.table
+        - light.big_o
+        - light.et_figure
+    - service: media_player.media_pause
+      entity_id: media_player.gabes_music_server
+    - service: media_player.turn_off
+      entity_id: media_player.volumio_mpd
+    - service: browser_mod.navigate
+      data:
+        navigation_path: /lovelace/15
+        deviceID:
+          - browser_note_kiosk
+#    - service: input_select.select_option
+#      data_template:
+#        entity_id: input_select.alexa_bedroom_ac
+#        option: "85"
+#    - service: input_select.select_option
+#      data_template:
+#        entity_id: input_select.alexa_livingroom_ac
+#        option: "85"
+
+- alias: Turn On Lights on Enter Home Zone
+  id: gabe_arrive_in_home_zone_lights_on
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.people_home
+      from: 'off'
+      to: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: light.entry_light
+#    - service: climate.set_temperature
+#      data:
+#        entity_id: climate.bedroom_therm
+#        temperature: 74
+#    - service: climate.set_temperature
+#      data:
+#        entity_id: climate.living_room_therm
+#        temperature: 75
+    - service: script.turn_on
+      entity_id: script.welcome_lights_on
+
+- alias: Welcome on Enter Home Zone
+  id: gabe_arrive_in_home_zone_welcome
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.people_home
+      to: 'on'
+#  condition:
+#    - condition: state
+#      entity_id: input_select.gabe_status_dropdown
+#      state: "Just Arrived"
+#    condition: template
+#    value_template: '{{ as_timestamp(now()) - as_timestamp(states.automation.gabe_arrive_in_home_zone_welcome.attributes.last_triggered) | int > 10800 }}'
+  action:
+    - delay: '00:05:00'
+    - service: script.turn_on
+      entity_id: script.thundercloud_celebrate
+    - service: rest_command.kiosk_sound_welcome
+    - service: media_player.play_media
+      data:
+        entity_id: media_player.gabe_s_alexa
+        media_content_type: sound
+        media_content_id: amzn_sfx_trumpet_bugle_04
+    - delay: '00:00:10'
+    - service: script.janet_speech_engine
+      data:
+        call_greeting_gabe: 1
+    - service: light.turn_on
+      entity_id: light.et_figure
+    - delay: '00:05:00'
+    - service: light.turn_off
+      entity_id: light.et_figure
+
+- alias: Mom welcome
+  id: mom_arrive_in_home_zone_welcome
+  trigger:
+    - platform: zone
+      entity_id: person.berny
+      zone: zone.home
+      event: enter
+#  condition:
+#    condition: template
+#    value_template: '{{ as_timestamp(now()) - as_timestamp(states.automation.mom_arrive_in_home_zone_welcome.attributes.last_triggered) | int > 10800 }}'
+  action:
+    - delay: '00:02:30'
+    - service: script.janet_speech_engine
+      data:
+        call_greeting_berny: 1
+    - service: script.turn_on
+      entity_id: script.thundercloud_celebrate
+    - service: light.turn_on
+      entity_id: light.et_figure
+    - delay: '00:05:00'
+    - service: light.turn_off
+      entity_id: light.et_figure
+
+- alias: Aaron welcome
+  id: aaron_arrive_in_home_zone_welcome
+  trigger:
+    - platform: zone
+      entity_id: device_tracker.magickal_guy
+      zone: zone.home
+      event: enter
+  action:
+    - delay: '00:02:30'
+    - service: script.janet_speech_engine
+      data:
+        call_introduction: 1
+        call_greeting_aaron: 1
+    - service: script.turn_on
+      entity_id: script.thundercloud_celebrate
+    - service: light.turn_on
+      entity_id: light.et_figure
+    - delay: '00:05:00'
+    - service: light.turn_off
+      entity_id: light.et_figure
+
+#Morning Greeting
+- alias: 'Morning Greeting'
+  id: morning_greeting_update
+  trigger:
+    platform: state
+    entity_id: input_boolean.bed_occupancy
+    from: 'on'
+    to: 'off'
+  condition:
+    condition: and
+    conditions:
+      - condition: time
+        before: '10:30:00'
+        after: '07:30:00'
+      - condition: state
+        entity_id: input_boolean.alarm_went_off
+        state: 'on'
+      - condition: template
+        value_template: '{{ as_timestamp(now()) - as_timestamp(states.automation.morning_greeting.attributes.last_triggered) | int > 10800 }}'
+  action:
+    - service: script.turn_on
+      entity_id: script.kiosk_good_morning
+
+#Download News once a day
+#- alias: 'download_npr_news'
+#  trigger:
+#    - platform: time
+#      at: '06:16:00'
+#  action:
+#    - service: downloader.download_file
+#      data_template:
+#        url: "{{ states('sensor.npr_news_mp3_link') }}"
+#        filename: "npr_news.mp3"
+#        overwrite: true
+
+#Dim Kiosk with light
+- alias: 'Dim Kiosk Screen'
+  id: dim_kiosk_screen
+  trigger:
+    platform: state
+    entity_id: light.entry_light
+    from: 'on'
+    to: 'off'
+  action:
+    - service: rest_command.kiosk_screen_dim
+
+#Bright Kiosk with light
+- alias: 'Brighten Kiosk Screen'
+  id: brihten_kiosk_screen
+  trigger:
+    platform: state
+    entity_id: light.entry_light
+    from: 'off'
+    to: 'on'
+  action:
+    - service: rest_command.kiosk_screen_mid
+
+- alias: Turn off kiosk charger
+  trigger:
+    platform: template
+    value_template: "{{ 80 < states.binary_sensor.browser_note_kiosk.attributes.battery_level }}"
+  action:
+    service: switch.turn_off
+    entity_id: switch.2437254184f3eb69e784
+
+- alias: Turn on kiosk charger
+  trigger:
+    platform: template
+    value_template: "{{ 20 > states.binary_sensor.browser_note_kiosk.attributes.battery_level }}"
+  action:
+    service: switch.turn_on
+    entity_id: switch.2437254184f3eb69e784
+
+#- alias: Home Assistant Start
+#  trigger:
+#    platform: homeassistant
+#    event: start
+#  action:
+#    - delay: '00:00:10'
+#    - service: notify.kiosk
+#      data:
+#        message: 'Home Assistant has started'
+
+- alias: Start Up
+  trigger:
+    - event: start
+      platform: homeassistant
+  action:
+    - delay: '00:00:10'
+    - service: media_player.play_media
+      data:
+        entity_id: media_player.volumio_mpd
+        media_content_id: 'https://thisisgabes.asuscomm.com:8008/local/sounds/battle.mp3'
+        media_content_type: 'music'
+    - delay: '00:00:01'
+    - service: notify.html5_push
+      data:
+        data:
+          renotify: 1
+          icon: https://thisisgabes.asuscomm.com:8008/local/icons/smarthome.png
+          badge: https://thisisgabes.asuscomm.com:8008/local/icons/badge_smarthome.png
+          timestamp: '%m'
+          url: https://thisisgabes.asuscomm.com:8008
+          vibrate: 700, 700, 700
+        message: "Home Assistant restarted at {{ as_timestamp(now()) | timestamp_custom('%H:%M', true) }}"
+        title: "Hello World!"
+        target:
+          - "Gabes Mate"
+          - "Macbook"
+    - delay:
+        seconds: 6
+    - service: script.janet_speech_engine
+      data:
+        call_greeting: 1
+    - delay:
+        seconds: 5
+    - service: script.janet_speech_engine
+      data:
+        call_introduction: 1
+    - delay:
+        seconds: 10
+    - service: alexa_media.update_last_called
+    - delay:
+        seconds: 5
+    - service: notify.alexa_media
+      data:
+        data:
+          type: tts
+        target:
+          - media_player.gabe_s_alexa
+        message:  'Alexa Tee Tee Ess is Connected'
+
+#Birdfeed
+- id: birdfeed_audio
+  alias: birdfeed_audio
+  initial_state: true
+  trigger:
+  - entity_id: media_player.mpd
+    platform: state
+    to: "playing"
+  action:
+    service: mqtt.publish
+    data_template:
+      topic: 'birdfeed/reading'
+      payload_template: "{{ states.media_player.mpd.attributes['media_content_id']}}"
+
+#SSL Expiry
+- alias: ssl_expiry_notify
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.ssl_certificate_expiry
+    below: 2
+  condition:
+    condition: time
+    after: '13:00:00'
+  action:
+    - service: notify.html5_push
+      data:
+        data:
+          renotify: 1
+          icon: https://thisisgabes.asuscomm.com:8008/local/icons/ssl.png
+          badge: https://thisisgabes.asuscomm.com:8008/local/icons/badge_calendar.png
+          timestamp: '%m'
+          url: https://thisisgabes.asuscomm.com:8008/lovelace/10
+          vibrate: 700, 700, 700
+        message: "Your SSL cert expires in {{ states.sensor.ssl_certificate_expiry.state }} days."
+        title: "Beep! Boop!"
+        target:
+          - "Gabes Mate"
+          - "Macbook"
+    - service: script.janet_speech_engine
+      data:
+        message: "Hey Gabe, I just want to let you know that your website SSL certificate expires in {{ states.sensor.ssl_certificate_expiry.state }} days. You have instructions on how to renew it saved in your evernote app."
+    - service: persistent_notification.create
+      data:
+        message: "Your SSL cert expires in {{ states.sensor.ssl_certificate_expiry.state }} days."
+        title: "Beep! Boop!"
+
+- alias: Set Harmony activity
+  trigger:
+    platform: state
+    entity_id: input_select.harmony
+  action:
+    service: remote.turn_on
+    entity_id: remote.gabes_harmony_hub
+    data_template:
+      activity: >
+        {% if is_state("input_select.harmony", "Speaker") %}
+          29883813
+        {% elif is_state("input_select.harmony", "Fishtank Evening") %}
+          25723108
+        {% elif is_state("input_select.harmony", "Watch Roku") %}
+          26106880
+        {% elif is_state("input_select.harmony", "Watch a Movie") %}
+          26106724
+        {% elif is_state("input_select.harmony", "Fishtank Morning") %}
+          25723061
+        {% else %}
+          -1
+        {% endif %}
+
+# This next automation is to update the input_select when the Harmony's
+# activity was changed from somewhere else, e.g. using its physical remote.
+- alias: Update Harmony input_select
+  trigger:
+    platform: state
+    entity_id: remote.gabes_harmony_hub
+  action:
+    service: input_select.select_option
+    data_template:
+      entity_id: input_select.harmony
+      option: "{{ states.remote.harmony_hub.attributes.current_activity }}"
+
+## Reef Tides Wavemaker
+- alias: Turn on Wavemaker at high tide
+  trigger:
+    platform: template
+    value_template: '{{ strptime(states.sensor.time_utc.state , "%H:%M") == strptime(states.sensor.reef_time_high_tide.state , "%H:%M") }}'
+  action:
+    service: switch.turn_on
+    entity_id: switch.06200940dc4f22cbb94b_2
+
+- alias: Turn off Wavemaker at low tide
+  trigger:
+    platform: template
+    value_template: '{{ strptime(states.sensor.time_utc.state , "%H:%M") == strptime(states.sensor.reef_time_low_tide.state , "%H:%M") }}'
+  action:
+    service: script.turn_on
+    entity_id: script.reef_waves_lowtide_fade_script
+
+## Amazon Tides Wavemaker
+- alias: Turn on Amazon Waves at high tide
+  trigger:
+    platform: template
+    value_template: '{{ strptime(states.sensor.time.state , "%k:%M") == strptime(states.sensor.amazonnexthightide.state , "%k:%M") }}'
+  action:
+    service: script.turn_on
+    entity_id: script.freshwater_waves_on_script
+
+- alias: Turn on Amazon Waves again at low tide
+  trigger:
+    platform: template
+    value_template: '{{ strptime(states.sensor.time.state , "%k:%M") == strptime(states.sensor.amazonnextlowtide.state , "%k:%M") }}'
+  action:
+    service: script.turn_on
+    entity_id: script.freshwater_waves_on_script
+
+#Sunrise Sunset on Reef Tank Diurnal Phasing
+- alias: Set sunrise and set with reef-pi
+  trigger:
+    platform: time
+    at: '04:15:00'
+  action:
+  - service: rest_command.set_diurnal_reef_lights
+
+- alias: Turn Off Reef Lights Outlet at Sunset
+  trigger:
+    platform: template
+    value_template: "{{ strptime(states.sensor.time.state , '%k:%M') == strptime(states.sensor.reeftime_sunset_adjustment.state , '%k:%M') }}"
+  action:
+  - service: script.turn_on
+    entity_id: script.reeftank_evening_outlet_kessil
+
+- alias: Turn On Reef Lights Outlet at Sunrise
+  trigger:
+    platform: template
+    value_template: "{{ strptime(states.sensor.time.state , '%H:%M') == strptime(states.sensor.reeftime_sunrise_adjustment.state , '%H:%M') }}"
+  action:
+  - service: script.turn_on
+    entity_id: script.reeftank_morning_outlet_kessil
+
+- alias: Kessil Color
+  trigger:
+    platform: state
+    entity_id: input_number.kessil_color
+  condition:
+    condition: template
+    value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"
+  action:
+    service: switch.turn_on
+    entity_id: switch.kessil_color_level
+
+- alias: Kessil Brightness
+  trigger:
+    platform: state
+    entity_id: input_number.kessil_brightness
+  condition:
+    condition: template
+    value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"
+  action:
+    service: switch.turn_on
+    entity_id: switch.kessil_brightness_level
+
+- alias: Garden Brightness
+  trigger:
+    platform: state
+    entity_id: input_number.garden_brightness
+  condition:
+    condition: template
+    value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"
+  action:
+    service: switch.turn_on
+    entity_id: switch.garden_brightness_level
+
+#Moonrise Moonset on Tanks
+- alias: Stop Reef Moon
+  trigger:
+    platform: template
+    value_template: "{{ strptime(states.sensor.time.state , '%H:%M') == strptime(states.sensor.reeftime_sunrise_adjustment.state , '%H:%M') }}"
+  condition:
+    condition: numeric_state
+    entity_id: sensor.reef_weather_moon_phase_0d
+    above: .35
+    below: .65
+  action:
+  - service: script.turn_on
+    entity_id: script.reeftank_moon_off
+
+- alias: Start Reef Moon
+  trigger:
+    platform: template
+    value_template: "{{ strptime(states.sensor.time.state , '%k:%M') == strptime(states.sensor.reeftime_sunset_adjustment.state , '%k:%M') }}"
+  condition:
+    condition: or
+    conditions:
+      - condition: numeric_state
+        entity_id: sensor.reef_weather_moon_phase_0d
+        above: .38
+        below: .48
+      - condition: numeric_state
+        entity_id: sensor.reef_weather_moon_phase_0d
+        above: .53
+        below: .63
+  action:
+  - service: script.turn_on
+    entity_id: script.reeftank_moon_on
+  - service: script.turn_on
+    entity_id: script.reeftank_moon_up
+
+- alias: Stronger Fade Up of Reef Moon
+  trigger:
+    platform: template
+    value_template: "{{ strptime(states.sensor.time.state , '%k:%M') == strptime(states.sensor.reeftime_sunset_adjustment.state , '%k:%M') }}"
+  condition:
+    condition: or
+    conditions:
+      - condition: numeric_state
+        entity_id: sensor.reef_weather_moon_phase_0d
+        above: .48
+        below: .49
+      - condition: numeric_state
+        entity_id: sensor.reef_weather_moon_phase_0d
+        above: .51
+        below: .53
+  action:
+  - service: script.turn_on
+    entity_id: script.reeftank_moon_on
+  - service: script.turn_on
+    entity_id: script.reeftank_moon_up_stronger
+
+- alias: Reef Full Moon
+  trigger:
+    platform: template
+    value_template: "{{ strptime(states.sensor.time.state , '%k:%M') == strptime(states.sensor.reeftime_sunset_adjustment.state , '%k:%M') }}"
+  condition:
+    condition: numeric_state
+    entity_id: sensor.reef_weather_moon_phase_0d
+    above: .49
+    below: .51
+  action:
+  - service: script.turn_on
+    entity_id: script.reeftank_moon_on
+  - service: script.turn_on
+    entity_id: script.reeftank_full_moon
+
+- alias: Freshwater Lights and O2 On at Sunrise
+  trigger:
+    platform: template
+    value_template: "{{ strptime(states.sensor.time.state , '%H:%M') == strptime(states.sensor.amazonsunrisetides.state , '%H:%M') }}"
+  action:
+  - service: script.turn_on
+    entity_id: script.octotank_morning_on
+
+- alias: Freshwater Lights and O2 Off at Sunset
+  trigger:
+    platform: template
+    value_template: "{{ strptime(states.sensor.time.state , '%H:%M') == strptime(states.sensor.amazonsunsettides.state , '%H:%M') }}"
+  action:
+  - service: script.turn_on
+    entity_id: script.octotank_evening_off
+
+# Amazon Feeder
+- alias: Activate Feeder Script Morning
+  trigger:
+    platform: time
+    at: '09:15:00'
+  action:
+  - service: script.turn_on
+    entity_id: script.freshwater_feeder_script
+
+#- alias: Activate Feeder Script MidDay
+#  trigger:
+#    platform: time
+#    at: '12:15:00'
+#  action:
+#  - service: script.turn_on
+#    entity_id: script.freshwater_feeder_script
+
+- alias: Activate Feeder Script Afternoon
+  trigger:
+    platform: time
+    at: '17:30:00'
+  action:
+  - service: script.turn_on
+    entity_id: script.freshwater_feeder_script
+
+## Amazon Temp Regulation
+# This automation script runs when a value is received via Amazon sensor: monthly_amazon_temp
+- alias: Set Amazon Thermostat Max Daytime Selector
+  trigger:
+    platform: template
+#summer temp
+#    value_template: "{{ states.sensor.monthly_amazon_temp_lowmed.state != states.climate.octo_tank_therm.attributes.temperature.state }}"
+#winter temp
+    value_template: "{{ states.sensor.monthly_amazon_temp_med.state != states.climate.octo_tank_therm.attributes.temperature.state }}"
+  condition:
+    condition: state
+    entity_id: switch.06200940dc4f22cbb432_4
+    state: 'on'
+  action:
+     service: climate.set_temperature
+     data_template:
+       entity_id: climate.octo_tank_therm
+#summer temp
+#       temperature: '{{ states.sensor.monthly_amazon_temp_lowmed.state | float }}'
+#winter temp
+       temperature: '{{ states.sensor.monthly_amazon_temp_med.state | float }}'
+
+ # This automation script runs when a value is received via Amazon sensor: monthly_amazon_temp
+- alias: Set Amazon Thermostat Max Night Selector
+  trigger:
+    platform: template
+#summer temp
+#    value_template: "{{ states.sensor.monthly_amazon_temp_min.state != states.climate.octo_tank_therm.attributes.temperature.state }}"
+#winter temp
+    value_template: "{{ states.sensor.monthly_amazon_temp_lowmed.state != states.climate.octo_tank_therm.attributes.temperature.state }}"
+  condition:
+    condition: state
+    entity_id: switch.06200940dc4f22cbb432_4
+    state: 'off'
+  action:
+     service: climate.set_temperature
+     data_template:
+       entity_id: climate.octo_tank_therm
+#summer temp
+#       temperature: '{{ states.sensor.monthly_amazon_temp_min.state | float }}'
+#winter temp
+       temperature: '{{ states.sensor.monthly_amazon_temp_lowmed.state | float }}'
+
+ # This automation script runs when a value is received via Reef sensor: reef_low_avg_daily_temp
+- alias: Set Reef Thermostat Max Daytime Selector
+  trigger:
+    platform: template
+#summer temp
+#    value_template: "{{ states.sensor.reef_high_avg_daily_temp.state != states.climate.reef_tank_therm.attributes.temperature.state }}"
+#winter temp
+    value_template: "{{ states.sensor.noaa_daily_max_reef_temp.state != states.climate.reef_tank_therm.attributes.temperature.state }}"
+  condition:
+    condition: state
+    entity_id: input_boolean.reef_temp_daytime_state
+    state: 'on'
+  action:
+     service: climate.set_temperature
+     data_template:
+       entity_id: climate.reef_tank_therm
+#summer temp
+#       temperature: '{{ states.sensor.reef_high_avg_daily_temp.state | float }}'
+#winter temp
+       temperature: '{{ states.sensor.noaa_daily_max_reef_temp.state | float }}'
+
+ # This automation script runs when a value is received via Reef sensor: noaa_daily_min_reef_temp
+- alias: Set Reef Thermostat Max Nighttime Selector
+  trigger:
+    platform: template
+#summer temp
+#    value_template: "{{ states.sensor.noaa_daily_min_reef_temp.state != states.climate.reef_tank_therm.attributes.temperature.state }}"
+#winter temp
+    value_template: "{{ states.sensor.reef_low_avg_daily_temp.state != states.climate.reef_tank_therm.attributes.temperature.state }}"
+  condition:
+    condition: state
+    entity_id: input_boolean.reef_temp_nightime_state
+    state: 'on'
+  action:
+     service: climate.set_temperature
+     data_template:
+       entity_id: climate.reef_tank_therm
+#summer temp
+#       temperature: '{{ states.sensor.noaa_daily_min_reef_temp.state | float }}'
+#winter temp
+       temperature: '{{ states.sensor.reef_low_avg_daily_temp.state | float }}'
+
+- alias: Regulate Reef Heater To Off on Low Misread
+  trigger:
+    platform: template
+    value_template: '{{ 32 == states.sensor.onlyreefcontrolpitemp.state }}'
+  action:
+    service: switch.turn_off
+    entity_id: switch.06200940dc4f22cbb94b_3
+
+- alias: Nightly Top OffOn
+  trigger:
+    - platform: time
+      at: '23:24:00'
+  action:
+    service: switch.turn_on
+    entity_id: switch.ato_scheduled
+
+- alias: Nightly Top OffOff
+  trigger:
+    - platform: time
+      at: '23:26:00'
+  action:
+    service: switch.turn_off
+    entity_id: switch.ato_scheduled
+
+- alias: Nightly Doser On
+  trigger:
+    - platform: time
+      at: '23:12:00'
+  action:
+    service: switch.turn_on
+    entity_id: switch.doser_scheduled
+
+- alias: Nightly Doser Off
+  trigger:
+    - platform: time
+      at: '23:16:00'
+  action:
+    service: switch.turn_off
+    entity_id: switch.doser_scheduled
+
+#Turn on sump pump every 20 min
+#- alias: Reef Sump Pump On Every Hour
+#  trigger:
+#    - platform: time_pattern
+#      minutes: '/20'
+#  condition:
+#    condition: state
+#    entity_id: sensor.reefcontrolpifloat
+#    state: 'OK'
+#  action:
+#    service: switch.turn_on
+#    entity_id: switch.2437254184f3eb695276
+
+#Update Reef temps once a day
+- alias: 'download_noaa_temps'
+  trigger:
+    - platform: time
+      at: '01:16:00'
+  action:
+    - service: downloader.download_file
+      data_template:
+        url: "https://coralreefwatch.noaa.gov/vs/data/great_nicobar.txt"
+        filename: "east_java_bali.txt"
+        overwrite: true
+
+#Turn on sump pump every 3 min
+- alias: Reef Sump Pulse
+  trigger:
+    - platform: time_pattern
+      minutes: '/4'
+  condition:
+    condition: state
+    entity_id: sensor.reefcontrolpifloat
+    state: 'OK'
+  action:
+    service: script.turn_on
+    entity_id: script.reeftank_sump_pulse
+
+#Turn sump pump off on low
+- alias: Reef Sump Pump Low Off
+  trigger:
+    platform: state
+    entity_id: sensor.reefcontrolpifloat
+    from: 'OK'
+    to: 'Low'
+  action:
+    service: switch.turn_off
+    entity_id: switch.2437254184f3eb695276
+
+#Turn sump pump off on low timer
+- alias: Reef Sump Pump Low Timer
+  trigger:
+    platform: state
+    entity_id: sensor.reefcontrolpifloat
+    to: 'Low'
+    for:
+      minutes: 5
+  action:
+    service: switch.turn_off
+    entity_id: switch.2437254184f3eb695276
+
+#Alert if plants need water
+- alias: ferns_needs_water
+  trigger:
+    platform: state
+    entity_id: binary_sensor.water_plant_alarm_ferns
+    to: 'on'
+    for:
+      minutes: 10
+  condition:
+    condition: and
+    conditions:
+      - condition: time
+        before: '22:30:00'
+        after: '09:30:00'
+      - condition: template
+        value_template: '{{ as_timestamp(now()) - as_timestamp(states.automation.ferns_needs_water.attributes.last_triggered) | int > 43200 }}'
+  action:
+    - service: notify.html5_push
+      data:
+        data:
+          renotify: 1
+          icon: https://thisisgabes.asuscomm.com:8008/local/icons/plant.png
+          badge: https://thisisgabes.asuscomm.com:8008/local/icons/badge_plant.png
+          timestamp: '%m'
+          url: https://thisisgabes.asuscomm.com:8008/lovelace/6
+          vibrate: 700, 700, 700
+        message: "Your bedroom ferns need water. Soil moisture is currently at {{ states.sensor.plant_monitor_soil_moisture.state }}%"
+        title: "I'm thirsty!"
+        target:
+          - "Gabes Mate"
+          - "Macbook"
+#    - service: ifttt.trigger
+#      data_template: {"event":"plant_needs_water", "value1":"Bedroom Ferns", "value2":"{{ states.sensor.plant_monitor_soil_moisture.state }}"}
+    - service: persistent_notification.create
+      data:
+        message: "Your bedroom ferns need water. Soil moisture is currently at {{ states.sensor.plant_monitor_soil_moisture.state }}%"
+        title: "Bedroom Ferns Water Alert!"
+    - service: script.janet_speech_engine
+      data:
+        call_plant_alert: 1
+        call_bedroom_plant_warning: 1
+
+- alias: plant_needs_water
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.garden_monitor_soil_moisture
+    below: 10
+  condition:
+    condition: and
+    conditions:
+      - condition: time
+        before: '22:30:00'
+        after: '09:30:00'
+      - condition: template
+        value_template: '{{ as_timestamp(now()) - as_timestamp(states.automation.plant_needs_water.attributes.last_triggered) | int > 43200 }}'
+  action:
+    - service: notify.html5_push
+      data:
+        data:
+          renotify: 1
+          icon: https://thisisgabes.asuscomm.com:8008/local/icons/plant.png
+          badge: https://thisisgabes.asuscomm.com:8008/local/icons/badge_plant.png
+          timestamp: '%m'
+          url: https://thisisgabes.asuscomm.com:8008/lovelace/6
+          vibrate: 700, 700, 700
+        message: "Your herb garden needs water. Soil moisture is currently at {{ states.sensor.garden_monitor_soil_moisture.state }}%"
+        title: "I'm thirsty!"
+        target:
+          - "Gabes Mate"
+          - "Macbook"
+#    - service: ifttt.trigger
+#      data_template: {"event":"plant_needs_water", "value1":"Hydroponic Garden", "value2":"{{ states.sensor.garden_monitor_soil_moisture.state }}"}
+    - service: persistent_notification.create
+      data:
+        message: "Your herb garden needs water. Soil moisture is currently at {{ states.sensor.garden_monitor_soil_moisture.state }}%"
+        title: "Hydroponic Garden Water Alert!"
+- alias: empty_garden_drain
+  trigger:
+    platform: state
+    entity_id: binary_sensor.water_alarm_garden_res
+    to: 'on'
+    for:
+      minutes: 10
+  condition:
+    condition: and
+    conditions:
+      - condition: time
+        before: '22:30:00'
+        after: '09:30:00'
+      - condition: template
+        value_template: '{{ as_timestamp(now()) - as_timestamp(states.automation.empty_garden_drain.attributes.last_triggered) | int > 43200 }}'
+  action:
+    - service: notify.html5_push
+      data:
+        data:
+          renotify: 1
+          icon: https://thisisgabes.asuscomm.com:8008/local/icons/plant.png
+          badge: https://thisisgabes.asuscomm.com:8008/local/icons/badge_pipe.png
+          timestamp: '%m'
+          url: https://thisisgabes.asuscomm.com:8008/lovelace/6
+          vibrate: 700, 700, 700
+        message: "Empty the drainage reservoir soon. It is currently at {{ states.sensor.garden_monitor_water_level.state }}%"
+        title: "Empty me!"
+        target:
+          - "Gabes Mate"
+          - "Macbook"
+#    - service: ifttt.trigger
+#      data_template: {"event":"empty_garden_drain", "value1":"Hydroponic Garden", "value2":"{{ states.sensor.garden_monitor_water_level.state }}"}
+    - service: persistent_notification.create
+      data:
+        message: "Empty the drainage reservoir soon. It is currently at {{ states.sensor.garden_monitor_water_level.state }}%"
+        title: "Hydroponic Garden Reservoir Alert!"
+
+## Alert if Garden Bot is down
+- alias: garden_bot_alert
+  trigger:
+    platform: state
+    entity_id: device_tracker.octocam
+  condition:
+    - condition: template
+      value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"
+  action:
+    - service: ifttt.trigger
+      data_template: {"event":"change_of_ip", "value1":"GardenBot changed state to {{ states.device_tracker.octocam.state }}"}
+
+#Alert if public IP Changes
+- alias: ip_change_alert
+  trigger:
+    platform: state
+    entity_id: sensor.ip_address
+  condition:
+    - condition: template
+      value_template: "{{ trigger.to_state.state != trigger.from_state.state }}"
+  action:
+    - service: ifttt.trigger
+      data_template: {"event":"change_of_ip", "value1":"{{ states.sensor.ip_address.state }}"}
+
+#Text Message if theres mail
+- alias: usps_mail_alert
+  trigger:
+    platform: zone
+    entity_id: device_tracker.huawei_mate_9_92528f2b1a5
+    zone: zone.home
+    event: enter
+  condition:
+    condition: or
+    conditions:
+      - condition: numeric_state
+        entity_id: sensor.usps_mail
+        above: '0'
+      - condition: numeric_state
+        entity_id: sensor.usps_packages
+        above: '0'
+  action:
+    - service: script.turn_on
+      entity_id: script.usps_sms_notification
+
+#Text Message if there's mail refresher on
+- alias: usps_mail_alert_automation_on
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.usps_mail
+      above: '0'
+    - platform: numeric_state
+      entity_id: sensor.usps_packages
+      above: '0'
+  action:
+    - service: automation.turn_on
+      entity_id: automation.usps_mail_alert
+
+#Text Message if there's mail refresher off
+- alias: usps_mail_alert_automation_off
+  trigger:
+    - platform: numeric_state
+      entity_id: sensor.usps_mail
+      below: '1'
+  action:
+    - service: automation.turn_off
+      entity_id: automation.usps_mail_alert
+
+#3d Printer Finished Alert
+- alias: octoprint_finished
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.octoprint_job_percentage
+    above: 96
+  condition:
+    condition: and
+    conditions:
+      - condition: time
+        before: '22:30:00'
+        after: '09:30:00'
+      - condition: template
+        value_template: '{{ as_timestamp(now()) - as_timestamp(states.automation.octoprint_finished.attributes.last_triggered) | int > 3000 }}'
+  action:
+    - service: camera.snapshot
+      data:
+        entity_id: camera.octopi3dprinter
+        filename: '/www/snapshots/3dprinter_{{ now().strftime("%Y%m%d-%H") }}.jpg'
+    - service: notify.html5_push
+      data:
+        data:
+          renotify: 1
+          icon: https://thisisgabes.asuscomm.com:8008/local/icons/robot5.png
+          badge: https://thisisgabes.asuscomm.com:8008/local/icons/badge_roomba.png
+          image: 'https://thisisgabes.asuscomm.com:8008/local/snapshots/3dprinter_{{ now().strftime("%Y%m%d-%H") }}.jpg'
+          timestamp: '%m'
+          url: https://thisisgabes.asuscomm.com:8008/lovelace/7
+          vibrate: 700, 700, 700
+        message: "Your 3D print is {{ states.sensor.octoprint_job_percentage.state }}% done after {{ states.sensor.sensor.octoprint_time_elapsed_format.state }}."
+        title: "Neato!"
+        target:
+          - "Gabes Mate"
+          - "Macbook"
+    - service: persistent_notification.create
+      data:
+        message: "Your 3D print is {{ states.sensor.octoprint_job_percentage.state }}% done after {{ states.sensor.sensor.octoprint_time_elapsed_format.state }}."
+        title: "Neato!"
+
+#Download Octoprint Timelapse
+- alias: 'download_octoprint_timelapse'
+  trigger:
+    platform: state
+    entity_id: sensor.octoprint_current_state
+    to: 'Idle'
+    for:
+      minutes: 3
+  action:
+    - service: downloader.download_file
+      data_template:
+        url: "{{ states('sensor.octoprint_timelapse_url_full') }}"
+        filename: "latest_timelapse.mpg"
+        overwrite: true
+        subdir: octoprint
+    - service: downloader.download_file
+      data_template:
+        url: "{{ states('sensor.octoprint_timelapse_url_full') }}"
+        filename: "latest_timelapse.mp4"
+        overwrite: true
+        subdir: octoprint
+
+- id: 'rpi_power_issue'
+  alias: Power Problem Notification
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.rpi_power_status
+    above: 0
+    for:
+      minutes: 1
+  condition:
+  action:
+    service: persistent_notification.create
+    data:
+      message: "Charger reported {{ states.sensor.rpi_power_status.state }}"
+      title: "RPI Power Issue"
+
+#- alias: Check for Tweets OctoCam
+#  id: twitter_check_octocam
+#  trigger:
+#    - platform: time_pattern
+#      minutes: '/30'
+#  action:
+#    - service: shell_command.tweet_retrieve_octocam
+
+#- alias: Check for Tweets SFGabe
+#  id: twitter_check_sfgabe
+#  trigger:
+#    - platform: time_pattern
+#      minutes: '/60'
+#  action:
+#    - service: shell_command.tweet_retrieve_sfgabe
+
+## Alarm 2 test
+- id: wake_up_alarm_2
+  alias: Alarm clock
+  initial_state: off
+  trigger:
+    platform: template
+    value_template: "{{ states('sensor.time') == (((state_attr('input_datetime.bedroom_alarm_clock_time' , 'timestamp')) - (15 * 60))|timestamp_custom('%H:%M', false)) }}"
+  condition:
+    - condition: state
+      entity_id: device_tracker.huawei_mate_9_92528f2b1a5
+      state: 'home'
+    - condition: state
+      entity_id: input_boolean.bedroom_alarm_clock_status
+      state: 'on'
+  action:
+    - service: script.turn_on
+      data:
+        entity_id: script.bedroom_wake_up
+
+## IFTTT Test
+- id: IFTTT_test
+  alias: IFTTT Test
+  trigger:
+    platform: event
+    event_type: ifttt_webhook_received
+    event_data:
+      action: call_service
+  action:
+    service_template: '{{ trigger.event.data.service }}'
+    data_template:
+      entity_id: '{{ trigger.event.data.entity_id }}'
+
+- alias: Download Reef Stats File
+  id: auto_download_reef_stats
+  trigger:
+    platform: time
+    at: '20:15:00'
+  action:
+    - service: shell_command.download_reef_stats
+
+- alias: Download Amazon Stats File
+  id: auto_download_amazon_stats
+  trigger:
+    platform: time
+    at: '20:16:00'
+  action:
+    - service: shell_command.download_amazon_stats
+
+#Presence Detection Logic
+- alias: Mark Gabe as just arrived
+  trigger:
+    - platform: state
+      entity_id: group.gabe
+      to: 'home'
+  action:
+    - service: input_select.select_option
+      data:
+        entity_id: input_select.gabe_status_dropdown
+        option: Just Arrived
+
+- alias: Mark Gabe as home
+  trigger:
+    - platform: state
+      entity_id: input_select.gabe_status_dropdown
+      to: 'Just Arrived'
+      for:
+        minutes: 10
+#    - platform: state
+#      entity_id: input_select.gabe_status_dropdown
+#      from: 'Just Left'
+#      to: 'Just Arrived'
+  condition:
+    - condition: state
+      entity_id: input_boolean.bed_occupancy
+      state: 'off'
+  action:
+    - service: input_select.select_option
+      data:
+        entity_id: input_select.gabe_status_dropdown
+        option: Home
+
+- alias: Mark Gabe as just left
+  trigger:
+    - platform: state
+      entity_id: group.gabe
+      to: 'not_home'
+  action:
+    - service: input_select.select_option
+      data:
+        entity_id: input_select.gabe_status_dropdown
+        option: Just Left
+    - service: browser_mod.navigate
+      data:
+        navigation_path: /lovelace/18
+        deviceID:
+          - browser_gabes_mate
+
+- alias: Bus Stop Popup
+  trigger:
+    - platform: zone
+      entity_id: group.gabe
+      zone: zone.bus_uptown
+  action:
+    - service: input_select.select_option
+      data:
+        entity_id: input_select.gabe_status_dropdown
+        option: M15 Bus Uptown
+    - service: browser_mod.navigate
+      data:
+        navigation_path: /lovelace/18
+        deviceID:
+          - browser_gabes_mate
+    - service: browser_mod.popup
+      data:
+        title: Next Bus
+        card:
+          - type: "custom:button-card"
+            entity: sensor.siri_bus_m15sbs_local_0_name_uptown_allen_at_grand
+            show_icon: false
+            color: '#ffffff'
+            name: M15-SBS
+            state:
+                - value: 'unknown'
+                  styles:
+                    card:
+                      - display: none
+            show_name: false
+            tap_action:
+              action: none
+            styles:
+              card:
+                - background-color: '#1f3db5'
+                - color: '#ffffff'
+                - filter: opacity(90%)
+                - font-size: 26px
+                - padding: 2% 3%
+                - font-weight: bold
+                - text-transform: capitalize
+              grid:
+                - grid-template-areas: '"name0 stop0" "destination0 distance0" "stop1 stop1" "destination1 distance1" "stop2 stop2" "destination2 distance2"'
+                - grid-template-columns: 1fr 1fr
+                - grid-template-rows:  1fr min-content min-content min-content min-content min-content
+              custom_fields:
+                name0:
+                  - align-self: start
+                  - justify-self: start
+                  - font-size: 24px
+                destination0:
+                  - align-self: start
+                  - justify-self: start
+                  - font-size: 14px
+                  - padding-left: 44px
+                stop0:
+                  - align-self: end
+                  - justify-self: end
+                  - font-size: 24px
+                  - --text-color-sensor: '[[[ if (states["sensor.siri_bus_m15sbs_local_0_distance_uptown_allen_at_grand"].state < 500) return "#fa9393"; ]]]'
+                  - --animation-sensor: '[[[ if (states["sensor.siri_bus_m15sbs_local_0_distance_uptown_allen_at_grand"].state < 300) return "blink 2s ease infinite"; ]]]'
+                distance0:
+                  - padding-bottom: 2px
+                  - align-self: end
+                  - justify-self: end
+                  - font-size: 14px
+                  - --text-color-sensor: '[[[ if (states["sensor.siri_bus_m15sbs_local_0_distance_uptown_allen_at_grand"].state < 500) return "#fa9393"; ]]]'
+                destination1:
+                  - align-self: start
+                  - justify-self: start
+                  - font-size: 14px
+                  - filter: opacity(70%)
+                  - padding-left: 44px
+                stop1:
+                  - align-self: end
+                  - justify-self: end
+                  - padding-top: 10px
+                  - font-size: 20px
+                  - filter: opacity(70%)
+                  - --text-color-sensor: '[[[ if (states["sensor.siri_bus_m15sbs_local_1_distance_uptown_allen_at_grand"].state < 500) return "#fa9393"; ]]]'
+                  - --animation-sensor: '[[[ if (states["sensor.siri_bus_m15sbs_local_1_distance_uptown_allen_at_grand"].state < 300) return "blink 2s ease infinite"; ]]]'
+                distance1:
+                  - padding-bottom: 2px
+                  - align-self: end
+                  - justify-self: end
+                  - font-size: 10px
+                  - filter: opacity(70%)
+                  - --text-color-sensor: '[[[ if (states["sensor.siri_bus_m15sbs_local_1_distance_uptown_allen_at_grand"].state < 500) return "#fa9393"; ]]]'
+                destination2:
+                  - align-self: start
+                  - justify-self: start
+                  - font-size: 14px
+                  - filter: opacity(50%)
+                  - padding-left: 44px
+                stop2:
+                  - align-self: end
+                  - justify-self: end
+                  - padding-top: 10px
+                  - font-size: 20px
+                  - filter: opacity(50%)
+                  - --text-color-sensor: '[[[ if (states["sensor.siri_bus_m15sbs_local_2_distance_uptown_allen_at_grand"].state < 500) return "#fa9393"; ]]]'
+                  - --animation-sensor: '[[[ if (states["sensor.siri_bus_m15sbs_local_2_distance_uptown_allen_at_grand"].state < 300) return "blink 2s ease infinite"; ]]]'
+                distance2:
+                  - padding-bottom: 2px
+                  - align-self: end
+                  - justify-self: end
+                  - font-size: 10px
+                  - filter: opacity(50%)
+                  - --text-color-sensor: '[[[ if (states["sensor.siri_bus_m15sbs_local_2_distance_uptown_allen_at_grand"].state < 500) return "#fa9393"; ]]]'
+            custom_fields:
+              name0: >
+                [[[ return '<ha-icon icon="mdi:bus-clock" style="width: 24px; height: 24px; padding: 2px 10px; color: white;"></ha-icon>' + states['sensor.siri_bus_m15sbs_local_0_name_uptown_allen_at_grand'].state; ]]]
+              destination0: >
+                [[[ return (states['sensor.siri_bus_m15sbs_local_0_destination_uptown_allen_at_grand'].state) ]]]
+              stop0: >
+                [[[ return '<span style="color: var(--text-color-sensor); animation: var(--animation-sensor);">' +(states['sensor.siri_bus_m15sbs_local_0_stop_uptown_allen_at_grand'].state) + '</span>' ]]]
+              distance0: >
+                [[[ return '<span style="color: var(--text-color-sensor);">' +(states['sensor.siri_bus_m15sbs_local_0_distance_uptown_allen_at_grand'].state) + ' meters</span>' ]]]
+              destination1: >
+                [[[ return (states['sensor.siri_bus_m15sbs_local_1_destination_uptown_allen_at_grand'].state) ]]]
+              stop1: >
+                [[[ return '<span style="color: var(--text-color-sensor); animation: var(--animation-sensor);">' +(states['sensor.siri_bus_m15sbs_local_1_stop_uptown_allen_at_grand'].state) + '</span>' ]]]
+              distance1: >
+                [[[ return '<span style="color: var(--text-color-sensor)">' +(states['sensor.siri_bus_m15sbs_local_1_distance_uptown_allen_at_grand'].state) + ' meters</span>' ]]]
+              destination2: >
+                [[[ return (states['sensor.siri_bus_m15sbs_local_2_destination_uptown_allen_at_grand'].state) ]]]
+              stop2: >
+                [[[ return '<span style="color: var(--text-color-sensor); animation: var(--animation-sensor);">' +(states['sensor.siri_bus_m15sbs_local_2_stop_uptown_allen_at_grand'].state) + '</span>' ]]]
+              distance2: >
+                [[[ return '<span style="color: var(--text-color-sensor);">' +(states['sensor.siri_bus_m15sbs_local_2_distance_uptown_allen_at_grand'].state) + ' meters</span>' ]]]
+
+- alias: Mark Gabe as away
+  trigger:
+    - platform: state
+      entity_id: input_select.gabe_status_dropdown
+      to: 'Just Left'
+      for:
+        minutes: 10
+  action:
+    - service: input_select.select_option
+      data:
+        entity_id: input_select.gabe_status_dropdown
+        option: Away
+    - service: rest_command.tasker_away_from_home
+
+- alias: Mark Gabe as in Bed
+  trigger:
+    - platform: state
+      entity_id: input_boolean.bed_occupancy
+      to: 'on'
+      for:
+        minutes: 10
+  condition:
+    - condition: state
+      entity_id: input_select.gabe_status_dropdown
+      state: 'Home'
+  action:
+    - service: input_select.select_option
+      data:
+        entity_id: input_select.gabe_status_dropdown
+        option: 'In Bed'
+
+- alias: Mark Gabe as no longer in Bed
+  trigger:
+    - platform: state
+      entity_id: input_boolean.bed_occupancy
+      to: 'off'
+      for:
+        minutes: 5
+  condition:
+    - condition: state
+      entity_id: input_select.gabe_status_dropdown
+      state: 'In Bed'
+  action:
+    - service: input_select.select_option
+      data:
+        entity_id: input_select.gabe_status_dropdown
+        option: 'Home'
+
+- alias: Mark Gabe as no longer in the Lobby
+  trigger:
+    - platform: state
+      entity_id: input_select.gabe_status_dropdown
+      to: 'In the Lobby'
+      for:
+        minutes: 5
+  action:
+    - service: input_select.select_option
+      data:
+        entity_id: input_select.gabe_status_dropdown
+        option: 'Just Arrived'
+
+- alias: Lobby mail check
+  trigger:
+    - platform: state
+      entity_id: input_select.gabe_status_dropdown
+      to: 'In the Lobby'
+  condition:
+    condition: and
+    conditions:
+      - condition: numeric_state
+        entity_id: sensor.usps_packages
+        above: 0
+      - condition: time
+        after: '15:00:00'
+  action:
+    - service: notify.html5_push
+      data:
+        data:
+          actions:
+          - action: dismiss
+            title: "Got it!"
+            icon: https://thisisgabes.asuscomm.com:8008/local/icons/badge_mailbox.png
+          image: "https://thisisgabes.asuscomm.com:8008/local/mail_images/todays_mail.gif"
+          renotify: 1
+          icon: https://thisisgabes.asuscomm.com:8008/local/icons/mailbox_on.png
+          badge: https://thisisgabes.asuscomm.com:8008/local/icons/badge_mailbox.png
+          timestamp: '%m'
+          url: https://thisisgabes.asuscomm.com:8008/states/group.homecams
+          vibrate: 700, 700, 700
+        message: "You have {{ states.sensor.usps_mail.state }} new snail mails!"
+        title: "New Snail Mail!"
+
+- alias: Lobby package check
+  trigger:
+    - platform: state
+      entity_id: input_select.gabe_status_dropdown
+      to: 'In the Lobby'
+  condition:
+    condition: and
+    conditions:
+      - condition: numeric_state
+        entity_id: sensor.usps_packages
+        above: 0
+      - condition: time
+        after: '15:00:00'
+  action:
+    - service: notify.html5_push
+      data:
+        data:
+          actions:
+          - action: dismiss
+            title: "Got it!"
+            icon: https://thisisgabes.asuscomm.com:8008/local/icons/badge_package.png
+          renotify: 1
+          icon: https://thisisgabes.asuscomm.com:8008/local/icons/package.png
+          badge: https://thisisgabes.asuscomm.com:8008/local/icons/badge_package.png
+          timestamp: '%m'
+          url: https://thisisgabes.asuscomm.com:8008/states/group.homecams
+          vibrate: 700, 700, 700
+        message: "You have {{ states.sensor.usps_packages.state }} new packages!"
+        title: "New Packages!"
+
+- alias: Mark Gabe as extended away
+  trigger:
+    - platform: state
+      entity_id: input_select.gabe_status_dropdown
+      to: 'Away'
+      for:
+        hours: 24
+  action:
+    - service: input_select.select_option
+      data_template:
+        entity_id: input_select.gabe_status_dropdown
+        option: Extended Away
+
+- alias: Request Mailbox Temp
+  trigger:
+    - platform: time_pattern
+      minutes: '/5'
+  action:
+    service: script.turn_on
+    entity_id: script.get_mailbox_temp
+
+- alias: Mailbox Mail Flag On
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.usps_mail
+    above: 0
+  action:
+    - service: switch.turn_on
+      data:
+        entity_id: switch.mailbox_flag
+    - service: switch.turn_on
+      data:
+        entity_id: switch.mailbox_green_light
+
+- alias: Mailbox Package Light On
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.usps_packages
+    above: 0
+  action:
+    - service: switch.turn_on
+      data:
+        entity_id: switch.mailbox_flag
+    - service: switch.turn_on
+      data:
+        entity_id: switch.mailbox_red_light
+
+- alias: Mailbox Mail Flag Off
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.usps_mail
+    below: 1
+  action:
+    - service: switch.turn_off
+      data:
+        entity_id: switch.mailbox_flag
+    - service: switch.turn_off
+      data:
+        entity_id: switch.mailbox_green_light
+
+- alias: Mailbox Package Light Off
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.usps_packages
+    below: 1
+  action:
+    - service: switch.turn_off
+      data:
+        entity_id: switch.mailbox_flag
+    - service: switch.turn_off
+      data:
+        entity_id: switch.mailbox_red_light
+
+- alias: Birdfeed Flappy On
+  trigger:
+    platform: template
+    value_template: >
+      {{ 0.7 <= states.media_player.snapcast_client_b8_27_eb_31_93_b7.attributes.volume_level }}
+  action:
+    - service: switch.turn_on
+      data:
+        entity_id: switch.birdfeed_flappy
+
+- alias: Birdfeed Flappy Off
+  trigger:
+    platform: template
+    value_template: >
+      {{ 0.7 >= states.media_player.snapcast_client_b8_27_eb_31_93_b7.attributes.volume_level }}
+  action:
+    - service: switch.turn_off
+      data:
+        entity_id: switch.birdfeed_flappy
+
+#Hue Dimmer Switch
+- id: Hue Dimmer Switch 1 Click
+  alias: Hue Dimmer Switch 1 Click
+  trigger:
+    - platform: state
+      entity_id: sensor.hue_dimmer_switch_1
+      to: "1_click"
+    - platform: state
+      entity_id: sensor.hue_dimmer_switch_1
+      to: "1_click_up"
+  action:
+    - service: light.turn_on
+      entity_id: light.bed_light
+      data:
+        brightness: 200
+        rgb_color: [255,236,182]
+    - service: light.turn_on
+      entity_id: light.bedroom_desk
+      data:
+        brightness: 200
+        rgb_color: [255,236,182]
+    - service: light.turn_on
+      entity_id: light.desk
+      data:
+        brightness: 200
+        rgb_color: [255,236,182]
+    - service: light.turn_on
+      entity_id: light.kitchen
+      data:
+        brightness: 200
+        rgb_color: [255,236,182]
+    - service: light.turn_on
+      entity_id: light.kitchen_2
+      data:
+        brightness: 200
+        rgb_color: [255,236,182]
+    - service: light.turn_on
+      entity_id: light.entry_light
+    - service: light.turn_on
+      entity_id: light.table
+      data:
+        brightness: 200
+        rgb_color: 255,236,182
+
+- id: Hue Dimmer Switch 2 Click
+  alias: Hue Dimmer Switch 2 Click
+  trigger:
+    - platform: state
+      entity_id: sensor.hue_dimmer_switch_1
+      to: "2_click"
+    - platform: state
+      entity_id: sensor.hue_dimmer_switch_1
+      to: "2_click_up"
+  action:
+    - service: light.turn_on
+      entity_id: light.bed_light
+      data:
+        brightness: 255
+        rgb_color: [217,234,255]
+    - service: light.turn_on
+      entity_id: light.bedroom_desk
+      data:
+        brightness: 255
+        rgb_color: [217,234,255]
+    - service: light.turn_on
+      entity_id: light.desk
+      data:
+        brightness: 255
+        rgb_color: [217,234,255]
+    - service: light.turn_on
+      entity_id: light.kitchen
+      data:
+        brightness: 255
+        rgb_color: [217,234,255]
+    - service: light.turn_on
+      entity_id: light.kitchen_2
+      data:
+        brightness: 255
+        rgb_color: [217,234,255]
+    - service: light.turn_on
+      entity_id: light.entry_light
+    - service: light.turn_on
+      entity_id: light.table
+      data:
+        brightness: 255
+        rgb_color: [217,234,255]
+
+- id: Hue Dimmer Switch 3 Click
+  alias: Hue Dimmer Switch 3 Click
+  trigger:
+    - platform: state
+      entity_id: sensor.hue_dimmer_switch_1
+      to: "3_click"
+    - platform: state
+      entity_id: sensor.hue_dimmer_switch_1
+      to: "3_click_up"
+  action:
+    - service: light.turn_on
+      entity_id: light.bed_light
+      data:
+        brightness: 100
+        rgb_color: [255,226,145]
+    - service: light.turn_on
+      entity_id: light.bedroom_desk
+      data:
+        brightness: 100
+        rgb_color: [255,226,145]
+    - service: light.turn_on
+      entity_id: light.desk
+      data:
+        brightness: 100
+        rgb_color: [255,226,145]
+    - service: light.turn_on
+      entity_id: light.kitchen
+      data:
+        brightness: 100
+        rgb_color: [255,226,145]
+    - service: light.turn_on
+      entity_id: light.kitchen_2
+      data:
+        brightness: 100
+        rgb_color: [255,226,145]
+    - service: light.turn_on
+      entity_id: light.table
+      data:
+        brightness: 100
+        rgb_color: [255,226,145]
+    - service: light.turn_off
+      entity_id: light.entry_light
+
+- id: Hue Dimmer Switch 4 Click
+  alias: Hue Dimmer Switch 4 Click
+  trigger:
+    - platform: state
+      entity_id: sensor.hue_dimmer_switch_1
+      to: "4_click"
+    - platform: state
+      entity_id: sensor.hue_dimmer_switch_1
+      to: "4_click_up"
+  action:
+    - service: light.turn_off
+      entity_id:
+        - light.bed_light
+        - light.bedroom_desk
+        - light.desk
+        - light.kitchen
+        - light.kitchen_2
+        - light.entry_light
+        - light.table
+        - light.big_o
+
+#  Capture a frame every 10 minutes while the room is occupied
+- alias : Room Auto Record
+  trigger:
+    platform: time_pattern
+    minutes: '/10'
+    seconds: 0
+  condition:
+    - condition: state
+      entity_id: binary_sensor.people_home
+      state: 'off'
+    - condition: state
+      entity_id: 'binary_sensor.room_occupied'
+      state: 'on'
+  action:
+    - service: rest_command.trigger_snapshot_room
+
+- alias: Motion Detection Alert On
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.room_occupied
+      from: 'off'
+      to: 'on'
+    - platform: state
+      entity_id: binary_sensor.dashboard_motion
+      from: 'off'
+      to: 'on'
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'off'
+      - condition: state
+        entity_id: vacuum.roomba
+        state: 'off'
+  action:
+    - service: switch.turn_on
+      entity_id: switch.motion_text_change
+    - service: rest_command.trigger_snapshot_room
+    - delay: '00:00:04'
+    - service: shell_command.motion_detect_get_latest
+    - delay: '00:00:02'
+    - service: notify.html5_push
+      data:
+        data:
+          actions:
+          - action: call_the_hounds
+            title: "Call the Hounds!"
+            icon: https://thisisgabes.asuscomm.com:8008/local/icons/badge_dog.png
+          - action: dismiss
+            title: Dismiss
+            icon: https://thisisgabes.asuscomm.com:8008/local/icons/badge_dismiss.png
+          image: "https://thisisgabes.asuscomm.com:8008/local/motion/recent-motion-overall.jpg"
+          renotify: 1
+          icon: https://thisisgabes.asuscomm.com:8008/local/icons/cctv.png
+          badge: https://thisisgabes.asuscomm.com:8008/local/icons/badge_camera.png
+          timestamp: '%m'
+          url: https://thisisgabes.asuscomm.com:8008/states/group.homecams
+          vibrate: 700, 700, 700
+        message: Motion in living room at {{ as_timestamp(now()) | timestamp_custom('%H:%M', true) }}
+        title: "Intruder Alert!"
+        target:
+          - "Gabes Mate"
+          - "Macbook"
+    - service: persistent_notification.create
+      data:
+        message: I detected motion in your living room at {{ as_timestamp(now()) | timestamp_custom('%H:%M', true) }}
+        title: "Intruder Alert!"
+
+#Hounds Alarm
+- alias: hound_alarm
+  trigger:
+  - event_data:
+      action: call_the_hounds
+    event_type: html5_notification.clicked
+    platform: event
+  action:
+  - entity_id: switch.call_the_hounds
+    service: switch.turn_on
+  - service: light.turn_on
+    entity_id: light.thundercloud
+    data:
+      brightness: 255
+      rgb_color: 255,0,0
+      effect: solid
+      flash: long
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: sensor.bed_occupancy_count
+        state: 'Empty'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'on'
+
+# Alert if Offline
+- alias: Alert when device goes offline
+  trigger:
+    - platform: state
+      entity_id: sensor.online_device_amazon_echo, sensor.online_device_mailbox, sensor.online_device_harmony_hub, sensor.online_device_homecam_pi, sensor.online_device_octoprint, sensor.online_device_phillips_hue,  sensor.online_device_entry_pi, sensor.online_device_reefcam_pantilt, sensor.online_device_reef_pi, sensor.online_device_entry_kiosk, sensor.online_device_gardenbot, sensor.online_device_plant_monitor
+      from: 'Online'
+      to: 'Offline'
+      for:
+        minutes: 60
+  condition:
+    condition: and
+    conditions:
+      - condition: template
+        value_template: >
+          {% if states.automation.alert_when_device_goes_offline.last_triggered is not none %}
+            {% if as_timestamp(now()) | int   -  as_timestamp(states.automation.alert_when_device_goes_offline.attributes.last_triggered) | int > 3600 %} true {% else %} false
+            {% endif %}
+          {% else %}
+          false
+          {% endif %}
+  action:
+    - service: ifttt.trigger
+      data_template: {"event":"change_of_ip", "value1":"{{trigger.to_state.attributes.friendly_name}} has been offline for 1 hour. Please check the status of this device."}
+
+# Harmony Soundbar
+- id: samsung_soundbar_power
+  alias: 'Soundbar'
+  trigger:
+    platform: state
+    entity_id: input_boolean.samsung_soundbar_power   #### Triggered by either turning on or off the input_boolen
+  action:
+    service: remote.send_command
+    data_template:
+      entity_id: remote.gabes_harmony_hub
+      device: Samsung Amp
+      command: >
+        {% if is_state(trigger.entity_id, 'on') %}
+          PowerOn
+        {% else %}
+          PowerOff
+        {% endif %}
+
+- alias: Samsung Soundbar Volume (Media to Slider)
+  trigger:
+    - platform: state
+      entity_id: media_player.yamaha_receiver
+  action:
+     service: input_number.set_value
+     data_template:
+       entity_id: input_number.samsung_soundbar
+       value: >
+          {{ ( ( -1.0 + trigger.to_state.attributes.volume_level | float ) * 100.0 ) | round(0.0) }}
+
+- alias: Samsung Soundbar Volume (Slider to Media)
+  trigger:
+    - platform: state
+      entity_id: input_number.samsung_soundbar
+  action:
+    - service: media_player.volume_set
+      data_template:
+        entity_id: media_player.yamaha_receiver
+        volume_level: >
+          {{ (1.0 - trigger.to_state.state | float / 100.0) | round(2) }}
+
+#Humidifier Switch through Alexa routine
+- alias: Turn on Humidifier
+  trigger:
+    - platform: state
+      entity_id: input_boolean.humidifier_toggle
+      to: 'on'
+  action:
+    - service: script.turn_on
+      entity_id: script.alexa_humidifier_on
+- alias: Turn off Humidifier
+  trigger:
+    - platform: state
+      entity_id: input_boolean.humidifier_toggle
+      to: 'off'
+  action:
+    - service: script.turn_on
+      entity_id: script.alexa_humidifier_off
+
+#AC Switch through Alexa routine
+- alias: Turn on Bedroom AC
+  trigger:
+    - platform: state
+      entity_id: input_boolean.bedroom_ac_toggle
+      to: 'on'
+  action:
+    - service: script.turn_on
+      entity_id: script.alexa_bedroom_ac_on
+- alias: Turn off Bedroom AC
+  trigger:
+    - platform: state
+      entity_id: input_boolean.bedroom_ac_toggle
+      to: 'off'
+  action:
+    - service: script.turn_on
+      entity_id: script.alexa_bedroom_ac_off
+- alias: Turn on Livingroom AC
+  trigger:
+    - platform: state
+      entity_id: input_boolean.livingroom_ac_toggle
+      to: 'on'
+  action:
+    - service: script.turn_on
+      entity_id: script.alexa_livingroom_ac_on
+- alias: Turn off Livingroom AC
+  trigger:
+    - platform: state
+      entity_id: input_boolean.livingroom_ac_toggle
+      to: 'off'
+  action:
+    - service: script.turn_on
+      entity_id: script.alexa_livingroom_ac_off
+
+- alias: Set Livingroom AC
+  trigger:
+    - platform: state
+      entity_id: input_select.alexa_livingroom_ac
+  action:
+    - service: script.turn_on
+      data:
+        entity_id: script.alexa_livingroom_ac_set
+
+- alias: Set Bedroom AC
+  trigger:
+    - platform: state
+      entity_id: input_select.alexa_bedroom_ac
+  action:
+    - service: script.turn_on
+      data:
+        entity_id: script.alexa_bedroom_ac_set
+
+
+- alias: Homecam Snapshot Momentary
+  trigger:
+    - platform: state
+      entity_id: input_boolean.homecam_snapshot
+      to: 'on'
+  action:
+    - service: rest_command.trigger_snapshot_room
+    - delay: '00:00:02'
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.homecam_snapshot
+
+
+#Aircraft Radio
+- alias: Aircraft Radio Power On
+  trigger:
+    - platform: state
+      entity_id: input_boolean.aircraft_radio_power_toggle
+      to: 'on'
+  action:
+    - service: shell_command.aircraft_radio_power
+    - delay: '00:00:02'
+    - service: shell_command.aircraft_radio_mute
+
+- alias: Aircraft Radio Power Off
+  trigger:
+    - platform: state
+      entity_id: input_boolean.aircraft_radio_power_toggle
+      to: 'off'
+  action:
+    - service: shell_command.aircraft_radio_mute
+    - delay: '00:00:02'
+    - service: shell_command.aircraft_radio_power
+
+- alias: Aircraft Radio Play Pause
+  trigger:
+    - platform: state
+      entity_id: input_boolean.aircraft_radio_play_toggle
+      to: 'on'
+  action:
+    - service: shell_command.aircraft_radio_play
+    - delay: '00:00:02'
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.aircraft_radio_play_toggle
+
+- alias: Aircraft Radio Mode
+  trigger:
+    - platform: state
+      entity_id: input_boolean.aircraft_radio_mode_toggle
+      to: 'on'
+  action:
+    - service: shell_command.aircraft_radio_mute
+    - delay: '00:00:02'
+    - service: shell_command.aircraft_radio_mode
+    - delay: '00:00:02'
+    - service: shell_command.aircraft_radio_mute
+    - delay: '00:00:02'
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.aircraft_radio_mode_toggle
+
+- alias: Aircraft Radio Mute
+  trigger:
+    - platform: state
+      entity_id: input_boolean.aircraft_radio_mute_toggle
+      to: 'on'
+  action:
+    - service: shell_command.aircraft_radio_mute
+    - delay: '00:00:02'
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.aircraft_radio_mute_toggle
+
+- alias: Aircraft Radio EQ
+  trigger:
+    - platform: state
+      entity_id: input_boolean.aircraft_radio_eq_toggle
+      to: 'on'
+  action:
+    - service: shell_command.aircraft_radio_eq
+    - delay: '00:00:02'
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.aircraft_radio_eq_toggle
+
+- alias: Aircraft Radio Fast Forward
+  trigger:
+    - platform: state
+      entity_id: input_boolean.aircraft_radio_fwd_toggle
+      to: 'on'
+  action:
+    - service: shell_command.aircraft_radio_fwd
+    - delay: '00:00:02'
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.aircraft_radio_fwd_toggle
+
+- alias: Aircraft Radio Stop
+  trigger:
+    - platform: state
+      entity_id: input_boolean.aircraft_radio_stop_toggle
+      to: 'on'
+  action:
+    - service: shell_command.aircraft_radio_stop
+    - delay: '00:00:02'
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.aircraft_radio_stop_toggle
+
+- alias: Aircraft Radio Back
+  trigger:
+    - platform: state
+      entity_id: input_boolean.aircraft_radio_back_toggle
+      to: 'on'
+  action:
+    - service: shell_command.aircraft_radio_back
+    - delay: '00:00:02'
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.aircraft_radio_back_toggle
+
+- alias: Aircraft Radio Rewind
+  trigger:
+    - platform: state
+      entity_id: input_boolean.aircraft_radio_rwd_toggle
+      to: 'on'
+  action:
+    - service: shell_command.aircraft_radio_rwd
+    - delay: '00:00:02'
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.aircraft_radio_rwd_toggle
+
+- alias: Aircraft Radio Volume Up
+  trigger:
+    - platform: state
+      entity_id: input_boolean.aircraft_radio_volume_up_toggle
+      to: 'on'
+  action:
+    - service: shell_command.aircraft_radio_up
+    - delay: '00:00:02'
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.aircraft_radio_volume_up_toggle
+
+- alias: Aircraft Radio Rewind
+  trigger:
+    - platform: state
+      entity_id: input_boolean.aircraft_radio_volume_down_toggle
+      to: 'on'
+  action:
+    - service: shell_command.aircraft_radio_down
+    - delay: '00:00:02'
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.aircraft_volume_down_toggle
+
+#Amazon ATO
+- alias: Amazon ATO
+  trigger:
+    - platform: state
+      entity_id: input_boolean.amazon_ato
+      to: 'on'
+  action:
+    - service: shell_command.amazon_ato_on
+    - delay: '00:00:20'
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.amazon_ato
+    - service: shell_command.amazon_ato_off
+
+- alias: Amazon ATO Nightly Top Off
+  trigger:
+    - platform: time
+      at: '23:30:00'
+  action:
+    service: input_boolean.turn_on
+    entity_id: input_boolean.amazon_ato
+
+- alias: Amazon ATO Low Top Off
+  trigger:
+    - platform: time
+      at: '20:30:00'
+  condition:
+    - condition: state
+      entity_id: sensor.amazonpifloat
+      state: 'Low'
+  action:
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.amazon_ato
+    - delay: '00:02:00'
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.amazon_ato
+    - delay: '00:02:00'
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.amazon_ato
+    - delay: '00:02:00'
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.amazon_ato
+
+- alias: Amazon ATO Level Notify
+  trigger:
+    - platform: state
+      entity_id: sensor.amazon_ato_level
+      from: 'OK'
+      to: 'Low'
+  action:
+    - service: notify.html5_push
+      data:
+        data:
+          renotify: 1
+          icon: https://thisisgabes.asuscomm.com:8008/local/icons/fish_school.png
+          badge: https://thisisgabes.asuscomm.com:8008/local/icons/badge_pipe.png
+          timestamp: '%m'
+          url: https://thisisgabes.asuscomm.com:8008/lovelace/6
+          vibrate: 700, 700, 700
+        message: "The closet tank needs water soon"
+        title: "Feeling Low"
+        target:
+          - "Gabes Mate"
+          - "Macbook"
+    - service: persistent_notification.create
+      data:
+        message: "The closet tank needs water soon"
+        title: "Feeling Low"
+
+#Bed Occupancy
+- alias: Bed Set
+  trigger:
+    platform: state
+    entity_id: sensor.bed_occupancy_load
+  condition:
+    condition: and
+    conditions:
+      - condition: numeric_state
+        entity_id: sensor.bed_occupancy_load
+        above: '201'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'on'
+  action:
+    - service: input_boolean.turn_on
+      entity_id: input_boolean.bed_occupancy
+
+# clears the in_bed boolean under a certain mass
+- alias: Bed Clear
+  trigger:
+    platform: state
+    entity_id: sensor.bed_occupancy_load
+  condition:
+    condition: and
+    conditions:
+      - condition: numeric_state
+        entity_id: sensor.bed_occupancy_load
+        below: '200'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'on'
+  action:
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.bed_occupancy
+
+- alias: Bed Tare Set
+  trigger:
+    platform: time
+    at: '13:00:00'
+  condition:
+    condition: and
+    conditions:
+      - condition: numeric_state
+        entity_id: sensor.bed_occupancy_load
+        below: '100'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'off'
+  action:
+    - service: script.turn_on
+      entity_id: script.zero_bed
+
+# tasks to perform when in bed
+- alias: Bed Occupied Tasks Single
+  trigger:
+    platform: state
+    entity_id: sensor.bed_occupancy_count
+    to: 'Single'
+  condition:
+    condition: time
+    after: '23:00:00'
+    before: '06:00:00'
+  action:
+    - service: light.turn_off
+      entity_id:
+        - light.bed_light
+        - light.desk
+        - light.kitchen
+        - light.bedroom_desk
+        - light.kitchen_2
+        - light.table
+        - light.thundercloud
+        - light.big_o
+      data:
+        transition: 450
+    - service: light.turn_off
+      entity_id:
+        - light.entry_light
+        - light.et_figure
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44
+        volume_level: 0
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+        volume_level: 1
+#    - service: script.turn_on
+#      entity_id: script.sleep_mode_cool_room
+
+- alias: Bed Occupied Tasks Daytime
+  trigger:
+    platform: state
+    entity_id: input_boolean.bed_occupancy
+    to: 'on'
+  condition:
+    condition: time
+    after: '12:00:00'
+    before: '20:00:00'
+  action:
+    - service: light.turn_on
+      entity_id: light.bed_light
+      data:
+        transition: 120
+        brightness: 250
+        rgb_color: [252,242,197]
+    - service: light.turn_on
+      entity_id: light.big_o
+      data:
+        transition: 120
+        brightness: 50
+        rgb_color: [0,255,0]
+
+- alias: Bed Not Occupied Tasks Single
+  trigger:
+    platform: state
+    entity_id: sensor.bed_occupancy_count
+    to: 'Empty'
+  condition:
+    condition: and
+    conditions:
+      - condition: time
+        after: '22:00:00'
+        before: '05:00:00'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: light.bed_light
+      data:
+        transition: 1000
+        brightness: 120
+        rgb_color: [115,50,168]
+    - service: light.turn_on
+      entity_id: light.big_o
+      data:
+        transition: 1000
+        brightness: 15
+        rgb_color: [0,50,25]
+    - service: light.turn_on
+      entity_id: light.kitchen
+      data:
+        transition: 500
+        brightness: 100
+        rgb_color: [115,50,168]
+    - service: switch.turn_on
+      entity_id: switch.et_chest
+    - service: switch.turn_on
+      entity_id: switch.et_eyes
+
+- alias: Bed Not Occupied Tasks Morning
+  trigger:
+    platform: state
+    entity_id: sensor.bed_occupancy_count
+    to: 'Empty'
+  condition:
+    condition: and
+    conditions:
+      - condition: time
+        after: '07:00:00'
+        before: '11:00:00'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'on'
+  action:
+    - service: light.turn_off
+      entity_id: light.bed_light
+      data:
+        transition: 10000
+        brightness: 120
+        rgb_color: [115,50,168]
+    - service: light.turn_off
+      entity_id: light.big_o
+      data:
+        transition: 10000
+        brightness: 120
+        rgb_color: [115,50,168]
+    - service: light.turn_off
+      entity_id: light.bedroom_desk
+      data:
+        transition: 10000
+        brightness: 120
+        rgb_color: [115,50,168]
+    - service: browser_mod.navigate
+      data:
+        navigation_path: /lovelace/21
+        deviceID:
+          - browser_note_kiosk
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44
+        volume_level: 1
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+        volume_level: 0
+
+- alias: Light on before bed
+  trigger:
+    platform: time
+    at: '22:00:00'
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: sensor.bed_occupancy_count
+        state: 'Empty'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: light.bed_light
+      data:
+        transition: 5000
+        brightness: 200
+        rgb_color: [115,50,168]
+    - service: light.turn_on
+      entity_id: light.big_o
+      data:
+        transition: 5000
+        brightness: 50
+        rgb_color: [0,50,168]
+
+- alias: Bed Occupied Tasks Double
+  trigger:
+    platform: state
+    entity_id: sensor.bed_occupancy_count
+    to: 'Double'
+  condition:
+    condition: time
+    after: '20:00:00'
+    before: '06:00:00'
+  action:
+    - service: light.turn_on
+      entity_id: light.bed_light
+      data:
+        brightness: 120
+        rgb_color: [115,50,168]
+        transition: 300
+    - service: light.turn_on
+      entity_id: light.big_o
+      data:
+        transition: 5000
+        brightness: 50
+        rgb_color: [0,0,168]
+    - service: light.turn_on
+      entity_id: light.bedroom_desk
+      data:
+        brightness: 60
+        rgb_color: [89,50,168]
+        transition: 600
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44
+        volume_level: 0
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+        volume_level: 1
+
+- alias: Set Ambient Sound
+  trigger:
+    platform: state
+    entity_id: input_select.ambient_sounds
+  action:
+    service_template: >
+        {% if is_state("input_select.ambient_sounds", "Underground Cave") %}
+          shell_command.volumio_amb_caves
+        {% elif is_state("input_select.ambient_sounds", "Dusk Fields") %}
+          shell_command.volumio_amb_dusk
+        {% elif is_state("input_select.ambient_sounds", "Autumn Woods") %}
+          shell_command.volumio_amb_forest
+        {% elif is_state("input_select.ambient_sounds", "English Garden") %}
+          shell_command.volumio_amb_garden
+        {% elif is_state("input_select.ambient_sounds", "Island Paradise") %}
+          shell_command.volumio_amb_island
+        {% elif is_state("input_select.ambient_sounds", "Morning Birds") %}
+          shell_command.volumio_amb_birds
+        {% elif is_state("input_select.ambient_sounds", "Mountain Stream") %}
+          shell_command.volumio_amb_mountain
+        {% elif is_state("input_select.ambient_sounds", "Night Forest") %}
+          shell_command.volumio_amb_night
+        {% elif is_state("input_select.ambient_sounds", "Ocean Waves") %}
+          shell_command.volumio_amb_ocean
+        {% elif is_state("input_select.ambient_sounds", "Rainy Afternoon") %}
+          shell_command.volumio_amb_rain
+        {% elif is_state("input_select.ambient_sounds", "Dark Thunderstorm") %}
+          shell_command.volumio_amb_thunderstorm
+        {% elif is_state("input_select.ambient_sounds", "Summer Heat") %}
+          shell_command.volumio_amb_rain
+        {% else %}
+          shell_command.volumio_emptytrack
+        {% endif %}
+
+#Thundercloud
+- alias: Lightning Warning
+  trigger:
+    - platform: geo_location
+      source: wwlln
+      zone: zone.home
+      event: enter
+  action:
+    - service: persistent_notification.create
+      data_template:
+        message: "{{ trigger.to_state.name }} - {{ trigger.to_state.attributes.status }}, as of {{ trigger.to_state.attributes.publication_date }}"
+        title: "Oooooh! Lightning!"
+    - service: script.turn_on
+      entity_id: script.lightning_burst
+
+#Full brightness if light is on
+- alias: Thundercloud Overcast
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.dark_sky_cloud_coverage
+    above: 70
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: sensor.bed_occupancy_count
+        state: 'Empty'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'on'
+      - condition: state
+        entity_id: light.entry_light
+        state: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: light.thundercloud
+      data:
+        brightness: 110
+
+- alias: Thundercloud Sunny
+  trigger:
+    platform: time_pattern
+    minutes: "/5"
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: sensor.dark_sky_icon_0h
+        state: 'clear-day'
+      - condition: state
+        entity_id: sensor.bed_occupancy_count
+        state: 'Empty'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'on'
+      - condition: state
+        entity_id: light.entry_light
+        state: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: light.thundercloud
+      data:
+        brightness: 255
+        rgb_color: [255,226,145]
+        effect: solid
+
+- alias: Thundercloud Sunny Night
+  trigger:
+    platform: time_pattern
+    minutes: "/5"
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: sensor.dark_sky_icon_0h
+        state: 'clear-night'
+      - condition: state
+        entity_id: sensor.bed_occupancy_count
+        state: 'Empty'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'on'
+      - condition: state
+        entity_id: light.entry_light
+        state: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: light.thundercloud
+      data:
+        brightness: 150
+        rgb_color: [255,181,108]
+        effect: solid
+
+- alias: Thundercloud Cloudy
+  trigger:
+    platform: time_pattern
+    minutes: "/5"
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: sensor.dark_sky_icon_0h
+        state: 'cloudy'
+      - condition: state
+        entity_id: sensor.bed_occupancy_count
+        state: 'Empty'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'on'
+      - condition: state
+        entity_id: light.entry_light
+        state: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: light.thundercloud
+      data:
+        brightness: 255
+        rgb_color: [71,71,255]
+        effect: solid
+
+- alias: Thundercloud Fog
+  trigger:
+    platform: time_pattern
+    minutes: "/5"
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: sensor.dark_sky_icon_0h
+        state: 'fog'
+      - condition: state
+        entity_id: sensor.bed_occupancy_count
+        state: 'Empty'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'on'
+      - condition: state
+        entity_id: light.entry_light
+        state: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: light.thundercloud
+      data:
+        brightness: 255
+        rgb_color: [90,255,36]
+        effect: solid
+
+- alias: Thundercloud Partly Cloudy
+  trigger:
+    platform: time_pattern
+    minutes: "/5"
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: sensor.dark_sky_icon_0h
+        state: 'partly-cloudy-day'
+      - condition: state
+        entity_id: sensor.bed_occupancy_count
+        state: 'Empty'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'on'
+      - condition: state
+        entity_id: light.entry_light
+        state: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: light.thundercloud
+      data:
+        brightness: 255
+        rgb_color: [71,208,255]
+        effect: solid
+
+- alias: Thundercloud Partly Cloudy Night
+  trigger:
+    platform: time_pattern
+    minutes: "/5"
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: sensor.dark_sky_icon_0h
+        state: 'partly-cloudy-night'
+      - condition: state
+        entity_id: sensor.bed_occupancy_count
+        state: 'Empty'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'on'
+      - condition: state
+        entity_id: light.entry_light
+        state: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: light.thundercloud
+      data:
+        brightness: 110
+        rgb_color: [71,208,255]
+        effect: solid
+
+- alias: Thundercloud Rain
+  trigger:
+    platform: time_pattern
+    minutes: "/5"
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: sensor.dark_sky_icon_0h
+        state: 'rain'
+      - condition: state
+        entity_id: sensor.bed_occupancy_count
+        state: 'Empty'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'on'
+      - condition: state
+        entity_id: light.entry_light
+        state: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: light.thundercloud
+      data:
+        brightness: 120
+        rgb_color: [36,36,255]
+        effect: juggle
+
+- alias: Thundercloud Snow
+  trigger:
+    platform: time_pattern
+    minutes: "/5"
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: sensor.dark_sky_icon_0h
+        state: 'snow'
+      - condition: state
+        entity_id: sensor.bed_occupancy_count
+        state: 'Empty'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'on'
+      - condition: state
+        entity_id: light.entry_light
+        state: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: light.thundercloud
+      data:
+        brightness: 120
+        rgb_color: [0,255,255]
+        effect: juggle
+
+- alias: Thundercloud Sleet
+  trigger:
+    platform: time_pattern
+    minutes: "/5"
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: sensor.dark_sky_icon_0h
+        state: 'sleet'
+      - condition: state
+        entity_id: sensor.bed_occupancy_count
+        state: 'Empty'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'on'
+      - condition: state
+        entity_id: light.entry_light
+        state: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: light.thundercloud
+      data:
+        brightness: 150
+        rgb_color: [0,255,190]
+        effect: glitter
+
+- alias: Thundercloud Wind
+  trigger:
+    platform: time_pattern
+    minutes: "/5"
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: sensor.dark_sky_icon_0h
+        state: 'wind'
+      - condition: state
+        entity_id: sensor.bed_occupancy_count
+        state: 'Empty'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'on'
+      - condition: state
+        entity_id: light.entry_light
+        state: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: light.thundercloud
+      data:
+        brightness: 200
+        rgb_color: [255,226,145]
+        effect: juggle
+
+- alias: Thundercloud Thunderstorm
+  trigger:
+    platform: time_pattern
+    minutes: "/5"
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: sensor.dark_sky_icon_0h
+        state: 'thunderstorm'
+      - condition: state
+        entity_id: sensor.bed_occupancy_count
+        state: 'Empty'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'on'
+      - condition: state
+        entity_id: light.entry_light
+        state: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: light.thundercloud
+      data:
+        brightness: 180
+        rgb_color: [255,255,255]
+        effect: lightning
+
+#Low brightness if light is off
+- alias: Thundercloud Overcast Lowlight
+  trigger:
+    platform: numeric_state
+    entity_id: sensor.dark_sky_cloud_coverage
+    above: 70
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: sensor.bed_occupancy_count
+        state: 'Empty'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'on'
+      - condition: state
+        entity_id: light.entry_light
+        state: 'off'
+  action:
+    - service: light.turn_on
+      entity_id: light.thundercloud
+      data:
+        brightness: 30
+
+- alias: Thundercloud Sunny Lowlight
+  trigger:
+    platform: time_pattern
+    minutes: "/5"
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: sensor.dark_sky_icon_0h
+        state: 'clear-day'
+      - condition: state
+        entity_id: sensor.bed_occupancy_count
+        state: 'Empty'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'on'
+      - condition: state
+        entity_id: light.entry_light
+        state: 'off'
+  action:
+    - service: light.turn_on
+      entity_id: light.thundercloud
+      data:
+        brightness: 60
+        rgb_color: [255,226,145]
+        effect: solid
+
+- alias: Thundercloud Sunny Night Lowlight
+  trigger:
+    platform: time_pattern
+    minutes: "/5"
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: sensor.dark_sky_icon_0h
+        state: 'clear-night'
+      - condition: state
+        entity_id: sensor.bed_occupancy_count
+        state: 'Empty'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'on'
+      - condition: state
+        entity_id: light.entry_light
+        state: 'off'
+  action:
+    - service: light.turn_on
+      entity_id: light.thundercloud
+      data:
+        brightness: 40
+        rgb_color: [255,181,108]
+        effect: solid
+
+- alias: Thundercloud Cloudy Lowlight
+  trigger:
+    platform: time_pattern
+    minutes: "/5"
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: sensor.dark_sky_icon_0h
+        state: 'cloudy'
+      - condition: state
+        entity_id: sensor.bed_occupancy_count
+        state: 'Empty'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'on'
+      - condition: state
+        entity_id: light.entry_light
+        state: 'off'
+  action:
+    - service: light.turn_on
+      entity_id: light.thundercloud
+      data:
+        brightness: 60
+        rgb_color: [71,71,255]
+        effect: solid
+
+- alias: Thundercloud Fog Lowlight
+  trigger:
+    platform: time_pattern
+    minutes: "/5"
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: sensor.dark_sky_icon_0h
+        state: 'fog'
+      - condition: state
+        entity_id: sensor.bed_occupancy_count
+        state: 'Empty'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'on'
+      - condition: state
+        entity_id: light.entry_light
+        state: 'off'
+  action:
+    - service: light.turn_on
+      entity_id: light.thundercloud
+      data:
+        brightness: 60
+        rgb_color: [90,255,36]
+        effect: solid
+
+- alias: Thundercloud Partly Cloudy Lowlight
+  trigger:
+    platform: time_pattern
+    minutes: "/5"
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: sensor.dark_sky_icon_0h
+        state: 'partly-cloudy-day'
+      - condition: state
+        entity_id: sensor.bed_occupancy_count
+        state: 'Empty'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'on'
+      - condition: state
+        entity_id: light.entry_light
+        state: 'off'
+  action:
+    - service: light.turn_on
+      entity_id: light.thundercloud
+      data:
+        brightness: 60
+        rgb_color: [71,208,255]
+        effect: solid
+
+- alias: Thundercloud Partly Cloudy Night Lowlight
+  trigger:
+    platform: time_pattern
+    minutes: "/5"
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: sensor.dark_sky_icon_0h
+        state: 'partly-cloudy-night'
+      - condition: state
+        entity_id: sensor.bed_occupancy_count
+        state: 'Empty'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'on'
+      - condition: state
+        entity_id: light.entry_light
+        state: 'off'
+  action:
+    - service: light.turn_on
+      entity_id: light.thundercloud
+      data:
+        brightness: 30
+        rgb_color: [71,208,255]
+        effect: solid
+
+- alias: Thundercloud Rain Lowlight
+  trigger:
+    platform: time_pattern
+    minutes: "/5"
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: sensor.dark_sky_icon_0h
+        state: 'rain'
+      - condition: state
+        entity_id: sensor.bed_occupancy_count
+        state: 'Empty'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'on'
+      - condition: state
+        entity_id: light.entry_light
+        state: 'off'
+  action:
+    - service: light.turn_on
+      entity_id: light.thundercloud
+      data:
+        brightness: 40
+        rgb_color: [36,36,255]
+        effect: juggle
+
+- alias: Thundercloud Snow Lowlight
+  trigger:
+    platform: time_pattern
+    minutes: "/5"
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: sensor.dark_sky_icon_0h
+        state: 'snow'
+      - condition: state
+        entity_id: sensor.bed_occupancy_count
+        state: 'Empty'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'on'
+      - condition: state
+        entity_id: light.entry_light
+        state: 'off'
+  action:
+    - service: light.turn_on
+      entity_id: light.thundercloud
+      data:
+        brightness: 40
+        rgb_color: [0,255,255]
+        effect: juggle
+
+- alias: Thundercloud Sleet Lowlight
+  trigger:
+    platform: time_pattern
+    minutes: "/5"
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: sensor.dark_sky_icon_0h
+        state: 'sleet'
+      - condition: state
+        entity_id: sensor.bed_occupancy_count
+        state: 'Empty'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'on'
+      - condition: state
+        entity_id: light.entry_light
+        state: 'off'
+  action:
+    - service: light.turn_on
+      entity_id: light.thundercloud
+      data:
+        brightness: 40
+        rgb_color: [0,255,190]
+        effect: glitter
+
+- alias: Thundercloud Wind Lowlight
+  trigger:
+    platform: time_pattern
+    minutes: "/5"
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: sensor.dark_sky_icon_0h
+        state: 'wind'
+      - condition: state
+        entity_id: sensor.bed_occupancy_count
+        state: 'Empty'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'on'
+      - condition: state
+        entity_id: light.entry_light
+        state: 'off'
+  action:
+    - service: light.turn_on
+      entity_id: light.thundercloud
+      data:
+        brightness: 50
+        rgb_color: [255,226,145]
+        effect: juggle
+
+- alias: Thundercloud Thunderstorm Lowlight
+  trigger:
+    platform: time_pattern
+    minutes: "/5"
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: sensor.dark_sky_icon_0h
+        state: 'thunderstorm'
+      - condition: state
+        entity_id: sensor.bed_occupancy_count
+        state: 'Empty'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'on'
+      - condition: state
+        entity_id: light.entry_light
+        state: 'off'
+  action:
+    - service: light.turn_on
+      entity_id: light.thundercloud
+      data:
+        brightness: 60
+        rgb_color: [255,255,255]
+        effect: lightning
+
+- alias: Thundercloud Weather Alert NYC
+  trigger:
+    platform: state
+    entity_id: sensor.dark_sky_alerts
+    from: "0"
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: sensor.bed_occupancy_count
+        state: 'Empty'
+      - condition: state
+        entity_id: binary_sensor.people_home
+        state: 'on'
+  action:
+    - service: light.turn_on
+      entity_id: light.thundercloud
+      data:
+        brightness: 255
+        rgb_color: [255,0,0]
+        effect: solid
+        flash: short
+
+- alias: Fluxing for tts on
+  trigger:
+    platform: state
+    entity_id: media_player.volumio_mpd
+    to: "playing"
+#  condition:
+#    condition: and
+#    conditions:
+#      - condition: template
+#        value_template: "{{ is_state('media_player.gabes_music_server.attributes.media_album_name', 'Google') }}"
+#      - condition: template
+#        value_template: "{{ is_state('media_player.gabes_music_server.attributes.is_volume_muted', 'false') }}"
+  action:
+    - service: light.turn_on
+      entity_id: light.flux_capacitor
+      data:
+        brightness: 133
+        rgb_color: [255,208,70]
+        effect: rainbow with glitter
+
+- alias: Fluxing for music on
+  trigger:
+    platform: state
+    entity_id: media_player.volumio_mpd
+    to: "playing"
+#  condition:
+#    condition: and
+#    conditions:
+#      - condition: template
+#        value_template: "{{ not is_state('media_player.gabes_music_server.attributes.media_album_name', 'Google') }}"
+#      - condition: template
+#        value_template: "{{ is_state('media_player.gabes_music_server.attributes.is_volume_muted', 'false') }}"
+  action:
+    - service: light.turn_on
+      entity_id: light.flux_capacitor
+      data:
+        brightness: 78
+        rgb_color: [255,208,71]
+        effect: flux
+
+- alias: Fluxing off
+  trigger:
+    platform: state
+    entity_id: media_player.volumio_mpd
+    to: "off"
+  action:
+    - service: light.turn_off
+      entity_id: light.flux_capacitor
+
+- alias: Fluxing paused
+  trigger:
+    platform: state
+    entity_id: media_player.volumio_mpd
+    to: "paused"
+  action:
+    - service: light.turn_on
+      entity_id: light.flux_capacitor
+      data:
+        brightness: 32
+        rgb_color: [36, 90, 255]
+        effect: solid
+
+#music kiosk display
+- alias: Music Kiosk Display
+  trigger:
+    platform: state
+    entity_id: media_player.volumio_mpd
+    to: "playing"
+  action:
+    - service: browser_mod.navigate
+      data:
+        navigation_path: /lovelace/now_playing
+        deviceID:
+          - browser_note_kiosk
+          - browser_tablet_kiosk
+
+- alias: Music Kiosk Display Off
+  trigger:
+    platform: state
+    entity_id: media_player.gabes_music_server
+    to: "idle"
+  action:
+    - service: browser_mod.navigate
+      data:
+        navigation_path: /lovelace/15
+        deviceID:
+          - browser_note_kiosk
+    - service: browser_mod.navigate
+      data:
+        navigation_path: /lovelace/13
+        deviceID:
+          - browser_tablet_kiosk
+
+#################################################################
+## Roomba Automations
+#################################################################
+
+        ##########################################################
+        ## Run Roomba when Away
+        ##########################################################
+
+- alias: Roomba - Run Roomba when Away
+
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.people_home
+      from: 'on'
+      to: 'off'
+      for:
+        hours: 0
+        minutes: 30
+        seconds: 0
+
+  condition:
+    - condition: state
+      entity_id: input_boolean.disable_roomba
+      state: 'off'
+    - condition: state
+      entity_id: input_boolean.roomba_ran
+      state: 'off'
+    - condition: time
+      after: '11:00'
+      before: '20:00'
+    - condition: state
+      entity_id: vacuum.roomba
+      state: 'off'
+    - condition: numeric_state
+      entity_id: sensor.roomba_batt
+      above: 99
+
+  action:
+    - service: vacuum.turn_on
+      entity_id:
+        - vacuum.roomba
+
+        ##########################################################
+        ## Shut Off Roombas when Home
+        ##########################################################
+
+- alias: Roomba - Shut Off Roomba when Home
+
+  trigger:
+    - platform: state
+      entity_id: input_boolean.disable_roomba
+      from: 'off'
+      to: 'on'
+      for:
+        hours: 0
+        minutes: 0
+        seconds: 45
+
+  condition:
+    - condition: state
+      entity_id: input_boolean.disable_roomba
+      state: 'off'
+    - condition: state
+      entity_id: vacuum.roomba
+      state: 'on'
+
+  action:
+    - service: vacuum.return_to_base
+      entity_id:
+        - vacuum.roomba
+
+        ##########################################################
+        ## Run Roomba Weekdays when not Home
+        ##########################################################
+
+- alias: Roomba - Run Roomba Weekdays when not Home
+
+  trigger:
+   - platform: time
+     at: '13:00'
+
+  condition:
+    - condition: state
+      entity_id: input_boolean.disable_roomba
+      state: 'off'
+    - condition: state
+      entity_id: input_boolean.roomba_ran
+      state: 'off'
+    - condition: time
+      weekday:
+        - tue
+        - wed
+        - thu
+        - fri
+    - condition: state
+      entity_id: vacuum.roomba
+      state: 'off'
+    - condition: state
+      entity_id: binary_sensor.people_home
+      state: 'off'
+    - condition: numeric_state
+      entity_id: sensor.roomba_batt
+      above: 99
+
+  action:
+    - service: vacuum.turn_on
+      entity_id:
+        - vacuum.roomba
+
+        ##########################################################
+        ## Run Roomba Weekends
+        ##########################################################
+
+- alias: Roomba - Run Roomba Weekends
+
+  trigger:
+   - platform: time
+     at: '17:00'
+
+  condition:
+    - condition: state
+      entity_id: input_boolean.disable_roomba
+      state: 'off'
+    - condition: state
+      entity_id: input_boolean.roomba_ran
+      state: 'off'
+    - condition: time
+      weekday:
+        - sat
+        - sun
+        - mon
+    - condition: state
+      entity_id: vacuum.roomba
+      state: 'off'
+    - condition: numeric_state
+      entity_id: sensor.roomba_batt
+      above: 99
+    - condition: state
+      entity_id: binary_sensor.people_home
+      state: 'off'
+
+  action:
+    - service: vacuum.turn_on
+      entity_id:
+        - vacuum.roomba
+
+        ##########################################################
+        ## Turn off Roomba when House Guests Arrive
+        ##########################################################
+
+- alias: Roomba - Turn off Roomba when House Guests Arrive
+
+  trigger:
+    - platform: state
+      entity_id: input_boolean.guest_mode
+      from: 'off'
+      to: 'on'
+
+  condition:
+    - condition: state
+      entity_id: input_boolean.disable_roomba
+      state: 'off'
+    - condition: state
+      entity_id: vacuum.roomba
+      state: 'on'
+
+  action:
+    - service: vacuum.return_to_base
+      entity_id:
+        - vacuum.roomba
+
+        ##########################################################
+        ## Set Roomba has Ran for the Day
+        ##########################################################
+
+- alias: Roomba - Set Roomba has Ran for the Day
+
+  trigger:
+    - platform: state
+      entity_id: vacuum.roomba
+      from: 'off'
+      to: 'on'
+      for:
+        hours: 0
+        minutes: 40
+        seconds: 0
+
+  condition:
+    condition: state
+    entity_id: input_boolean.disable_roomba
+    state: 'off'
+
+  action:
+    - service: homeassistant.turn_on
+      entity_id:
+        - input_boolean.roomba_ran
+
+        ##########################################################
+        ## Reset Roomba has ran for the day
+        ##########################################################
+
+- alias: Roomba - Reset Roomba has ran for the day
+
+  trigger:
+   - platform: time
+     at: '00:01'
+
+  action:
+    - service: homeassistant.turn_off
+      entity_id:
+        - input_boolean.roomba_ran
+
+        ##########################################################
+        ## Roomba is Stuck Notification
+        ##########################################################
+
+- alias: Roomba - Stuck Notification
+
+  trigger:
+    - platform: template
+      value_template: "{%if is_state_attr('vacuum.roomba', 'status', 'Stuck') %}true{%endif%}"
+
+  condition:
+    condition: state
+    entity_id: input_boolean.disable_roomba
+    state: 'off'
+
+  action:
+    - service: notify.html5_push
+      data:
+        data:
+          renotify: 1
+          icon: https://thisisgabes.asuscomm.com:8008/local/icons/roomba.png
+          badge: https://thisisgabes.asuscomm.com:8008/local/icons/badge_roomba.png
+          timestamp: '%m'
+          url: https://thisisgabes.asuscomm.com:8008/lovelace/6
+          vibrate: 700, 700, 700
+        message: "Roomba is stuck"
+        title: "Send Help!"
+        target:
+          - "Gabes Mate"
+          - "Macbook"
+    - service: persistent_notification.create
+      data:
+        message: "Roomba is stuck"
+        title: "Send Help!"
+
+        ##########################################################
+        ## Roomba is Full Notification
+        ##########################################################
+
+- alias: Roomba - Full Notification
+
+  trigger:
+    - platform: template
+      value_template: "{%if is_state_attr('vacuum.roomba', 'bin_full', true) %}true{%endif%}"
+  condition:
+    condition: state
+    entity_id: input_boolean.disable_roomba
+    state: 'off'
+  action:
+    - service: notify.html5_push
+      data:
+        data:
+          renotify: 1
+          icon: https://thisisgabes.asuscomm.com:8008/local/icons/dust.png
+          badge: https://thisisgabes.asuscomm.com:8008/local/icons/badge_roomba.png
+          timestamp: '%m'
+          url: https://thisisgabes.asuscomm.com:8008/lovelace/6
+          vibrate: 700, 700, 700
+        message: "Roomba is full"
+        title: "I ate too much!"
+        target:
+          - "Gabes Mate"
+          - "Macbook"
+    - service: persistent_notification.create
+      data:
+        message: "Roomba is full"
+        title: "I ate too much!"
+
+#emulated roku commands
+- id: eroku_mpd_on
+  alias: ERoku MPD On
+  trigger:
+  - platform: event
+    event_type: roku_command
+    event_data:
+      source_name: Home Assistant
+      type: keypress
+      key: Home
+  action:
+  - service: media_player.toggle
+    entity_id: media_player.volumio_mpd
+
+- id: eroku_mpd_off
+  alias: ERoku MPD Off
+  trigger:
+  - platform: event
+    event_type: roku_command
+    event_data:
+      source_name: Home Assistant
+      type: keypress
+      key: Select
+  action:
+  - service: media_player.media_pause
+    entity_id: media_player.gabes_music_server
+  - service: media_player.turn_off
+    entity_id: media_player.volumio_mpd
+
+- id: eroku_mpd_play
+  alias: ERoku MPD Play
+  trigger:
+  - platform: event
+    event_type: roku_command
+    event_data:
+      source_name: Home Assistant
+      type: keypress
+      key: Play
+  action:
+  - service: media_player.play_pause
+    entity_id: media_player.gabes_music_server
+
+- id: eroku_mpd_fwd
+  alias: ERoku MPD Fwd
+  trigger:
+  - platform: event
+    event_type: roku_command
+    event_data:
+      source_name: Home Assistant
+      type: keypress
+      key: Fwd
+  action:
+  - service: media_player.media_next_track
+    entity_id: media_player.gabes_music_server
+
+- id: eroku_mpd_rev
+  alias: ERoku MPD Rev
+  trigger:
+  - platform: event
+    event_type: roku_command
+    event_data:
+      source_name: Home Assistant
+      type: keypress
+      key: Rev
+  action:
+  - service: media_player.media_previous_track
+    entity_id: media_player.gabes_music_server
+
+- id: eroku_mpd_shuffle
+  alias: ERoku MPD Shuffle
+  trigger:
+  - platform: event
+    event_type: roku_command
+    event_data:
+      source_name: Home Assistant
+      type: keypress
+      key: Back
+  action:
+  - service: media_player.shuffle_set
+    entity_id: media_player.gabes_music_server
+
+- id: eroku_mpd_news
+  alias: ERoku MPD News
+  trigger:
+  - platform: event
+    event_type: roku_command
+    event_data:
+      source_name: Home Assistant
+      type: keypress
+      key: Info
+  action:
+    - service: media_player.play_media
+      data:
+        entity_id: media_player.volumio_mpd
+        media_content_type: music
+        media_content_id: 'http://pd.npr.org/anon.npr-mp3/npr/news/newscast.mp3'
+
+- id: eroku_mpd_radio_uk
+  alias: ERoku MPD Radio UK
+  trigger:
+  - platform: event
+    event_type: roku_command
+    event_data:
+      source_name: Home Assistant
+      type: keypress
+      key: Backspace
+  action:
+    - service: media_player.play_media
+      data:
+        entity_id: media_player.volumio_mpd
+        media_content_type: music
+        media_content_id: 'http://bbcmedia.ic.llnwd.net/stream/bbcmedia_radio1_mf_p?s=1581371986&e=1581386386&h=0fd01ca2b35d9bec933601e4ee603cef'
+
+- id: eroku_mpd_radio_nyc
+  alias: ERoku MPD Radio NYC
+  trigger:
+  - platform: event
+    event_type: roku_command
+    event_data:
+      source_name: Home Assistant
+      type: keypress
+      key: Right
+  action:
+    - service: media_player.play_media
+      data:
+        entity_id: media_player.volumio_mpd
+        media_content_type: music
+        media_content_id: 'http://18843.live.streamtheworld.com:80/WQHT_SC?TGT=TuneIn&DIST=TuneIn'
+
+- id: eroku_mpd_playlist_up
+  alias: ERoku MPD Playlist Up
+  trigger:
+  - platform: event
+    event_type: roku_command
+    event_data:
+      source_name: Home Assistant
+      type: keypress
+      key: ChannelUp
+  action:
+    - service: media_player.play_media
+      data:
+        entity_id: media_player.gabes_music_server
+        source_list: HassUp
+
+- id: eroku_mpd_playlist_down
+  alias: ERoku MPD Playlist Down
+  trigger:
+  - platform: event
+    event_type: roku_command
+    event_data:
+      source_name: Home Assistant
+      type: keypress
+      key: ChannelDown
+  action:
+    - service: media_player.play_media
+      data:
+        entity_id: media_player.gabes_music_server
+        source_list: Lounge
+
+- id: eroku_mpd_playlist_shuffle_all
+  alias: ERoku MPD Playlist Shuffle All
+  trigger:
+  - platform: event
+    event_type: roku_command
+    event_data:
+      source_name: Home Assistant
+      type: keypress
+      key: Search
+  action:
+    - service: media_player.play_media
+      data:
+        entity_id: media_player.gabes_music_server
+        source_list: Firehose
+
+#number buttons 1
+- id: eroku_mpd_shortcut_1
+  alias: ERoku MPD Shortcut 1
+  trigger:
+  - platform: event
+    event_type: roku_command
+    event_data:
+      source_name: Home Assistant
+      type: launch
+      app_id: Amazon
+  action:
+    - service: media_player.play_media
+      data:
+        entity_id: media_player.volumio_mp
+        media_artist: Indigo Girls
+        shuffle: false

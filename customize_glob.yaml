@@ -1,0 +1,5 @@
+"input_boolean.*":
+  templates:
+    icon_color: >
+      if (state === 'on') return 'rgb(251, 210, 41)'; return 'rgb(54, 95, 140)';
+

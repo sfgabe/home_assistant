@@ -1,0 +1,461 @@
+#Main Views
+
+home:
+  name: Apartment 10R
+  entities:
+    - group.basics
+    - group.people
+    - camera.housecam
+    - group.lights
+    - group.empirestate
+    - group.usps
+    - group.devices
+    - weather.dark_sky
+    - group.traveltime
+    - group.birthday
+    - group.crypto
+    - group.3dprinter
+    - group.homecams
+
+reef:
+  name: Reef Tank
+  entities:
+    - camera.reefcam
+    - group.reef_weather
+    - group.reef_server
+    - group.reef_temp
+    - group.reef_tank
+    - group.reef_lights
+    - group.reef_tides
+    - group.reef_power
+
+amazon:
+  name: Amazon Tank
+  entities:
+    - camera.octocam
+    - group.amazon_weather
+    - group.amazon_server
+    - group.amazon_temp
+    - group.amazon_tank
+    - group.amazon_power
+
+travel:
+  name: Travel
+  entities:
+    - weather.dark_sky
+    - group.bus
+    - group.subway
+    - group.traveltime
+    - group.nextappt
+
+weather:
+  name: Weather
+  entities:
+    - weather.dark_sky
+    - camera.weather_radar
+    - group.weather_summary
+    - group.weather_precip
+    - group.weather_details
+    - input_boolean.weather
+
+system:
+  name: System
+  entities:
+    - media_player.roku_2ld558098368
+    - persistent_notification.invalid_config
+    - group.devices
+    - group.speedtest
+    - group.serverinfo
+
+homecams:
+  name: Apt 10R
+  entities:
+    - camera.housecam
+    - camera.kioskcam
+
+#Groups
+
+all_lightbulbs:
+  name: All Lightbulbs
+  entities:
+    - light.bedroom_desk
+    - light.hue_color_light_1
+    - light.desk
+    - light.kitchen
+    - light.entry_light
+    - light.table
+    - light.white_bulb
+
+all_rgb_lights:
+  name: All RGB Lights
+  entities:
+    - light.bedroom_desk
+    - light.hue_color_light_1
+    - light.desk
+    - light.kitchen
+    - light.table
+
+reef_tides:
+  name: Reef Tides
+  entities:
+    - history_graph.reef_tides
+    - sensor.bali_reef_tides
+
+reef_weather:
+  name: Reef Weather
+  entities:
+    - sensor.reefweather_condition
+    - sensor.reefweather_current
+    - sensor.reefweather_humidity
+    - sensor.reefweather_pressure
+    - sensor.reefweather_temperature
+    - sensor.reefweather_temperature_max
+    - sensor.reefweather_temperature_min
+    - sensor.reefweather_wind_speed
+
+reef_temp:
+  name: Reef Temp
+  entities:
+    - history_graph.reef_water_temp_sync
+    - sensor.onlyreefcontrolpitemp
+    - sensor.onlyreefcontrolpitemptime
+    - switch.reef_cooler_pump_switch
+    - sensor.noaa_daily_max_reef_temp
+    - sensor.reef_high_avg_daily_temp
+    - sensor.reef_avg_daily_temp
+    - sensor.reef_low_avg_daily_temp
+    - sensor.noaa_daily_min_reef_temp
+
+reef_tank:
+  name: Reef Tank
+  entities:
+    - sensor.mqtt_topic_reef_water_level_template_level
+    - sensor.mqtt_topic_reef_water_level_template_time
+    - sensor.reefcontrolpipump1
+    - sensor.onlyreefcontrolpitemp
+    - sensor.reefsunrisetides
+    - sensor.reefsunsettides
+
+reef_automation:
+  name: Automation
+  icon: mdi:av-timer
+  entities:
+    - switch.reeftank_light_switch
+    - input_boolean.reef_temp_daytime_state
+    - input_boolean.reef_temp_nightime_state
+    - automation.start_fade_down_of_reef_lights_at_sunset
+    - automation.start_fade_up_of_reef_lights_at_sunrise
+    - automation.reef_sump_pump_low_off
+    - automation.reef_sump_pump_low_off_doublecheck
+    - automation.reef_sump_pump_on_every_hour
+    - automation.regulate_reef_heater_to_off_daytime_temp
+    - automation.regulate_reef_heater_to_off_nightime_temp
+    - automation.regulate_reef_heater_to_off_on_low_misread
+    - automation.regulate_reef_heater_to_on_daytime_temp
+    - automation.regulate_reef_heater_to_on_nightime_temp
+    - automation.turn_off_wavemaker_at_low_tide
+    - automation.turn_on_wavemaker_at_high_tide
+
+reef_power:
+  name: Reef Power Switches
+  entities:
+    - switch.06200940dc4f22cbb94b_1
+    - switch.06200940dc4f22cbb94b_2
+    - switch.06200940dc4f22cbb94b_3
+    - switch.06200940dc4f22cbb94b_4
+    - switch.06200940dc4f22cbb94b_7
+    - switch.2437254184f3eb695276
+    - switch.reef_pump_1
+
+reef_server:
+  name: Reef Server
+  entities:
+    - sensor.reefsysinfo_template_ip
+    - sensor.reefsysinfo_template_name
+    - sensor.reefsysinfo_template_uptime
+    - sensor.reefsysinfo_template_version
+    - sensor.reefsysinfo_template_cpu_temperature
+    - switch.06200940dc4f22cbb94b_7
+
+amazon_weather:
+  name: Amazon Weather
+  entities:
+    - sensor.amazonweather_condition
+    - sensor.amazonweather_current
+    - sensor.amazonweather_humidity
+    - sensor.amazonweather_pressure
+    - sensor.amazonweather_temperature
+    - sensor.amazonweather_temperature_max
+    - sensor.amazonweather_temperature_min
+    - sensor.amazonweather_wind_speed
+
+amazon_temp:
+  name: Amazon Tank Temp
+  entities:
+    - history_graph.amazon_water_temp_sync
+    - sensor.onlyamazonpitemp
+    - sensor.monthly_amazon_temp
+    - sensor.monthly_amazon_ph
+    - switch.06200940dc4f22cbb432_2
+
+amazon_tank:
+  name: Amazon Tank
+  entities:
+    - sensor.mqtt_topic_octo_water_level_template_level
+    - sensor.mqtt_topic_octo_water_level_template_time
+    - sensor.amazonnexthightide
+    - sensor.amazonnextlowtide
+    - sensor.amazonsunrisetides
+    - sensor.amazonsunsettides
+
+amazon_automation:
+  icon: mdi:av-timer
+  name: Automation
+  entities:
+    - script.freshwater_waves_on_script
+    - automation.freshwater_lights_off_at_sunset
+    - automation.freshwater_lights_on_at_sunrise
+    - automation.turn_on_amazon_waves_again_at_low_tide
+    - automation.turn_on_amazon_waves_at_high_tide
+
+amazon_power:
+  name: Amazon Power Switches
+  entities:
+    - switch.06200940dc4f22cbb432_1 #waves
+    - switch.06200940dc4f22cbb432_2 #heater
+    - switch.06200940dc4f22cbb432_3 #O2
+    - switch.06200940dc4f22cbb432_4 #lights
+    - switch.06200940dc4f22cbb432_7 #octocam
+
+amazon_server:
+  name: Octo Server
+  icon: mdi:server-network
+  entities:
+    - sensor.mqtt_topic_octo_sysinfo_template_serverload
+    - sensor.mqtt_topic_octo_sysinfo_template_serverspeed
+    - sensor.mqtt_topic_octo_sysinfo_template_servertemp
+
+empirestate:
+  name: The View
+  entities:
+    - camera.empirestatelights
+    - sensor.empirestatelights
+
+people:
+  name: People
+  entities:
+    - device_tracker.gabes_mate
+    - camera.gabeonmaps
+
+devices:
+  name: Devices
+  entities:
+    - device_tracker.macbook
+    - device_tracker.phone
+    - switch.motion_detect
+    - script.roomba_turn_on
+#    - device_tracker.hassio_gabesmatephone
+
+birthday:
+  name: Next Birthday
+  entities:
+    - sensor.template_calendar_birthday_date
+    - sensor.template_calendar_birthday
+
+bus:
+  name: Bus Times
+  entities:
+    - sensor.m15_local_uptown_allen_at_grand
+    - sensor.m15sbs_uptown_allen_at_grand
+    - sensor.m14a_crosstown_at_clinton_street
+
+subway:
+  name: Subway Times
+  entities:
+    - sensor.northbound_f_delancey_st
+    - sensor.northbound_m_essex_st
+    - sensor.northbound_b_grand_st
+    - sensor.northbound_d_grand_st
+    - sensor.southbound_f_east_broadway
+    - sensor.northbound_j_essex_st
+    - sensor.northbound_z_essex_st
+
+crypto:
+  name: Crypto
+  entities:
+    - history_graph.bitcoin
+    - sensor.btc_exchange_rate
+    - sensor.coinbase_bch_wallet
+    - sensor.coinbase_eth_wallet
+    - sensor.coinbase_ltc_wallet
+    - sensor.coinbase_my_vault
+    - sensor.coinbase_my_wallet
+    - sensor.coinbase_usd_wallet
+    - sensor.eth_exchange_rate
+    - sensor.ltc_exchange_rate
+
+weather_precip:
+  name: Precipitation
+  entities:
+    - sensor.dark_sky_daily_max_precip_intensity
+    - sensor.dark_sky_dew_point
+    - sensor.dark_sky_nearest_storm_distance
+    - sensor.dark_sky_precip
+    - sensor.dark_sky_precip_accumulation
+    - sensor.dark_sky_precip_intensity
+    - sensor.dark_sky_precip_probability
+    - sensor.dark_sky_visibility
+    - sensor.dark_sky_wind_bearing
+    - sensor.dark_sky_wind_speed
+
+weather_details:
+  name: Migraine Forecast
+  entities:
+    - sensor.dark_sky_pressure
+    - sensor.dark_sky_humidity
+    - sensor.dark_sky_ozone
+    - sensor.dark_sky_cloud_coverage
+    - sensor.dark_sky_uv_index
+
+weather_summary:
+  name: Summary
+  entities:
+    - sensor.pretty_date
+    - sensor.dark_sky_minutely_summary
+    - weather.dark_sky
+    - history_graph.temperature
+    
+weather_card_forecast:
+  name: Forecast
+  icon: mdi:sun
+  entities:
+    - sensor.dark_sky_daily_summary
+    - sensor.forecast_today
+    - sensor.forecast_0
+    - sensor.forecast_1
+    - sensor.forecast_2
+    - sensor.forecast_3
+    - sensor.forecast_4
+    - sensor.forecast_5
+    - sensor.forecast_6
+    - sensor.forecast_7
+
+basics:
+  name: Hello!
+  entities:
+    - sensor.pretty_date_time
+#    - sun.sun
+    - sensor.mqtt_topic_home_sysinfo_template_ambient_temperature
+    - sensor.battery_gabes_mate
+    - sensor.stats_home
+    - sensor.stats_work
+    - sensor.ambient_temp_graph
+
+serverinfo:
+  name: Server Info
+  entities:
+    - sensor.myipopendnscom
+    - sensor.ha_installed_version
+    - sensor.ha_uptime
+    - sensor.db_file_system_size
+    - sensor.mariadb_database_size
+    - sensor.mqtt_topic_home_sysinfo_template_ambient_temperature
+    - sensor.mqtt_topic_home_sysinfo_template_serverload
+    - sensor.mqtt_topic_home_sysinfo_template_serverspeed
+    - sensor.mqtt_topic_home_sysinfo_template_servertemp
+    - sensor.server_temperature
+    - switch.2437254184f3eb695715
+
+speedtest:
+  name: Speedtest
+  entities:
+    - history_graph.fios_speed
+    - sensor.speedtest_download
+    - sensor.speedtest_upload
+    - sensor.speedtest_ping
+
+traveltime:
+  name: Travel Time
+  entities:
+    - sensor.home_to_work
+    - sensor.work_to_home
+#    - sensor.home_to_next_appt
+
+nextappt:
+  name: Next Event
+  entities:
+    - sensor.nextcal_message
+    - sensor.new_nextcal_location
+    - sensor.nextcal_start_time
+    - sensor.nextcal_end_time
+#    - sensor.home_to_next_appt
+#    - sensor.nextcal_calc_leave_time
+    - camera.next_appointment
+#    - camera.street_view
+
+usps:
+  name: Mail
+  entities:
+    - sensor.usps_mail
+    - sensor.usps_packages
+    - camera.usps_mail_pictures
+
+3dprinter:
+  name: 3D Printer
+  entities:
+    - switch.2437254184f3eb695327
+    - binary_sensor.octoprint_status_printing
+    - binary_sensor.octoprint_status_printing_error
+    - sensor.octoprint_current_state
+    - sensor.octoprint_job_percentage
+    - sensor.octoprint_time_elapsed_format
+    - sensor.octoprint_time_remaining_format
+    - sensor.octoprint_hotend
+    - sensor.octoprint_hotend_target
+    - sensor.octoprint_bed
+    - sensor.octoprint_bed_target
+    - automation.turn_off_3d_printer_on_idle
+    - camera.octopi3dprinter
+
+alarmclock:
+  - sensor.alarm_time_off_day
+  - sensor.alarm_time_work_day
+  - input_number.alarm_hour
+  - input_number.alarm_minutes
+  - input_boolean.alarm_clock
+  - input_boolean.alarm_clock_work_day
+  - input_boolean.start_alarm_clock_work_day
+  - input_boolean.alarm_clock_off_day
+  - input_boolean.start_alarm_clock_off_day
+  - input_boolean.alarm_clock_loop
+#  - input_select.radio_station
+  - automation.wake_up_radio
+  - automation.start_alarm_clock_radio_work_day
+  - automation.start_alarm_clock_radio_off_day
+  - automation.wake_up_radio_from_loop
+  - script.alarm_clock_loop
+
+gabe:
+#  - device_tracker.5re0217120001465_2
+  - device_tracker.5re0217120001465
+  - device_tracker.huawei_mate_9_92528f2b1a5
+  - device_tracker.e38371cbc195dfdd
+#  - device_tracker.gabes_mate
+#  - device_tracker.gabesmatehotspot
+  - device_tracker.google_maps_114555423860561989456
+#  - device_tracker.hassio_gabesmatephone
+  - device_tracker.ionic
+  - device_tracker.phone
+
+berny:
+  - device_tracker.bernys_iphone
+
+nanoo:
+  - device_tracker.gurchatnsiphone
+
+streaming_radio:
+  name: Streaming Radio
+  entities:
+    - input_select.radio_station
+    - input_select.speaker_radio
+    - script.radio_tune

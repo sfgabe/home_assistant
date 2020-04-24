@@ -1,0 +1,1928 @@
+#Manual Backup Button
+backup:
+  alias: Backup HA Configuration Files
+  sequence:
+    - service: shell_command.backup_configuration
+
+#Manual Reefcam Restart Button
+reefcam_restart:
+  alias: Reefcam Restart
+  sequence:
+    - service: shell_command.reefcam_restart
+
+#Manual ReefControlPi Restart Button
+reef_control_restart:
+  alias: Reef Control Pi Restart
+  sequence:
+    - service: shell_command.reefcontrolpi_reboot
+
+#Manual Octocam Restart Button
+#octocam_restart:
+#  alias: Octocam Restart
+#  sequence:
+#    - service: shell_command.octocam_restart
+
+#Manual Home Assistant Restart Button
+ha_restart:
+  alias: Home Assistant Restart
+  sequence:
+    - service: shell_command.ha_reboot
+
+#Reef Tank Kessil Morning and Evening Light Fades - depreciated
+reeftank_morning_fade_kessil:  
+  alias: "Reef Light Morning Fade Kessil"
+  sequence:
+    - delay:
+        seconds: 7200
+    - service: input_boolean.turn_off
+      data:
+        entity_id: input_boolean.reef_temp_nightime_state
+    - service: input_boolean.turn_on
+      data:
+        entity_id: input_boolean.reef_temp_daytime_state
+    - service: automation.trigger
+      entity_id: automation.set_reef_thermostat_max_daytime_selector
+    - service: switch.turn_on
+      entity_id: switch.06200940dc4f22cbb432_2
+    - service: automation.trigger
+      entity_id: automation.set_reef_thermostat_max_daytime_selector
+    - service: switch.turn_on
+      entity_id: switch.06200940dc4f22cbb94b_4
+    - delay:
+        seconds: 480
+    - service: homeassistant.turn_on
+      entity_id: switch.kessil_light_level_1
+    - delay:
+        seconds: 1800
+    - service: homeassistant.turn_on
+      entity_id: switch.kessil_light_level_2
+    - delay:
+        seconds: 900
+    - service: homeassistant.turn_on
+      entity_id: switch.kessil_light_level_3
+    - delay:
+        seconds: 900
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 43857787
+        command: ['PowerToggle','2']
+    - service: homeassistant.turn_on
+      entity_id: switch.kessil_light_level_4
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: 'FastForward'
+    - delay:
+        seconds: 900
+    - service: homeassistant.turn_on
+      entity_id: switch.kessil_light_level_5
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: 'FastForward'
+    - delay:
+        seconds: 5200
+    - service: homeassistant.turn_on
+      entity_id: switch.kessil_light_level_6
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: 'FastForward'
+    - delay:
+        seconds: 12600
+    - service: homeassistant.turn_on
+      entity_id: switch.kessil_light_level_7
+    - delay:
+        seconds: 10800
+    - service: homeassistant.turn_on
+      entity_id: switch.kessil_light_level_8
+    - delay:
+        seconds: 3600
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: 'Rewind'
+    - service: homeassistant.turn_on
+      entity_id: switch.kessil_light_level_9
+    - delay:
+        seconds: 3600
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: 'Rewind'
+    - service: homeassistant.turn_on
+      entity_id: switch.kessil_light_level_10
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: 'Rewind'
+    - delay:
+        seconds: 3600
+    - service: homeassistant.turn_on
+      entity_id: switch.kessil_light_level_11
+    - delay:
+        seconds: 3600
+    - service: homeassistant.turn_on
+      entity_id: switch.kessil_light_level_12
+
+reeftank_evening_fade_kessil:  
+  alias: "Reef Light Evening Fade Kessil"
+  sequence:
+    - delay:
+        seconds: 3600
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: 'Stop'
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: ['1','Rewind','Rewind','Rewind','Rewind','Rewind','Rewind','Rewind','Rewind','Stop']
+    - delay:
+        seconds: 3600
+    - service: input_boolean.turn_off
+      data:
+        entity_id: input_boolean.reef_temp_daytime_state
+    - service: input_boolean.turn_on
+      data:
+        entity_id: input_boolean.reef_temp_nightime_state
+    - service: automation.trigger
+      entity_id: automation.set_reef_thermostat_max_nighttime_selector
+    - service: homeassistant.turn_off
+      entity_id: switch.kessil_light_level_12
+    - delay:
+        seconds: 480
+    - service: switch.turn_off
+      entity_id: switch.06200940dc4f22cbb94b_4
+
+reeftank_morning_outlet_kessil:  
+  alias: "Reef Light Morning Outlet Kessil"
+  sequence:
+    - service: input_boolean.turn_off
+      data:
+        entity_id: input_boolean.reef_temp_nightime_state
+    - service: input_boolean.turn_on
+      data:
+        entity_id: input_boolean.reef_temp_daytime_state
+    - service: automation.trigger
+      entity_id: automation.set_reef_thermostat_max_daytime_selector
+    - service: switch.turn_on
+      entity_id: switch.06200940dc4f22cbb432_2
+    - service: switch.turn_on
+      entity_id: switch.06200940dc4f22cbb94b_4
+    - delay:
+        seconds: 4080
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 43857787
+        command: ['PowerToggle','2']
+    - delay:
+        seconds: 120
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: 'FastForward'
+    - delay:
+        seconds: 900
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: 'FastForward'
+    - delay:
+        seconds: 5200
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: 'FastForward'
+    - delay:
+        seconds: 27000
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: 'Rewind'
+    - delay:
+        seconds: 3600
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: 'Rewind'
+    - delay:
+        seconds: 3600
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: 'Rewind'
+
+reeftank_evening_outlet_kessil:  
+  alias: "Reef Light Evening Outlet Kessil"
+  sequence:
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: ['1','Rewind','Rewind','Rewind','Rewind','Rewind','Rewind','Rewind','Rewind','Stop']
+    - service: input_boolean.turn_off
+      data:
+        entity_id: input_boolean.reef_temp_daytime_state
+    - service: input_boolean.turn_on
+      data:
+        entity_id: input_boolean.reef_temp_nightime_state
+    - service: automation.trigger
+      entity_id: automation.set_reef_thermostat_max_nighttime_selector
+    - delay:
+        seconds: 900
+    - service: switch.turn_off
+      entity_id: switch.06200940dc4f22cbb94b_4
+
+reeftank_moon_on:  
+  alias: "Reef Light Moon On"
+  sequence:
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: ['PowerToggle','1','Rewind','Rewind','Rewind','Rewind','Rewind','Rewind','Rewind']
+
+reeftank_moon_up:  
+  alias: "Reef Light Moon Up"
+  sequence:
+    - delay:
+        seconds: 600
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: ['FastForward']
+    - delay:
+        seconds: 3600
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: ['FastForward']
+    - delay:
+        seconds: 3600
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: ['FastForward']
+    - delay:
+        seconds: 10800
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: ['Rewind']
+    - delay:
+        seconds: 3600
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: ['Rewind']
+    - delay:
+        seconds: 3600
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: ['Rewind']
+    - delay:
+        seconds: 3600
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: ['Rewind']
+
+reeftank_moon_up_stronger:  
+  alias: "Reef Light Moon Stronger"
+  sequence:
+    - delay:
+        seconds: 600
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: ['FastForward','FastForward']
+    - delay:
+        seconds: 3600
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: ['FastForward']
+    - delay:
+        seconds: 3600
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: ['FastForward']
+    - delay:
+        seconds: 3600
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: ['FastForward']
+    - delay:
+        seconds: 7200
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: ['Rewind']
+    - delay:
+        seconds: 3600
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: ['Rewind']
+    - delay:
+        seconds: 3600
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: ['Rewind']
+    - delay:
+        seconds: 3600
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: ['Rewind']
+    - delay:
+        seconds: 3600
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: ['Rewind','Rewind']
+
+reeftank_full_moon:  
+  alias: "Reef Full Moon"
+  sequence:
+    - delay:
+        seconds: 300
+    - service: homeassistant.turn_on
+      entity_id: rest_command.diurnal_reef_full_moon
+    - delay:
+        seconds: 300
+    - service: switch.turn_on
+      entity_id: switch.06200940dc4f22cbb94b_4
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: ['FastForward']
+    - delay:
+        seconds: 3600
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: ['FastForward']
+    - delay:
+        seconds: 3600
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: ['FastForward']
+    - delay:
+        seconds: 3600
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: ['FastForward']
+    - delay:
+        seconds: 7200
+    - service: switch.turn_off
+      entity_id: switch.06200940dc4f22cbb94b_4
+    - service: homeassistant.turn_on
+      entity_id: rest_command.set_diurnal_reef_lights
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: ['Rewind']
+    - delay:
+        seconds: 3600
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: ['Rewind']
+    - delay:
+        seconds: 3600
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: ['Rewind']
+    - delay:
+        seconds: 3600
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: ['Rewind']
+    - delay:
+        seconds: 3600
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: ['Rewind']
+
+reeftank_moon_off:  
+  alias: "Reef Light Moon Off"
+  sequence:
+    - service: remote.send_command
+      data_template:
+        entity_id: remote.gabes_harmony_hub
+        device: 'Generic LED'
+        command: ['Stop']
+
+# LED light
+# Buttons 1Blue 2white 4green 5yellow 8orange
+
+reeftank_sump_pulse:  
+  alias: "Reef Tank Sump Pulse"
+  sequence:
+    - service: homeassistant.turn_on
+      entity_id: switch.2437254184f3eb695276
+    - delay:
+        seconds: 30
+    - service: homeassistant.turn_off
+      entity_id: switch.2437254184f3eb695276
+
+
+octotank_morning_on:
+  alias: "Octo Light Morning On"
+  sequence:
+    - delay:
+        seconds: 3600
+    - service: switch.turn_on
+      entity_id: switch.06200940dc4f22cbb432_4
+#    - service: switch.turn_on
+#      entity_id: switch.06200940dc4f22cbb432_3
+    - service: automation.trigger
+      entity_id: automation.set_amazon_thermostat_max_daytime_selector
+
+octotank_evening_off:
+  alias: "Octo Light Evening Off"
+  sequence:
+    - delay:
+        seconds: 3600
+    - service: switch.turn_off
+      entity_id: switch.06200940dc4f22cbb432_4
+#    - service: switch.turn_off
+#      entity_id: switch.06200940dc4f22cbb432_3
+    - service: automation.trigger
+      entity_id: automation.set_amazon_thermostat_max_night_selector
+
+#Freshwater Feeder
+freshwater_feeder_script:  
+  alias: "Feed the Fish"
+  sequence:
+    - service: switch.turn_on
+      entity_id: switch.octofishfeeder
+    - delay:
+        seconds: 20
+    - service: switch.turn_off
+      entity_id: switch.octofishfeeder
+    - delay:
+        seconds: 240
+    - service: switch.turn_on
+      entity_id: switch.octofishfeeder
+    - delay:
+        seconds: 20
+    - service: switch.turn_off
+      entity_id: switch.octofishfeeder
+    - delay:
+        seconds: 240
+    - service: switch.turn_on
+      entity_id: switch.octofishfeeder
+    - delay:
+        seconds: 20
+    - service: switch.turn_off
+      entity_id: switch.octofishfeeder
+    - service: downloader.download_file
+      data_template:
+        url: "{{ states('sensor.octocam_pic_url') }}"
+        filename: "latest_octocam.jpg"
+        overwrite: true
+    - delay:
+        seconds: 240
+    - service: switch.turn_off
+      entity_id: switch.octofishfeeder
+    - service: notify.octo_cam_bot_notifier
+      data:
+        message: "I, OctoCamBot, just fed the fish! \U0001F420 \U0001F95E \U0001F389 \U0001F32E \U0001F420 \U0001F355 EmojiStats: \U0001F321 {{ states.sensor.onlyamazonpitemp.state }}F \U0001F964  {{ states. sensor.amazonpifloat.state }} \U0001F305 {{ states.sensor.amazonsunrisetides.state }} \U0001F307 {{ states.sensor.amazonsunsettides.state }}"
+        data:
+          media: /home/homeassistant/.homeassistant/www/images/latest_octocam.jpg
+
+#Freshwater Waves
+freshwater_waves_on_script:  
+  alias: "Turn On Freshwater Waves"
+  sequence:
+    - service: switch.turn_on
+      entity_id: switch.06200940dc4f22cbb432_1
+    - delay:
+        seconds: 6300
+    - service: switch.turn_off
+      entity_id: switch.06200940dc4f22cbb432_1
+    - delay:
+        seconds: 14400
+    - service: switch.turn_on
+      entity_id: switch.06200940dc4f22cbb432_1
+    - delay:
+        seconds: 6300
+    - service: switch.turn_off
+      entity_id: switch.06200940dc4f22cbb432_1
+
+#Reef Waves
+reef_waves_lowtide_fade_script:  
+  alias: "Low Tide Reef Waves Fade"
+  sequence:
+    - service: switch.turn_off
+      entity_id: switch.06200940dc4f22cbb94b_2
+    - delay:
+        seconds: 360
+    - service: switch.turn_on
+      entity_id: switch.06200940dc4f22cbb94b_2
+    - delay:
+        seconds: 980
+    - service: switch.turn_off
+      entity_id: switch.06200940dc4f22cbb94b_2
+    - delay:
+        seconds: 2100
+    - service: switch.turn_on
+      entity_id: switch.06200940dc4f22cbb94b_2
+    - delay:
+        seconds: 2905
+    - service: switch.turn_off
+      entity_id: switch.06200940dc4f22cbb94b_2
+    - delay:
+        seconds: 3465
+    - service: switch.turn_on
+      entity_id: switch.06200940dc4f22cbb94b_2
+    - delay:
+        seconds: 3885
+    - service: switch.turn_off
+      entity_id: switch.06200940dc4f22cbb94b_2
+    - delay:
+        seconds: 4095
+    - service: switch.turn_on
+      entity_id: switch.06200940dc4f22cbb94b_2
+    - delay:
+        seconds: 4200
+    - service: switch.turn_off
+      entity_id: switch.06200940dc4f22cbb94b_2
+    - delay:
+        seconds: 4095
+    - service: switch.turn_on
+      entity_id: switch.06200940dc4f22cbb94b_2
+    - delay:
+        seconds: 3885
+    - service: switch.turn_off
+      entity_id: switch.06200940dc4f22cbb94b_2
+    - delay:
+        seconds: 3465
+    - service: switch.turn_on
+      entity_id: switch.06200940dc4f22cbb94b_2
+    - delay:
+        seconds: 2905
+    - service: switch.turn_off
+      entity_id: switch.06200940dc4f22cbb94b_2
+    - delay:
+        seconds: 2100
+    - service: switch.turn_on
+      entity_id: switch.06200940dc4f22cbb94b_2
+    - delay:
+        seconds: 980
+    - service: switch.turn_off
+      entity_id: switch.06200940dc4f22cbb94b_2
+    - delay:
+        seconds: 360
+    - service: switch.turn_on
+      entity_id: switch.06200940dc4f22cbb94b_2
+    - delay:
+        seconds: 230
+    - service: switch.turn_off
+      entity_id: switch.06200940dc4f22cbb94b_2
+
+# Lovelace Theme Notification Text Clear
+clear_notification_text:
+  sequence:
+    - service: input_text.set_value
+      data_template:
+        entity_id: input_text.notification_text
+        value: "No Message"
+
+# Alarm Clock
+#alarm_clock_loop:
+#  alias: Alarm Clock Loop
+#  sequence:
+#  - service: script.turn_on
+#    data:
+#      entity_id: script.sunrise_lights
+
+#Alarm 2
+bedroom_wake_up:
+  sequence:
+    - service_template: >
+        {% if is_state('sensor.dark_sky_icon' , 'rain') %} script.early_wakeup
+        {% elif is_state('sensor.dark_sky_icon' , 'snow') %} script.early_wakeup
+        {% else %} script.on_time_wakeup {% endif %}
+    - service: automation.turn_on
+      entity_id: automation.morning_greeting_update
+
+early_wakeup:
+  sequence:
+    - service: script.notify
+      data:
+        message: "I am triggering the alarm fifteen minutes early because of bad weather"
+#    - service_template: >
+#        {% if is_state('input_boolean.bedroom_alarm_clock_repeat' , 'on') %} homeassistant.turn_on
+#        {% else %} homeassistant.turn_off {% endif %}
+#      entity_id: input_boolean.bedroom_alarm_clock_status
+    - service: script.turn_on
+      data:
+        entity_id: script.sunrise_lights
+
+on_time_wakeup:
+  sequence:
+    - delay:
+        seconds: 900
+#    - service_template: >
+#        {% if is_state('input_boolean.bedroom_alarm_clock_repeat' , 'on') %} homeassistant.turn_on
+#        {% else %} homeassistant.turn_off {% endif %}
+#      entity_id: input_boolean.bedroom_alarm_clock_status
+    - service: script.turn_on
+      data:
+        entity_id: sunrise_lights
+    - service: script.turn_on
+      data:
+        entity_id: sunrise_sound
+
+#Sunrise lights
+sunrise_lights:
+  sequence:
+    - service: light.turn_on
+      data:
+        entity_id: light.bedroom
+        xy_color: [0.67,0.39]
+        brightness: 1
+    - service: light.turn_on
+      data:
+        entity_id: light.big_o
+        brightness: 1
+        rgb_color: [145,98,9]
+    - delay:
+        seconds: 1
+    - service: light.turn_on
+      data:
+        entity_id: light.bedroom
+        xy_color: [0.65,0.41]
+        brightness: 85
+        transition: 600
+    - service: light.turn_on
+      data:
+        entity_id: light.big_o
+        brightness: 85
+        transition: 600
+        rgb_color: [156,158,5]
+    - delay:
+        seconds: 600
+    - service: light.turn_on
+      data:
+        entity_id: light.bedroom
+        xy_color: [0.60,0.40]
+        brightness: 170
+        transition: 600
+    - service: light.turn_on
+      data:
+        entity_id: light.big_o
+        brightness: 105
+        transition: 600
+        rgb_color: [191,167,27]
+    - delay:
+        seconds: 600
+    - service: light.turn_on
+      data:
+        entity_id: light.bedroom
+        xy_color: [0.48,0.40]
+        brightness: 255
+        transition: 600
+    - service: light.turn_on
+      data:
+        entity_id: light.big_o
+        brightness: 120
+        transition: 600
+        rgb_color: [219,232,32]
+
+#Sunrise sound
+sunrise_sound:
+  sequence:
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44
+        volume_level: 0
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+        volume_level: 0
+    - service: input_select.select_option
+      data_template:
+        entity_id: input_select.ambient_sounds
+        option: "Morning Birds"
+    - delay:
+        seconds: 10
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+        volume_level: 0.05
+    - delay:
+        seconds: 150
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+        volume_level: 0.10
+    - delay:
+        seconds: 150
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+        volume_level: 0.15
+    - delay:
+        seconds: 150
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+        volume_level: 0.20
+    - delay:
+        seconds: 150
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+        volume_level: 0.25
+    - delay:
+        seconds: 150
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+        volume_level: 0.30
+    - delay:
+        seconds: 150
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+        volume_level: 0.35
+    - delay:
+        seconds: 150
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+        volume_level: 0.40
+    - delay:
+        seconds: 150
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+        volume_level: 0.45
+    - delay:
+        seconds: 150
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+        volume_level: 0.50
+    - delay:
+        seconds: 150
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+        volume_level: 0.55
+    - delay:
+        seconds: 150
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+        volume_level: 0.60
+    - delay:
+        seconds: 150
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+        volume_level: 0.65
+    - delay:
+        seconds: 150
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+        volume_level: 0.70
+    - delay:
+        seconds: 150
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+        volume_level: 0.75
+    - delay:
+        seconds: 150
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+        volume_level: 0.80
+
+usps_sms_notification:
+  sequence:
+    - service: ifttt.trigger
+      data_template: {"event":"usps_mail_alert_1", "value1":"{{ sensor.usps_mail }}", "value2":"{{ sensor.usps_packages }}"}
+    - service: ifttt.trigger
+      data_template: {"event":"usps_mail_alert_2", "value1":"{{ sensor.usps_mail }}", "value2":"{{ sensor.usps_packages }}"}
+    - service: automation.turn_off
+      entity_id: automation.usps_mail_alert
+
+kiosk_screen_value:
+  sequence:
+    - service: input_number.set_value
+      data_template:
+        entity_id: input_number.kiosk_brightness
+        value: "{{ brightness }}"
+    - service: rest_command.kiosk_screen_value
+
+kiosk_weather_report:
+  sequence:
+    - service: script.janet_speech_engine
+      data:
+        call_greeting: 1
+        call_morning_weather: 1
+
+kiosk_good_morning:
+  sequence:
+#    - service: input_select.select_option
+#      data_template:
+#        entity_id: input_select.alexa_bedroom_ac
+#        option: 85
+#    - service: input_select.select_option
+#      data_template:
+#        entity_id: input_select.alexa_livingroom_ac
+#        option: 72
+    - delay: '00:03:00'
+    - service: browser_mod.navigate
+      data:
+        navigation_path: /lovelace/18
+        deviceID:
+          - browser_note_kiosk
+    - service: input_boolean.turn_off
+      entity_id: input_boolean.alarm_went_off
+    - service: remote.turn_on
+      entity_id: remote.gabes_harmony_hub
+      data:
+        activity: "Speaker"
+    - service: shell_command.volumio_emptytrack
+    - delay: '00:00:02'
+    - service: media_player.media_pause
+      entity_id: media_player.gabes_music_server
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44
+        volume_level: 1
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+        volume_level: 0
+#    - service: script.soundbar_volume_up
+#    - delay: '00:01:00'
+#    - service: media_player.play_media
+#      data:
+#        entity_id: media_player.gabe_s_alexa
+#        media_content_type: sound
+#        media_content_id: amzn_sfx_trumpet_bugle_03
+    - service: media_player.play_media
+      data:
+        entity_id: media_player.volumio_mpd
+        media_content_id: 'https://thisisgabes.asuscomm.com:8008/local/sounds/janet_hithere.mp3'
+        media_content_type: 'music'
+    - delay: '00:00:01'
+    - service: script.janet_speech_engine
+      data:
+        call_morning_greeting: 1
+    - delay: '00:00:05'
+    - service: script.janet_speech_engine
+      data:
+        call_morning_weather: 1
+#    - wait_template: "{{ not is_state( media_player.browser_note_kiosk, 'playing') }}"
+#      timeout: 00:00:10
+#    - service: script.janet_speech_engine
+#      data:
+#        call_morning_news: 1
+#    - wait_template: "{{ not is_state( media_player.browser_note_kiosk, 'playing') }}"
+#      timeout: 00:00:10
+#    - service: rest_command.kiosk_sound_startrek_computer2
+    - delay: '00:00:15'
+    - service: switch.turn_on
+      entity_id: switch.entry_light
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen
+        rgb_color: [255,251,4]
+        brightness: 255
+        transition: 120
+    - service: shell_command.volumio_emptytrack
+    - delay: '00:00:02'
+    - service: media_player.media_pause
+      entity_id: media_player.gabes_music_server
+    - service: media_player.play_media
+      data:
+        entity_id: media_player.volumio_mpd
+        media_content_id: 'https://thisisgabes.asuscomm.com:8008/local/sounds/janet_boop.mp3'
+        media_content_type: music
+    - delay: '00:00:01'
+    - service: shell_command.volumio_emptytrack
+    - delay: '00:00:02'
+    - service: media_player.media_pause
+      entity_id: media_player.gabes_music_server
+    - service: media_player.play_media
+      data:
+        entity_id: media_player.volumio_mpd
+        media_content_type: music
+        media_content_id: 'http://pd.npr.org/anon.npr-mp3/npr/news/newscast.mp3'
+    - delay: '00:05:00'
+    - service: media_player.media_pause
+      entity_id: media_player.gabes_music_server
+    - service: shell_command.volumio_emptytrack
+    - delay: '00:00:02'
+    - service: media_player.media_pause
+      entity_id: media_player.gabes_music_server
+    - condition: template
+      value_template: "{{ ((as_timestamp(states.calendar.gabethisisgabescom.attributes.start_time) - as_timestamp(now())) < 64800) and ((as_timestamp(states.calendar.gabethisisgabescom.attributes.start_time) - as_timestamp(now())) > 0) }}"
+    - service: media_player.play_media
+      data:
+        entity_id: media_player.volumio_mpd
+        media_content_id: 'https://thisisgabes.asuscomm.com:8008/local/sounds/startrek_computer3.mp3'
+        media_content_type: music
+    - service: script.janet_speech_engine
+      data:
+        call_inform: 1
+        call_morning_event: 1
+#    - delay:
+#        seconds: 35.00
+#    - condition: template
+#      value_template: "{{ ((as_timestamp(states.calendar.work.attributes.start_time) - as_timestamp(now())) < 64800) and ((as_timestamp(states.calendar.work.attributes.start_time) - as_timestamp(now())) > 0) }}"
+#    - service: rest_command.kiosk_sound_startrek_computer1
+#    - service: script.janet_speech_engine
+#      data:
+#        call_inform: 1
+#        call_morning_work_event: 1
+    - delay: '00:00:35'
+    - service: browser_mod.navigate
+      data:
+        navigation_path: /lovelace/18
+        deviceID:
+          - browser_note_kiosk
+    - delay: '00:05:00'
+    - service: media_player.media_stop
+      entity_id: media_player.volumio_mpd
+    - service: media_player.turn_off
+      entity_id: media_player.volumio_mpd
+    - service: automation.turn_off
+      entity_id: automation.morning_greeting_update
+    - service: script.soundbar_volume_down
+
+kiosk_play_the_news:
+  sequence:
+    - service: remote.turn_on
+      entity_id: remote.gabes_harmony_hub
+      data:
+        activity: "Speaker"
+    - service: script.soundbar_volume_up
+    - delay:
+        seconds: 30
+    - service: media_player.play_media
+      data:
+        entity_id: media_player.volumio_mpd
+        media_content_type: music
+        media_content_id: 'http://pd.npr.org/anon.npr-mp3/npr/news/newscast.mp3'
+    - delay:
+        minutes: 6
+    - service: media_player.media_pause
+      entity_id: media_player.gabes_music_server
+    - service: media_player.turn_off
+      entity_id: media_player.volumio_mpd
+    - service: script.soundbar_volume_down
+
+soundfx_drumriff:
+  sequence:
+    - service: media_player.play_media
+      data:
+        entity_id: media_player.gabe_s_alexa
+        media_content_type: sound
+        media_content_id: amzn_sfx_drum_comedy_02
+
+soundfx_bugle:
+  sequence:
+    - service: media_player.play_media
+      data:
+        entity_id: media_player.gabe_s_alexa
+        media_content_type: sound
+        media_content_id: amzn_sfx_trumpet_bugle_03
+
+soundfx_applause:
+  sequence:
+    - service: media_player.play_media
+      data:
+        entity_id: media_player.gabe_s_alexa
+        media_content_type: sound
+        media_content_id: amzn_sfx_crowd_applause_03
+
+fart_machine:
+  sequence:
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44
+        volume_level: 1
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+        volume_level: 0
+    - service: media_player.play_media
+      data_template:
+        entity_id: media_player.volumio_mpd
+        media_content_id: >-
+          {%- set responses = [
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart1.mp3", 
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart2.mp3", 
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart3.mp3",
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart4.mp3", 
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart5.mp3", 
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart6.mp3",
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart7.mp3", 
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart8.mp3", 
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart9.mp3",
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart10.mp3", 
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart11.mp3", 
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart12.mp3",
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart13.mp3",
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart14.mp3"
+          ] -%}
+          {% set rindex =  (range(0, (responses | length - 1) )|random) -%}
+          {{responses[rindex]}}
+        media_content_type: music
+    - delay: 00:00:03
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44
+        volume_level: 0
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+        volume_level: 1
+    - service: media_player.play_media
+      data_template:
+        entity_id: media_player.volumio_mpd
+        media_content_id: >-
+          {%- set responses = [
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart1.mp3", 
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart2.mp3", 
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart3.mp3",
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart4.mp3", 
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart5.mp3", 
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart6.mp3",
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart7.mp3", 
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart8.mp3", 
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart9.mp3",
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart10.mp3", 
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart11.mp3", 
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart12.mp3",
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart13.mp3",
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart14.mp3"
+          ] -%}
+          {% set rindex =  (range(0, (responses | length - 1) )|random) -%}
+          {{responses[rindex]}}
+        media_content_type: music
+    - delay: 00:00:03
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44
+        volume_level: 1
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+        volume_level: 0
+    - service: media_player.play_media
+      data_template:
+        entity_id: media_player.volumio_mpd
+        media_content_id: >-
+          {%- set responses = [
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart1.mp3", 
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart2.mp3", 
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart3.mp3",
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart4.mp3", 
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart5.mp3", 
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart6.mp3",
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart7.mp3", 
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart8.mp3", 
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart9.mp3",
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart10.mp3", 
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart11.mp3", 
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart12.mp3",
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart13.mp3",
+          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart14.mp3"
+          ] -%}
+          {% set rindex =  (range(0, (responses | length - 1) )|random) -%}
+          {{responses[rindex]}}
+        media_content_type: music
+    - delay: 00:00:03
+
+get_mailbox_temp:
+  sequence:
+    - service: switch.turn_on
+      entity_id: switch.mailbox_temp_request
+    - delay: 00:00:02
+    - service: switch.turn_off 
+      entity_id: switch.mailbox_temp_request
+
+#Lighting Scripts
+tv_lights_off:
+  sequence:
+    - service: light.turn_on
+      data:
+        entity_id: light.table
+        rgb_color: [255,251,4]
+        brightness: 255
+        transition: 120
+    - service: light.turn_on
+      data:
+        entity_id: light.desk
+        rgb_color: [255,251,4]
+        brightness: 170
+        transition: 120
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen
+        rgb_color: [255,251,4]
+        brightness: 255
+        transition: 120
+    - service: light.turn_on
+      data:
+        entity_id: light.bedroom_desk
+        xy_color: [0.48,0.40]
+        brightness: 70
+        transition: 120
+    - service: light.turn_on
+      data:
+        entity_id: light.bed_light
+        xy_color: [0.65,0.41]
+        brightness: 70
+        transition: 120
+    - service: light.turn_on
+      data:
+        entity_id: light.big_o
+        transition: 120
+        brightness: 50
+        rgb_color: [0,255,0]
+
+tv_lights_on:
+  sequence:
+    - service: switch.turn_off
+      entity_id: switch.entry_light
+    - service: light.turn_on
+      data:
+        entity_id: light.table
+        rgb_color: [255,251,4]
+        brightness: 44
+        transition: 60
+    - service: light.turn_off
+      data:
+        entity_id: light.desk
+        transition: 60
+    - service: light.turn_off
+      data:
+        entity_id: light.thundercloud
+        transition: 60
+    - service: light.turn_off
+      data:
+        entity_id: light.kitchen
+        rgb_color: [255,251,4]
+        brightness: 60
+        transition: 60
+
+welcome_lights_on:
+  sequence:
+    - service: light.turn_on
+      entity_id: light.entry_light
+    - service: light.turn_on
+      data:
+        entity_id: light.bed_light
+        brightness: 20
+        rgb_color: [255,251,4]
+        transition: 40
+    - delay:
+        seconds: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.table
+        rgb_color: [255,182,109]
+        brightness: 221
+        transition: 30
+    - delay:
+        seconds: 20
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen
+        brightness: 254
+        rgb_color: [255,251,4]
+        transition: 30
+    - delay:
+        seconds: 20
+    - service: light.turn_on
+      data:
+        entity_id: light.desk
+        rgb_color: [255,182,109]
+        brightness: 50
+        transition: 30
+    - service: script.turn_on
+      data:
+        entity: script.et_lightshow
+
+#Bed Occupancy
+zero_bed:
+  alias: Tare Bed
+  sequence:
+    - service: mqtt.publish
+      data_template:
+        topic: "bed_occupancy/reading/tare"
+        payload: '0'
+
+#Lighting Scripts
+et_lightshow:
+  sequence:
+    - service: switch.turn_off
+      entity_id: switch.et_heartbeat
+    - delay:
+        seconds: 2
+    - service: switch.turn_off
+      entity_id: switch.et_blink
+    - delay:
+        seconds: 2
+    - service: switch.turn_off
+      entity_id: switch.et_finger_blink
+    - delay:
+        seconds: 5
+    - service: switch.turn_on
+      entity_id: switch.et_heartbeat
+    - delay:
+        seconds: 5
+    - service: switch.turn_on
+      entity_id: switch.et_blink
+    - delay:
+        seconds: 5
+    - service: switch.turn_on
+      entity_id: switch.et_finger_blink
+    - delay:
+        seconds: 20
+    - service: switch.turn_off
+      entity_id: switch.et_heartbeat
+    - delay:
+        seconds: 5
+    - service: switch.turn_off
+      entity_id: switch.et_blink
+    - delay:
+        seconds: 5
+    - service: switch.turn_off
+      entity_id: switch.et_finger_blink
+    - delay:
+        seconds: 2
+    - service: switch.turn_on
+      entity_id: switch.et_eyes
+    - delay:
+        seconds: 5
+    - service: switch.turn_on
+      entity_id: switch.et_chest
+    - delay:
+        seconds: 5
+    - service: switch.turn_on
+      entity_id: switch.et_finger
+
+et_off:
+  sequence:
+    - service: switch.turn_off
+      entity_id: switch.et_heartbeat
+    - delay:
+        seconds: 2
+    - service: switch.turn_off
+      entity_id: switch.et_blink
+    - delay:
+        seconds: 2
+    - service: switch.turn_off
+      entity_id: switch.et_finger_blink
+    - delay:
+        seconds: 2
+    - service: switch.turn_off
+      entity_id: switch.et_eyes
+    - delay:
+        seconds: 2
+    - service: switch.turn_off
+      entity_id: switch.et_chest
+    - delay:
+        seconds: 2
+    - service: switch.turn_off
+      entity_id: switch.et_finger
+
+lights_chill_blue:
+  sequence:
+    - service: homeassistant.turn_on
+      entity_id: group.all_rgb_lights
+      data_template:
+        rgb_color: [82,0,255]
+        brightness_pct: 20
+        transition: 10
+    - service: light.turn_on
+      data:
+        entity_id: light.table
+        rgb_color: [82,0,255]
+        brightness: 100
+        transition: 10
+    - service: light.turn_on
+      data:
+        entity_id: light.desk
+        rgb_color: [82,0,255]
+        brightness: 100
+        transition: 10
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen
+        rgb_color: [82,0,255]
+        brightness: 10
+    - service: light.turn_on
+      data:
+        entity_id: light.bedroom_desk
+        rgb_color: [82,0,255]
+        brightness: 100
+        transition: 10
+    - service: light.turn_on
+      data:
+        entity_id: light.bed_light
+        rgb_color: [82,0,255]
+        brightness: 100
+        transition: 10
+    - service: light.turn_on
+      data:
+        entity_id: light.big_o
+        transition: 120
+        brightness: 50
+        rgb_color: [0,0,255]
+    - service: switch.turn_off
+      entity_id: switch.entry_light
+
+#Lighting Scripts
+lights_random:
+  sequence:
+    - service: homeassistant.turn_on
+      entity_id: group.all_rgb_lights
+      data_template:
+        hs_color:
+          - "{{ range(360)|random }}"
+          - "{{ range(80,101)|random }}"
+        brightness_pct: 100
+        transition: 30
+    - delay: '00:00:02'
+    - service: light.turn_on
+      data:
+        entity_id: light.table
+        effect: random
+        transition: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.desk
+        effect: random
+        transition: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen
+        effect: random
+        transition: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.bedroom_desk
+        effect: random
+        transition: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.bed_light
+        effect: random
+        transition: 30
+
+lights_loop:
+  sequence:
+    - service: homeassistant.turn_on
+      entity_id: group.all_rgb_lights
+      data_template:
+        hs_color:
+          - "{{ range(360)|random }}"
+          - "{{ range(80,101)|random }}"
+        brightness_pct: 100
+        transition: 30
+    - service: light.turn_on
+      data:
+        entity_id: light.table
+        effect: colorloop
+        transition: 60
+    - service: light.turn_on
+      data:
+        entity_id: light.desk
+        effect: colorloop
+        transition: 60
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen
+        effect: colorloop
+        transition: 60
+    - service: light.turn_on
+      data:
+        entity_id: light.bedroom_desk
+        effect: colorloop
+        transition: 60
+    - service: light.turn_on
+      data:
+        entity_id: light.bed_light
+        effect: colorloop
+        transition: 60
+
+lightning_burst:
+  sequence:
+    - service: light.turn_on
+      entity_id: light.thundercloud
+      data:
+        effect: lightning
+    - delay: 00:05:00
+    - service: light.turn_on
+      entity_id: light.thundercloud
+      data:
+        effect: solid
+
+thundercloud_celebrate:
+  sequence:
+    - service: light.turn_on
+      entity_id: light.thundercloud
+      data:
+        brightness: 255
+        effect: bpm
+    - delay: 00:01:00
+    - service: light.turn_on
+      entity_id: light.thundercloud
+      data:
+        brightness: 200
+        rgb_color: [255,190,0]
+        effect: solid
+
+soundbar_power_off:
+  alias: Soundbar Power Off
+  sequence:
+    - service: remote.send_command
+      data:
+        entity_id: remote.gabes_harmony_hub
+        command:
+          - PowerToggle
+        device: 'Samsung Amp'
+
+soundbar_power_on:
+  alias: Soundbar Power On
+  sequence:
+    - service: remote.send_command
+      data:
+        entity_id: remote.gabes_harmony_hub
+        command:
+          - PowerToggle
+        device: 'Samsung Amp'
+
+soundbar_volume_up:
+  alias: Soundbar Volume Up
+  sequence:
+    - service: remote.send_command
+      data:
+        entity_id: remote.gabes_harmony_hub
+        command:
+          - VolumeUp
+        device: 'Samsung Amp'
+    - delay: 00:00:02
+    - service: remote.send_command
+      data:
+        entity_id: remote.gabes_harmony_hub
+        command:
+          - VolumeUp
+        device: 'Samsung Amp'
+    - delay: 00:00:02
+    - service: remote.send_command
+      data:
+        entity_id: remote.gabes_harmony_hub
+        command:
+          - VolumeUp
+        device: 'Samsung Amp'
+    - delay: 00:00:02
+    - service: remote.send_command
+      data:
+        entity_id: remote.gabes_harmony_hub
+        command:
+          - VolumeUp
+        device: 'Samsung Amp'
+    - delay: 00:00:02
+
+soundbar_volume_down:
+  alias: Soundbar Volume Down
+  sequence:
+    - service: remote.send_command
+      data:
+        entity_id: remote.gabes_harmony_hub
+        command:
+          - VolumeDown
+        device: 'Samsung Amp'
+    - delay: 00:00:02
+    - service: remote.send_command
+      data:
+        entity_id: remote.gabes_harmony_hub
+        command:
+          - VolumeDown
+        device: 'Samsung Amp'
+    - delay: 00:00:02
+    - service: remote.send_command
+      data:
+        entity_id: remote.gabes_harmony_hub
+        command:
+          - VolumeDown
+        device: 'Samsung Amp'
+
+soundbar_input_select:
+  alias: Soundbar Input Select
+  sequence:
+    - service: remote.send_command
+      data:
+        entity_id: remote.gabes_harmony_hub
+        command:
+          - Source
+        device: 'Samsung Amp'
+    - delay: 00:00:02
+    - service: switch.turn_off 
+      entity_id: switch.samsung_soundbar_input
+
+#Birdfeed
+birdfeed_announce_begin:
+  alias: Birdfeed Announce Begin
+  sequence:
+    - service: media_player.media_pause
+      entity_id: media_player.gabes_music_server
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44
+        volume_level: 0
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_b8_27_eb_31_93_b7
+        volume_level: 1
+    - service: media_player.play_media
+      data:
+        entity_id: media_player.volumio_mpd
+        media_content_id: 'https://thisisgabes.asuscomm.com:8008/local/sounds/empty_track_1min.mp3'
+        media_content_type: music
+    - delay: 00:00:02
+
+birdfeed_announce_end:
+  alias: Birdfeed Announce End
+  sequence:
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44
+        volume_level: 1
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_b8_27_eb_31_93_b7
+        volume_level: 0 
+    - service: media_player.play_media
+      data:
+        entity_id: media_player.volumio_mpd
+        media_content_id: 'https://thisisgabes.asuscomm.com:8008/local/sounds/empty_track_1min.mp3'
+        media_content_type: music
+    - delay: 00:00:01
+
+birdfeed_tweet:
+  alias: Birdfeed Tweet
+  sequence:
+    - service: script.turn_on
+      entity_id: script.birdfeed_announce_begin
+    - delay: 00:00:01
+    - service: media_player.play_media
+      data:
+        entity_id: media_player.volumio_mpd
+        media_content_id: 'https://thisisgabes.asuscomm.com:8008/local/sounds/tweet.mp3'
+        media_content_type: music
+    - delay: 00:00:04
+    - service: script.turn_on
+      entity_id: script.birdfeed_announce_end
+
+#Alexa TTS
+alexa_set_volume:
+  sequence:
+    - service: media_player.volume_set
+      data_template: 
+        entity_id: '{{ states.sensor.last_alexa.state }}' 
+        volume_level: >
+          {% if is_state("sensor.last_alexa", "media_player.gabe_s_alexa") %}
+            0.5
+          {% else %}
+            0.3
+          {% endif %}
+
+alexa_tts:
+  sequence: 
+    - service: script.turn_on
+      entity_id: script.alexa_set_volume
+    - delay: '00:00:01'      
+    - service: media_player.alexa_tts
+      data_template:
+        entity_id: '{{ states.sensor.last_alexa.state }}' 
+        message: "YOUR MESSAGE"
+
+alexa_morning_weather:
+  alias: Alexa Morning Weather
+  sequence:
+#    - service: script.turn_on
+#      entity_id: script.alexa_connect_to_speaker
+#    - delay: '00:00:01' 
+    - service: script.turn_on
+      entity_id: script.alexa_set_volume
+    - delay: '00:00:01' 
+    - data:
+        entity_id: media_player.gabe_s_alexa
+        media_content_id: morningweather
+        media_content_type: routine
+      service: media_player.play_media
+
+alexa_joke:
+  alias: Alexa Joke
+  sequence:
+#    - service: script.turn_on
+#      entity_id: script.alexa_connect_to_speaker
+    - service: script.turn_on
+      entity_id: script.alexa_set_volume
+    - delay: '00:00:01' 
+    - service: media_player.play_media
+      data:
+        entity_id: media_player.gabe_s_alexa
+        media_content_id: "Alexa.Joke.Play"
+        media_content_type: sequence
+
+alexa_humidifier_on:
+  alias: Alexa Humidifier On
+  sequence:
+  - data:
+      entity_id: media_player.gabe_s_alexa
+      media_content_id: humidifieron
+      media_content_type: routine
+    service: media_player.play_media
+
+alexa_humidifier_off:
+  alias: Alexa Humidifier Off
+  sequence:
+  - data:
+      entity_id: media_player.gabe_s_alexa
+      media_content_id: humidifieroff
+      media_content_type: routine
+    service: media_player.play_media
+
+#ac units
+alexa_bedroom_ac_on:
+  alias: Alexa Bedroom AC On
+  sequence:
+  - data:
+      entity_id: media_player.gabe_s_alexa
+      media_content_id: bedroomacon
+      media_content_type: routine
+    service: media_player.play_media
+
+alexa_bedroom_ac_off:
+  alias: Alexa Bedroom AC Off
+  sequence:
+  - data:
+      entity_id: media_player.gabe_s_alexa
+      media_content_id: bedroomacoff
+      media_content_type: routine
+    service: media_player.play_media
+
+alexa_livingroom_ac_on:
+  alias: Alexa Livingroom AC On
+  sequence:
+  - data:
+      media_content_id: livingroomacon
+      media_content_type: routine
+      entity_id: media_player.gabe_s_alexa
+    service: media_player.play_media
+
+alexa_livingroom_ac_off:
+  alias: Alexa Livingroom AC Off
+  sequence:
+  - data:
+      media_content_id: livingroomacoff
+      media_content_type: routine
+      entity_id: media_player.gabe_s_alexa
+    service: media_player.play_media
+
+alexa_livingroom_ac_set:
+  alias: Alexa Livingroom AC Set
+  sequence:
+  - service: media_player.play_media
+    data_template:
+      media_content_id: >
+          {% if is_state("input_select.alexa_livingroom_ac", "63") %}livingroomacsixthree
+          {% elif is_state("input_select.alexa_livingroom_ac", "64") %}livingroomacsixfour
+          {% elif is_state("input_select.alexa_livingroom_ac", "65") %}livingroomacsixfive
+          {% elif is_state("input_select.alexa_livingroom_ac", "66") %}livingroomacsixsix
+          {% elif is_state("input_select.alexa_livingroom_ac", "67") %}livingroomacsixseven
+          {% elif is_state("input_select.alexa_livingroom_ac", "68") %}livingroomacsixeight
+          {% elif is_state("input_select.alexa_livingroom_ac", "69") %}livingroomacsixnine
+          {% elif is_state("input_select.alexa_livingroom_ac", "70") %}livingroomacsevenzero
+          {% elif is_state("input_select.alexa_livingroom_ac", "71") %}livingroomacsevenone
+          {% elif is_state("input_select.alexa_livingroom_ac", "72") %}livingroomacseventwo
+          {% elif is_state("input_select.alexa_livingroom_ac", "73") %}livingroomacseventhree
+          {% elif is_state("input_select.alexa_livingroom_ac", "74") %}livingroomacsevenfour
+          {% elif is_state("input_select.alexa_livingroom_ac", "75") %}livingroomacsevenfive
+          {% elif is_state("input_select.alexa_livingroom_ac", "76") %}livingroomacsevensix
+          {% elif is_state("input_select.alexa_livingroom_ac", "77") %}livingroomacsevenseven
+          {% elif is_state("input_select.alexa_livingroom_ac", "78") %}livingroomacseveneight
+          {% elif is_state("input_select.alexa_livingroom_ac", "79") %}livingroomacsevennine
+          {% elif is_state("input_select.alexa_livingroom_ac", "80") %}livingroomaceightzero
+          {% elif is_state("input_select.alexa_livingroom_ac", "81") %}livingroomaceightone
+          {% elif is_state("input_select.alexa_livingroom_ac", "82") %}livingroomaceighttwo
+          {% elif is_state("input_select.alexa_livingroom_ac", "83") %}livingroomaceightthree
+          {% elif is_state("input_select.alexa_livingroom_ac", "84") %}livingroomaceightfour
+          {% elif is_state("input_select.alexa_livingroom_ac", "85") %}livingroomaceightfive
+          {% endif %}
+      entity_id: media_player.gabe_s_alexa
+      media_content_type: routine
+
+alexa_bedroom_ac_set:
+  alias: Alexa Bedroom AC Set
+  sequence:
+  - service: media_player.play_media
+    data_template:
+      media_content_id: >
+          {% if is_state("input_select.alexa_bedroom_ac", "63") %}bedroomacsixthree
+          {% elif is_state("input_select.alexa_bedroom_ac", "64") %}bedroomacsixfour
+          {% elif is_state("input_select.alexa_bedroom_ac", "65") %}bedroomacsixfive
+          {% elif is_state("input_select.alexa_bedroom_ac", "66") %}bedroomacsixsix
+          {% elif is_state("input_select.alexa_bedroom_ac", "67") %}bedroomacsixseven
+          {% elif is_state("input_select.alexa_bedroom_ac", "68") %}bedroomacsixeight
+          {% elif is_state("input_select.alexa_bedroom_ac", "69") %}bedroomacsixnine
+          {% elif is_state("input_select.alexa_bedroom_ac", "70") %}bedroomacsevenzero
+          {% elif is_state("input_select.alexa_bedroom_ac", "71") %}bedroomacsevenone
+          {% elif is_state("input_select.alexa_bedroom_ac", "72") %}bedroomacseventwo
+          {% elif is_state("input_select.alexa_bedroom_ac", "73") %}bedroomacseventhree
+          {% elif is_state("input_select.alexa_bedroom_ac", "74") %}bedroomacsevenfour
+          {% elif is_state("input_select.alexa_bedroom_ac", "75") %}bedroomacsevenfive
+          {% elif is_state("input_select.alexa_bedroom_ac", "76") %}bedroomacsevensix
+          {% elif is_state("input_select.alexa_bedroom_ac", "77") %}bedroomacsevenseven
+          {% elif is_state("input_select.alexa_bedroom_ac", "78") %}bedroomacseveneight
+          {% elif is_state("input_select.alexa_bedroom_ac", "79") %}bedroomacsevennine
+          {% elif is_state("input_select.alexa_bedroom_ac", "80") %}bedroomaceightzero
+          {% elif is_state("input_select.alexa_bedroom_ac", "81") %}bedroomaceightone
+          {% elif is_state("input_select.alexa_bedroom_ac", "82") %}bedroomaceighttwo
+          {% elif is_state("input_select.alexa_bedroom_ac", "83") %}bedroomaceightthree
+          {% elif is_state("input_select.alexa_bedroom_ac", "84") %}bedroomaceightfour
+          {% elif is_state("input_select.alexa_bedroom_ac", "85") %}bedroomaceightfive
+          {% endif %}
+      entity_id: media_player.gabe_s_alexa
+      media_content_type: routine
+
+sleep_mode_cool_room:
+  alias: Sleep Mode Cool Bedroom
+  sequence:
+    - service: switch.turn_off
+      entity_id: switch.entry_light
+    - service: input_select.select_option
+      data:
+        entity_id: input_select.alexa_bedroom_ac
+        option: 72
+    - service: input_select.select_option
+      data:
+        entity_id: input_select.alexa_livingroom_ac
+        option: 83
+    - service: script.turn_on
+      data:
+        entity: script.alexa_bedroom_ac_set
+    - service: script.turn_on
+      data:
+        entity: script.alexa_livingroom_ac_set
+
+sleep_mode_ambient_sounds:
+  alias: Sleep Mode Ambient Sounds
+  sequence:
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44
+        volume_level: 0
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+        volume_level: 0.4
+    - delay:
+        seconds: 10
+    - service: input_select.select_option
+      data_template:
+        entity_id: input_select.ambient_sounds
+        option: "Dark Thunderstorm"
+    - delay:
+        seconds: 30
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+        volume_level: 0.5
+    - delay:
+        seconds: 60
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+        volume_level: 0.6
+    - delay:
+        seconds: 60
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+        volume_level: 0.7
+    - delay:
+        seconds: 60
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+        volume_level: 0.8
+    - delay:
+        minutes: 120
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+        volume_level: 0
+
+alexa_connect_to_speaker:
+  alias: Alexa Connect to Speaker
+  sequence:
+    - condition: template
+      value_template:  '{{ (states.sensor.soundbar_connected.state) != "on" }}'
+    - service: media_player.select_source
+      data:
+        source: "[AV] Samsung Soundbar K360 K-Series"
+        entity_id: media_player.gabe_s_alexa
+
+radio_tune:
+  alias: Play Radio on Kiosk Speaker
+  sequence:
+#    - service: media_player.volume_set
+#      data:
+#        entity_id: media_player.entry
+#        volume_level: '0.35'
+#    -  service: media_player.volume_set
+#       data:
+#         entity_id: media_player.soundbar
+#         volume_level: '0.20'
+     - service: media_player.play_media
+#       entity: media_player.browser_note_kiosk
+       data_template:
+         entity_id: media_player.browser_note_kiosk
+         media_content_type: music
+         media_content_id: >
+            {% if is_state("input_select.radio_station", "BBC News") %} https://fm939.wnyc.org/wnycfm-web?nyprBrowserId=60b090e836734000
+            {% elif is_state("input_select.radio_station", "Q-Music") %} http://icecast-qmusic.cdp.triple-it.nl/Qmusic_nl_live_96.mp3
+            {% elif is_state("input_select.radio_station", "3FM") %} http://icecast.omroep.nl/3fm-bb-mp3
+            {% elif is_state("input_select.radio_station", "100% NL") %} http://stream.100p.nl/100pctnl.mp3
+            {% elif is_state("input_select.radio_station", "Veronica") %} http://8543.live.streamtheworld.com/VERONICACMP3
+            {% elif is_state("input_select.radio_station", "Sky Radio") %} http://8623.live.streamtheworld.com:80/SKYRADIOAAC_SC
+            {% elif is_state("input_select.radio_station", "Arrow Classic Rock") %} http://91.221.151.155/listen.mp3
+            {% elif is_state("input_select.radio_station", "Classic FM") %} http://19143.live.streamtheworld.com/CLASSICFM_SC
+            {% elif is_state("input_select.radio_station", "BNR Nieuwsradio") %} http://icecast-bnr.cdp.triple-it.nl/bnr_mp3_96_03
+            {% elif is_state("input_select.radio_station", "Sleep Radio") %} http://37.59.28.208:8722/stream
+            {% elif is_state("input_select.radio_station", "Ambient Sleeping Pill") %} http://perseus.shoutca.st:8447/h
+            {% elif is_state("input_select.radio_station", "Radio Art - Sleep") %} http://live.radioart.com/fSleep.mp3
+            {% elif is_state("input_select.radio_station", "Ambi Nature Radio") %} http://94.23.252.14:8067/stream
+            {% elif is_state("input_select.radio_station", "Calm Radio - Sleep") %} http://streams.calmradio.com/api/39/128/stream
+            {% elif is_state("input_select.radio_station", "Dinamo.FM Sleep") %} http://channels.dinamo.fm/sleep-aac
+            {% endif %}

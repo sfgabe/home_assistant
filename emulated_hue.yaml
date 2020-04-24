@@ -1,0 +1,8 @@
+listen_port: 8300
+host_ip: 192.168.50.159
+expose_by_default: true
+exposed_domains:
+  - light
+entities:
+  media_player.volumio_mpd:
+    name: "Gabes Music"

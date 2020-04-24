@@ -1,0 +1,475 @@
+input_boolean.weather:
+  custom_ui_state_card: custom-weather-card
+  config:
+    weather: weather.darksky
+    sun: sun.sun
+
+sensor.dark_sky_temperature:
+  friendly_name: Temperature
+  
+sensor.dark_sky_apparent_temperature:
+  friendly_name: Apparent Temperature
+  
+sensor.dark_sky_humidity:
+  friendly_name: Humidity
+  
+sensor.dark_sky_wind_speed:
+  friendly_name: Wind Speed
+  
+sensor.dark_sky_daily_max_precip_intensity:
+  friendly_name: Daily Max Precip Intensity
+  icon: mdi:beaker
+  
+sensor.dark_sky_cloud_coverage:
+  friendly_name: Cloud Coverage
+  
+sensor.wind:
+  icon: mdi:weather-windy
+  
+sensor.weather_week_text:
+  icon: mdi:calendar-range
+
+binary_sensor.floorplan:
+  custom_ui_state_card: state-card-floorplan
+  config: !include floorplan.yaml
+
+sensor.empirestatelights:
+  friendly_name: The View
+  custom_ui_state_card: state-card-text
+
+sensor.dark_sky_summary:
+  friendly_name: Forecast
+  custom_ui_state_card: state-card-text
+
+sensor.dark_sky_hourly_summary:
+  friendly_name: In the next hour
+  custom_ui_state_card: state-card-text
+
+sensor.dark_sky_daily_summary:
+  friendly_name: 24 Hour Forecast
+  custom_ui_state_card: state-card-text
+
+sensor.dark_sky_minutely_summary:
+  friendly_name: Right Now
+  custom_ui_state_card: state-card-text
+
+sensor.pretty_date_time:
+  friendly_name: Today
+  custom_ui_state_card: state-card-text
+
+sensor.pretty_date:
+  friendly_name: Today
+  custom_ui_state_card: state-card-text
+
+sensor.template_calendar_next:
+  friendly_name: Next Event
+  custom_ui_state_card: state-card-text
+
+sensor.new_nextcal_location:
+  friendly_name: Next Event Location
+  custom_ui_state_card: state-card-text
+
+sensor.nextcal_location:
+  friendly_name: Next Event Location
+  custom_ui_state_card: state-card-text
+
+sensor.nextcal_message:
+  friendly_name: Next Event Name
+  custom_ui_state_card: state-card-text
+
+sensor.date:
+  friendly_name: Date
+  custom_ui_state_card: state-card-text
+
+sensor.template_calendar_birthday_date:
+  friendly_name: Next Birthday Date
+  custom_ui_state_card: state-card-text
+
+sensor.template_calendar_birthday:
+  friendly_name: Next Birthday
+  custom_ui_state_card: state-card-text
+
+sensor.myipopendnscom:
+  friendly_name: DNS
+  custom_ui_state_card: state-card-text
+
+sensor.stats_work:
+  icon: mdi:domain
+  friendly_name: 'At Work (7 days)'
+
+sensor.stats_home:
+  icon: mdi:home
+  friendly_name: 'At Home (7 days)'
+
+sensor.stats_bed:
+  icon: mdi:bed-king
+  friendly_name: 'In Bed (7 days)'
+
+sensor.usps_mail:
+  friendly_name: USPS Mail
+  templates:
+    icon: >
+      if (state > 1) return 'mdi:email-multiple-outline';
+      return 'mdi:email-outline';
+    icon_color: >
+      if (state > 0) return 'rgb(251, 210, 41)';
+      return 'rgb(54, 95, 140)';
+
+sensor.usps_packages:
+  friendly_name: USPS Packages
+  icon: mdi:package-varient
+  templates:
+    icon_color: >
+      if (state > 0) return 'rgb(251, 210, 41)';
+      return 'rgb(54, 95, 140)';
+
+sensor.noaa_reef_temp_str:
+  friendly_name: NOAA Reef Temp String
+
+sensor.reefsunrisetides:
+  friendly_name: Reef Sunrise
+
+sensor.reefsunsettides:
+  friendly_name: Reef Sunset
+
+sensor.mqtt_topic_home_sysinfo_template:
+  friendly_name: HomeCam Server Temperature
+
+group.reef_temp:
+  friendly_name: Reef Aquarium Temperature
+
+group.amazon_tank:
+  friendly_name: Amazon Aquarium
+
+sensor.mqtt_topic_octo_sysinfo_template_serverload:
+  friendly_name: Server Load
+
+sensor.mqtt_topic_octo_sysinfo_template_serverspeed:
+  friendly_name: Server Speed
+
+sensor.mqtt_topic_octo_sysinfo_template_servertemp:
+  friendly_name: Server Temperature
+
+sensor.mqtt_topic_octo_sysinfo_template_watertemp:
+  friendly_name: Aquarium Water Temperature
+
+sensor.amazonnexthightide:
+  friendly_name: Next High Tide
+
+sensor.amazonnextlowtide:
+  friendly_name: Next Low Tide
+
+sensor.amazonsunrisetides:
+  friendly_name: Sunrise
+
+sensor.amazonsunsettides:
+  friendly_name: Sunset
+
+sensor.amazonwatertemptides:
+  friendly_name: "Today's Actual (°C)"
+
+sensor.mqtt_topic_reef_sysinfo_template_serverload:
+  friendly_name: Server Load
+
+sensor.mqtt_topic_reef_sysinfo_template_serverspeed:
+  friendly_name: Server Speed
+
+sensor.mqtt_topic_reef_sysinfo_template_servertemp:
+  friendly_name: Server Temperature
+
+sensor.mqtt_topic_reef_sysinfo_template_watertemp:
+  friendly_name: Water Temperature
+
+sensor.reef_ocean_temp_c:
+  friendly_name: "Today's Actual (°C)"
+
+sensor.reef_ocean_temp_f:
+  friendly_name: "Today's Actual (°F)"
+
+history_graph.reef_water_temp_sync:
+  friendly_name: Temperature Sync
+
+history_graph.fios_speed:
+  friendly_name: Fios Speeds
+
+sensor.speedtest_download:
+  friendly_name: Download
+
+sensor.speedtest_upload:
+  friendly_name: Upload
+
+sensor.speedtest_ping:
+  friendly_name: Ping
+
+sensor.mqtt_topic_home_sysinfo_template_ambient_temperature:
+  friendly_name: Inside Temperature
+
+sensor.onlyreefcontrolpitemp:
+  friendly_name: Water Temperature
+
+sensor.onlyreefcontrolpitemptime:
+  friendly_name: Last Checked
+
+sensor.onlyreefcontrolcpumemory:
+  friendly_name: CPU Memory
+
+sensor.onlyreefcontrolcpuload:
+  friendly_name: CPU Load
+
+sensor.northbound_f_delancey_st:
+  entity_picture: /local/images/icons/F.png
+
+sensor.northbound_m_essex_st:
+  entity_picture: /local/images/icons/M.png
+
+sensor.northbound_b_grand_st:
+  entity_picture: /local/images/icons/B.png
+
+sensor.northbound_d_grand_st:
+  entity_picture: /local/images/icons/D.png
+
+sensor.southbound_f_east_broadway:
+  entity_picture: /local/images/icons/F.png
+
+sensor.northbound_j_essex_st:
+  entity_picture: /local/images/icons/J.png
+
+sensor.northbound_z_essex_st:
+  entity_picture: /local/images/icons/Z.png
+
+sensor.m14a_crosstown_at_clinton_street:
+  entity_picture: /local/images/icons/M14A.png
+
+sensor.m15_local_uptown_allen_at_grand:
+  entity_picture: /local/images/icons/M15.png
+
+sensor.m15sbs_uptown_allen_at_grand:
+  entity_picture: /local/images/icons/M15SBS.png
+
+climate.reef_tank_therm:
+  target_temp_step: 0.01
+
+climate.octo_tank_therm:
+  target_temp_step: 0.01
+
+switch.reef_pump_2: 
+  icon: mdi:fast-forward
+
+switch.reef_pump_1: 
+  icon: mdi:fast-forward
+
+switch.reef_pump_1_reverse: 
+  icon: mdi:rewind
+
+switch.reef_pump_1_scheduled: 
+  icon: mdi:clock
+
+sensor.reefcontrolpipump2power: 
+  icon: mdi:eyedropper
+
+sensor.reefcontrolpipump1status: 
+  icon: mdi:pipe
+
+switch.kessil_light_level_1: 
+  icon: mdi:alpha-a-box
+switch.kessil_light_level_2: 
+  icon: mdi:alpha-b-box
+switch.kessil_light_level_3: 
+  icon: mdi:alpha-c-box
+switch.kessil_light_level_4: 
+  icon: mdi:alpha-d-box
+switch.kessil_light_level_5: 
+  icon: mdi:alpha-e-box
+switch.kessil_light_level_6: 
+  icon: mdi:alpha-f-box
+switch.kessil_light_level_7: 
+  icon: mdi:alpha-g-box
+switch.kessil_light_level_8: 
+  icon: mdi:alpha-h-box
+switch.kessil_light_level_9: 
+  icon: mdi:alpha-i-box
+switch.kessil_light_level_10: 
+  icon: mdi:alpha-j-box
+switch.kessil_light_level_11: 
+  icon: mdi:alpha-k-box
+switch.kessil_light_level_12: 
+  icon: mdi:alpha-l-box
+
+switch.06200940dc4f22cbb94b_4:
+  icon: mdi:lightbulb-on
+switch.entry_light:
+  icon: mdi:lightbulb-on
+switch.motion_detect:
+  icon: mdi:security
+switch.garden_light:
+  icon: mdi:weather-sunny
+switch.garden_waterbot:
+  icon: mdi:water-pump
+sensor.mqtt_topic_garden_humidity_template:
+  icon: mdi:water-percent
+sensor.mqtt_topic_garden_moisture_level_template_level:
+  icon: mdi:cup-water
+sensor.mqtt_topic_garden_moisture_level_template_time:
+  icon: mdi:clock
+sensor.mqtt_topic_garden_humidity_template_time:
+  icon: mdi:clock
+input_boolean.bedroom_alarm_clock_status:
+  icon: mdi:alarm
+switch.pantilt_up:
+  icon: mdi:arrow-up-box
+switch.pantilt_down:
+  icon: mdi:arrow-down-box
+switch.pantilt_left:
+  icon: mdi:arrow-left-box
+switch.pantilt_right:
+  icon: mdi:arrow-right-box
+switch.pantilt_center:
+  icon: mdi:image-filter-center-focus
+binary_sensor.homecam_motion_sensor:
+  icon: mdi:motion-sensor
+switch.2437254184f3eb69e784:
+  icon: mdi:power-plug
+
+script.radio_tune:
+  friendly_name: Start Playing
+  icon: mdi:play
+
+#input_boolean.bedroom_alarm_clock_status:
+#  templates:
+#    icon: >
+#      if (state == 'on') return 'mdi:alarm';
+#      return 'mdi:alarm-off';
+#    icon_color: >
+#      if (state == 'on') return 'rgb(251, 210, 41)';
+#      return 'rgb(54, 95, 140)';
+
+#kiosk
+sensor.kiosk_brightness:
+  hidden: true
+binary_sensor.kiosk_screen:
+  hidden: true
+input_number.kiosk_brightness:
+  hidden: true
+
+switch.sonoff_10006b7f44:
+  entity_picture: /local/images/humidifier.jpg
+
+sensor.gabe_status:
+  entity_picture: https://pbs.twimg.com/profile_images/729829958621773825/6tR5_2u-_400x400.jpg
+
+group.gabe:
+  entity_picture: https://pbs.twimg.com/profile_images/729829958621773825/6tR5_2u-_400x400.jpg
+
+person.gabe_2:
+  entity_picture: https://pbs.twimg.com/profile_images/729829958621773825/6tR5_2u-_400x400.jpg
+
+switch.call_the_hounds:
+  friendly_name: "Call the Hounds!"
+  icon: mdi:dog-side
+rest_command.trigger_snapshot_room:
+  icon: mdi:camera
+
+media_player.snapcast_client_b8_27_eb_79_e8_44:
+  friendly_name: "VolumioSnapcastClient"
+media_player.snapcast_client_ffffffff_f480_0bd5_0000_00007bf68e41:
+  friendly_name: "GabesMateSnapcastClient"
+media_player.snapcast_client_12_42_bf_4f_88_4f:
+  friendly_name: "BedroomSnapcastClient"
+media_player.snapcast_client_b8_27_eb_31_93_b7:
+  friendly_name: "BirdfeedSnapcastClient"
+
+# Devices
+sensor.online_device_lorex_cam:
+  entity_picture: /local/images/device_lorexcam.jpg
+sensor.online_device_bluray_player:
+  entity_picture: /local/images/device_bluray.jpg
+sensor.online_device_asus_router:
+  entity_picture: /local/images/device_asus_router.jpeg
+sensor.online_device_amazon_echo:
+  entity_picture: /local/images/amazon_echo_dot.jpg
+sensor.online_device_samsung_soundbar:
+  entity_picture: /local/images/device_samsung_soundbar.jpg
+sensor.online_device_roku_dongle:
+  entity_picture: /local/images/device_roku_dongle.jpg
+sensor.online_device_mailbox:
+  entity_picture: /local/images/device_mailbox.jpg
+sensor.online_device_white_macbook:
+  entity_picture: /local/images/device_macbook.jpeg
+sensor.online_device_harmony_hub:
+  entity_picture: /local/images/device_harmony_hub.jpg
+sensor.online_device_homecam_pi:
+  entity_picture: /local/images/device_homecam_pi.jpg
+sensor.online_device_huawei_mate:
+  entity_picture: /local/images/device_huawei_mate.jpg
+sensor.gabes_mate_hotspot_bt_hass:
+  entity_picture: /local/images/device_huawei_mate.jpg
+sensor.online_device_octoprint:
+  entity_picture: /local/images/mpms_printer.jpg
+sensor.online_device_philipshue:
+  entity_picture: /local/images/device_philipshue.jpeg
+sensor.online_device_entry_pi:
+  entity_picture: /local/images/device_entry_pi.jpg
+sensor.online_device_reefcam_pantilt:
+  entity_picture: /local/images/device_reefcam_pantilt.jpg
+sensor.online_device_reef_pi:
+  entity_picture: /local/images/device_reef_pi.jpg
+sensor.online_device_entry_kiosk:
+  entity_picture: /local/images/device_entry_kiosk.jpg
+sensor.online_device_flux_capacitor:
+  entity_picture: /local/images/device_flux_capacitor.jpg
+sensor.online_device_garden_robot:
+  entity_picture: /local/images/device_garden_robot.jpg
+sensor.online_device_plant_monitor:
+  entity_picture: /local/images/device_plant_monitor.jpg
+device_tracker.001bc70517d8:
+  entity_picture: /local/images/device_lorexcam.jpg
+device_tracker.104fa8d6e235:
+  entity_picture: /local/images/device_bluray.jpg
+device_tracker.42a6774db0cd:
+  entity_picture: /local/images/device_asus_router.jpeg
+device_tracker.amazon_9dff0b9a7:
+  entity_picture: /local/images/amazon_echo_dot.jpg
+device_tracker.av_samsung_soundbar_k360_kseries:
+  entity_picture: /local/images/device_samsung_soundbar.jpg
+device_tracker.d04d2c107c33:
+  entity_picture: /local/images/device_roku_dongle.jpg
+device_tracker.esp_2fdf0d:
+  entity_picture: /local/images/device_mailbox.jpg
+device_tracker.harmonyhub:
+  entity_picture: /local/images/device_harmony_hub.jpg
+device_tracker.homecam:
+  entity_picture: /local/images/device_homecam_pi.jpg
+device_tracker.huawei_mate_9_92528f2b1a5:
+  entity_picture: /local/images/device_huawei_mate.jpg
+device_tracker.octopi_2:
+  entity_picture: /local/images/mpms_printer.jpg
+device_tracker.philipshue:
+  entity_picture: /local/images/device_philipshue.jpeg
+device_tracker.lightswitch_pi:
+  entity_picture: /local/images/device_entry_pi.jpg
+device_tracker.reefcam_pantilt:
+  entity_picture: /local/images/device_reefcam_pantilt.jpg
+device_tracker.reefcontrolpi:
+  entity_picture: /local/images/device_reef_pi.jpg
+device_tracker.android_ac43312d0683f1c6:
+  entity_picture: /local/images/device_entry_kiosk.jpg
+device_tracker.retropie:
+  entity_picture: /local/images/device_flux_capacitor.jpg
+device_tracker.octocam:
+  entity_picture: /local/images/device_garden_robot.jpg
+device_tracker.esp_55f7c6:
+  entity_picture: /local/images/device_plant_monitor_2.jpg
+device_tracker.esp_55f8c6:
+  entity_picture: /local/images/device_plant_monitor_2.jpg
+device_tracker.gabes_macbook:
+  entity_picture: /local/images/device_macbook.jpeg
+device_tracker.5re0217120001465_2:
+  entity_picture: /local/images/device_huawei_mate.jpg
+device_tracker.esp_25f89b:
+  entity_picture: /local/images/device_et.jpg
+
+binary_sensor.people_home:
+  templates:
+    entity_picture: >
+      if (state === 'On') return '/local/icons/people_home.png';
+      return '/local/icons/insurance.png';

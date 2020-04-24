@@ -1,0 +1,128 @@
+radio_station:
+  name: 'Select Radio Station'
+  options:
+    - BBC News
+    - Q-Music
+    - 3FM
+    - 100% NL
+    - Veronica
+    - Sky Radio
+    - Arrow Classic Rock
+    - Classic FM
+    - BNR Nieuwsradio
+    - Sleep Radio
+    - Ambient Sleeping Pill
+    - Radio Art - Sleep
+    - Ambi Nature Radio
+    - Calm Radio - Sleep
+    - Dinamo.FM Sleep
+  initial: Classic FM
+  icon: mdi:radio 
+
+speaker_radio:
+  name: 'Select Speakers'
+  options:
+    - Soundbar
+    - browser_note_kiosk
+    - browser_gabes_mate
+    - browser_gabes_macbook
+    - browser_tablet_kiosk
+  initial: browser_note_kiosk
+  icon: mdi:speaker-wireless
+
+harmony:
+  name: Harmony
+  options:
+    - Speaker
+    - Fishtank Evening
+    - Watch Roku
+    - Watch a Movie
+    - Fishtank Morning
+  icon: mdi:monitor
+
+ambient_sounds:
+  name: Ambient Sounds
+  options:
+    - Underground Cave
+    - Dusk Fields
+    - Autumn Woods
+    - English Garden
+    - Island Paradise
+    - Morning Birds
+    - Mountain Stream
+    - Night Forest
+    - Ocean Waves
+    - Rainy Afternoon
+    - Dark Thunderstorm
+    - Summer Heat
+  icon: mdi:tree
+
+
+gabe_status_dropdown:
+  name: Gabe
+  options:
+    - Home
+    - Just Arrived
+    - Just Left
+    - Away
+    - Extended Away
+    - Work
+    - In the Lobby
+    - At Moms House
+    - In Bed
+    - M15 Bus Uptown
+  initial: Home
+
+alexa_livingroom_ac:
+  name: Living Room AC
+  options:
+    - 63
+    - 64
+    - 65
+    - 66
+    - 67
+    - 68
+    - 69
+    - 70
+    - 71
+    - 72
+    - 73
+    - 74
+    - 75
+    - 76
+    - 77
+    - 78
+    - 79
+    - 80
+    - 81
+    - 82
+    - 83
+    - 84
+    - 85
+
+alexa_bedroom_ac:
+  name: Bedroom AC
+  options:
+    - 63
+    - 64
+    - 65
+    - 66
+    - 67
+    - 68
+    - 69
+    - 70
+    - 71
+    - 72
+    - 73
+    - 74
+    - 75
+    - 76
+    - 77
+    - 78
+    - 79
+    - 80
+    - 81
+    - 82
+    - 83
+    - 84
+    - 85

@@ -1,0 +1,42 @@
+#name: "Bedroom Lights Alarm"
+#entities:
+#  light.bedroom_desk:
+#    state: on
+#    xy_color: [0.48,0.40]
+#    brightness: 255
+#    transition: 600
+#  light.bedside_table:
+#    state: on
+#    xy_color: [0.65,0.41]
+#    brightness: 170
+#    transition: 600
+
+name: "Every Light In The House"
+entities:
+  light.table:
+    state: on
+    brightness: 255
+    rgb_color: [255,251,250]
+    transition: 30
+  light.desk:
+    state: on
+    brightness: 255
+    rgb_color: [255,255,255]
+    transition: 30
+  light.kitchen:
+    state: on
+    brightness: 255
+    rgb_color: [255,251,251]
+    transition: 30
+  light.bedroom_desk:
+    state: on
+    xy_color: [0.48,0.40]
+    brightness: 60
+    transition: 30
+  light.bedside_table:
+    state: on
+    xy_color: [0.65,0.41]
+    brightness: 60
+    transition: 120
+  light.entry_light:
+    state: on

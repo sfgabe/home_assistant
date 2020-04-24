@@ -1,0 +1,23 @@
+- name: octo_cam_bot_notifier
+  platform: twitter
+  consumer_key: !secret twitter_consumer_key
+  consumer_secret: !secret twitter_consumer_secret
+  access_token: !secret twitter_access_token
+  access_token_secret: !secret twitter_access_token_secret
+
+#- platform: command_line
+#  name: gabes_alexa
+#  command: /home/homeassistant/.homeassistant/scripts/alexa_wrapper.sh -d "Gabe's Alexa"
+
+#- name: kiosk
+#  platform: command_line
+#  command: "/home/homeassistant/.homeassistant/tts/kiosk_tts.py"
+
+- platform: alexa_media
+  name: alexa_media
+
+- platform: html5
+  name: html5_push
+  vapid_pub_key: !secret firebase_pub_key
+  vapid_prv_key: !secret firebase_priv_key
+  vapid_email: !secret firebase_email
