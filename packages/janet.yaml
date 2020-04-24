@@ -102,7 +102,7 @@ script:
 #              {%- if device.name == states.input_select.janet_notification_media_player.state -%}
 #                {{ device.entity_id }}
 #              {%- endif -%}
-#            {%- endfor -%} 
+#            {%- endfor -%}
 
           speech_message: >-
 
@@ -184,7 +184,7 @@ script:
               ] %}
               {{ update | random }}
             {%- endmacro -%}
-            
+
             {%- macro location_not_home() -%}
               {% set not_home = [
                 " is going somewhere. ",
@@ -193,7 +193,7 @@ script:
               ] %}
               {{ not_home | random }}
             {%- endmacro -%}
-            
+
             {%- macro location_inquiry( person, not_home ) -%}
             {%- for device in states.device_tracker -%}
               {%- if device.name == person -%}
@@ -206,7 +206,7 @@ script:
               {%- endif -%}
             {%- endfor -%}
             {%- endmacro -%}
-            
+
             {%- macro bad_weather() -%}
               {% set rain = [
                 " You might want to change your schedule. ",
@@ -239,7 +239,7 @@ script:
             {%- macro bedroom_plant_alert_warning()-%}
                 Your bedroom ferns need water. Soil moisture is currently at {{ states.sensor.plant_monitor_soil_moisture.state }}
             {%- endmacro -%}
-            
+
             {%- macro weather_alert_warning()-%}
                 The National Weather Service has issued a {{ states.sensor.weatheralerts.attributes.Description }} for your area. It expires at {{ states.sensor.weatheralerts.attributes.Expires }}.
             {%- endmacro -%}
@@ -313,7 +313,7 @@ script:
 
             {%- macro system_check() -%}
               CPU temperature is {{ states('sensor.cpu_temp') }} degrees celsius. Processor is running at {{ states('sensor.processor_use') }} percent. Memory used is {{ states('sensor.memory_use_percent') }} percent. Disk used is {{ states('sensor.disk_use_percent_') }} percent and your last reboot is {{ states('sensor.ha_last_reboot') }}.
-            {%- endmacro -%}  
+            {%- endmacro -%}
 
             {% if call_system_check == 1 %}
               {{ system_check() }}
@@ -331,26 +331,26 @@ script:
                    " Good morning Mister Shellta! I hope you slept soundly. "
               ] %}
               {{ morning_greeting | random }}
-            {%- endmacro -%}  
+            {%- endmacro -%}
 
              {%- macro morning_weather() -%}
                 The time is now, {{ states('sensor.time') }}. Outside the temperature is, {{ states('sensor.dark_sky_temperature') }} degrees fahrenheit and {{ states('sensor.dark_sky_minutely_summary') }}. You can expect {{ states('sensor.dark_sky_daily_summary') }}
-             {%- endmacro -%}  
+             {%- endmacro -%}
 
             {%- macro morning_news() -%}
               The leading reuters headline this morning is {{(states.sensor.news_top.attributes | string).split("'")[1].split("'")[-1]}}. In technology the top headline is {{(states.sensor.news_tech.attributes | string).split("'")[1].split("'")[-1]}}. The arts headline is {{(states.sensor.news_arts.attributes | string).split("'")[1].split("'")[-1]}}. And finally in news of the weird, {{(states.sensor.news_weird.attributes | string).split("'")[1].split("'")[-1]}}
-            {%- endmacro -%}  
+            {%- endmacro -%}
 
              {%- macro morning_event() -%}
                 You have an event on your calendar today. At {{as_timestamp(states.calendar.gabethisisgabescom.attributes.start_time) | timestamp_custom('%-I:%M %P')}} is {{states.calendar.gabethisisgabescom.attributes.message}}. It will be located at {{states.calendar.gabethisisgabescom.attributes.location}}
-             {%- endmacro -%}  
+             {%- endmacro -%}
 
              {%- macro morning_work_event() -%}
                 You have an event on your calendar today. At {{as_timestamp(states.calendar.work.attributes.start_time) | timestamp_custom('%-I:%M %P')}} is {{states.calendar.work.attributes.message}}. It will be located at {{states.calendar.work.attributes.location}}
-             {%- endmacro -%}  
+             {%- endmacro -%}
 
              {%- macro greeting_berny() -%}
-              {% set person = "Berny" %} 
+              {% set person = "Berny" %}
               {% set greeting_berny = [
             " Welcome back home " ~ person,
             " Guess who is home " ~ person + " is!",
@@ -362,22 +362,22 @@ script:
             "Knock Knock. Who is There " ~ person + " is!",
             person ~ " You are home!",
             "I know a secret " ~ person + " is home!",
-            "Hello " ~ person + " welcome home! " , 
-            "Welcome back " ~ person , 
-            "Hello Ma'am. " , 
-            "oohhh... it's you. Hello " ~ person , 
-            "Greetings ma'am. " , 
+            "Hello " ~ person + " welcome home! " ,
+            "Welcome back " ~ person ,
+            "Hello Ma'am. " ,
+            "oohhh... it's you. Hello " ~ person ,
+            "Greetings ma'am. " ,
             "Nice of you to join us, " ~ person
               ] %}
               {{ greeting_berny | random }}
-            {%- endmacro -%}  
+            {%- endmacro -%}
 
             {% if call_greeting_berny == 1 %}
               {{  greeting_berny() }}
             {% endif %}
 
             {%- macro greeting_gabe() -%}
-              {% set person = "Gabe" %} 
+              {% set person = "Gabe" %}
               {% set greeting_gabe = [
             "Welcome back home " ~ person,
             "Guess who is home " ~ person + " is! ",
@@ -389,22 +389,22 @@ script:
             "Knock Knock. Who is There " ~ person + " is! ",
             person ~ " You are home! ",
             "I know a secret " ~ person + " is home! ",
-            "Hello " ~ person + " welcome home! " , 
-            "Welcome back " ~ person , 
-            "Hello Sir. " , 
-            "oohhh... it's you. Hello " ~ person , 
-            "Greetings sir. " , 
+            "Hello " ~ person + " welcome home! " ,
+            "Welcome back " ~ person ,
+            "Hello Sir. " ,
+            "oohhh... it's you. Hello " ~ person ,
+            "Greetings sir. " ,
             "Nice of you to join us, " ~ person
               ] %}
               {{ greeting_gabe | random }}
-            {%- endmacro -%}  
+            {%- endmacro -%}
 
             {% if call_greeting_gabe == 1 %}
               {{  greeting_gabe() }}
             {% endif %}
 
              {%- macro greeting_aaron() -%}
-              {% set person = "Aye Jay" %} 
+              {% set person = "Aye Jay" %}
               {% set greeting_aaron = [
             " Welcome back home " ~ person,
             " Guess who is home " ~ person + " is!",
@@ -416,15 +416,15 @@ script:
             "Knock Knock. Who is There " ~ person + " is!",
             person ~ " You are home!",
             "I know a secret " ~ person + " is home!",
-            "Hello " ~ person + " welcome home! " , 
-            "Welcome back " ~ person , 
-            "Hello Sir! " , 
-            "oohhh... it's you. Hello " ~ person , 
-            "Greetings ma'am. " , 
+            "Hello " ~ person + " welcome home! " ,
+            "Welcome back " ~ person ,
+            "Hello Sir! " ,
+            "oohhh... it's you. Hello " ~ person ,
+            "Greetings ma'am. " ,
             "Nice of you to join us, " ~ person
               ] %}
               {{ greeting_aaron | random }}
-            {%- endmacro -%}  
+            {%- endmacro -%}
 
             {% if call_greeting_aaron == 1 %}
               {{  greeting_aaron() }}
@@ -432,7 +432,7 @@ script:
 
 
             {%- macro greeting_nanoo() -%}
-              {% set person = "Nanoo" %} 
+              {% set person = "Nanoo" %}
               {% set greeting_nanoo = [
             "Welcome back home " ~ person,
             "Guess who is home " ~ person + " is! ",
@@ -444,15 +444,15 @@ script:
             "Knock Knock. Who is There " ~ person + " is! ",
             person ~ " You are home! ",
             "I know a secret " ~ person + " is home! ",
-            "Hello " ~ person + " welcome home! " , 
-            "Welcome back " ~ person , 
-            "Hello Sir. " , 
-            "oohhh... it's you. Hello " ~ person , 
-            "Greetings sir. " , 
+            "Hello " ~ person + " welcome home! " ,
+            "Welcome back " ~ person ,
+            "Hello Sir. " ,
+            "oohhh... it's you. Hello " ~ person ,
+            "Greetings sir. " ,
             "Nice of you to join us, " ~ person
               ] %}
               {{ greeting_nanoo | random }}
-            {%- endmacro -%}  
+            {%- endmacro -%}
 
             {% if call_greeting_nanoo == 1 %}
               {{  greeting_nanoo() }}
@@ -482,7 +482,7 @@ script:
             {% if call_inform == 1 %}
               {{ inform() }}
             {% endif %}
-            
+
             {% if call_location_inquiry == 1 %}
               {% set location = location_inquiry( person, location_not_home() ) %}
               {% set count = location | length %}
@@ -492,7 +492,7 @@ script:
                 {{ location }}
               {% endif %}
             {% endif %}
-            
+
             {% if call_rain_warning == 1 %}
               {{ rain_warning( witty ( bad_weather(), chance ) ) }}
             {% endif %}
@@ -578,7 +578,7 @@ script:
 #            {{ media_player }}
           speech_message: >-
             {{ speech_message }}
-      - service: script.janet_text_processing 
+      - service: script.janet_text_processing
         data_template:
           speech_message: >-
             {{ speech_message }}
@@ -630,7 +630,7 @@ script:
       - service: media_player.play_media
         data:
           entity_id: media_player.volumio_mpd
-          media_content_id: "https://thisisgabes.asuscomm.com:8008/local/sounds/janet_boop.mp3"
+          media_content_id: "REMOTEURL/sounds/janet_boop.mp3"
           media_content_type: music
       - delay:
           seconds: 2

@@ -14,6 +14,7 @@
 .cloud
 .config
 .google.token
+hass_tts_key.json
 compiled
 bash
 build
@@ -34,6 +35,7 @@ python_scripts/lib
 .well_known
 www/.well-known
 www_back
+scripts3
 
 # Ensure these YAML files are ignored, otherwise your secret data/credentials will leak.
 ip_bans.yaml

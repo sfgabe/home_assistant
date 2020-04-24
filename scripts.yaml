@@ -29,7 +29,7 @@ ha_restart:
     - service: shell_command.ha_reboot
 
 #Reef Tank Kessil Morning and Evening Light Fades - depreciated
-reeftank_morning_fade_kessil:  
+reeftank_morning_fade_kessil:
   alias: "Reef Light Morning Fade Kessil"
   sequence:
     - delay:
@@ -132,7 +132,7 @@ reeftank_morning_fade_kessil:
     - service: homeassistant.turn_on
       entity_id: switch.kessil_light_level_12
 
-reeftank_evening_fade_kessil:  
+reeftank_evening_fade_kessil:
   alias: "Reef Light Evening Fade Kessil"
   sequence:
     - delay:
@@ -164,7 +164,7 @@ reeftank_evening_fade_kessil:
     - service: switch.turn_off
       entity_id: switch.06200940dc4f22cbb94b_4
 
-reeftank_morning_outlet_kessil:  
+reeftank_morning_outlet_kessil:
   alias: "Reef Light Morning Outlet Kessil"
   sequence:
     - service: input_boolean.turn_off
@@ -229,7 +229,7 @@ reeftank_morning_outlet_kessil:
         device: 'Generic LED'
         command: 'Rewind'
 
-reeftank_evening_outlet_kessil:  
+reeftank_evening_outlet_kessil:
   alias: "Reef Light Evening Outlet Kessil"
   sequence:
     - service: remote.send_command
@@ -250,7 +250,7 @@ reeftank_evening_outlet_kessil:
     - service: switch.turn_off
       entity_id: switch.06200940dc4f22cbb94b_4
 
-reeftank_moon_on:  
+reeftank_moon_on:
   alias: "Reef Light Moon On"
   sequence:
     - service: remote.send_command
@@ -259,7 +259,7 @@ reeftank_moon_on:
         device: 'Generic LED'
         command: ['PowerToggle','1','Rewind','Rewind','Rewind','Rewind','Rewind','Rewind','Rewind']
 
-reeftank_moon_up:  
+reeftank_moon_up:
   alias: "Reef Light Moon Up"
   sequence:
     - delay:
@@ -312,7 +312,7 @@ reeftank_moon_up:
         device: 'Generic LED'
         command: ['Rewind']
 
-reeftank_moon_up_stronger:  
+reeftank_moon_up_stronger:
   alias: "Reef Light Moon Stronger"
   sequence:
     - delay:
@@ -379,7 +379,7 @@ reeftank_moon_up_stronger:
         device: 'Generic LED'
         command: ['Rewind','Rewind']
 
-reeftank_full_moon:  
+reeftank_full_moon:
   alias: "Reef Full Moon"
   sequence:
     - delay:
@@ -456,7 +456,7 @@ reeftank_full_moon:
         device: 'Generic LED'
         command: ['Rewind']
 
-reeftank_moon_off:  
+reeftank_moon_off:
   alias: "Reef Light Moon Off"
   sequence:
     - service: remote.send_command
@@ -468,7 +468,7 @@ reeftank_moon_off:
 # LED light
 # Buttons 1Blue 2white 4green 5yellow 8orange
 
-reeftank_sump_pulse:  
+reeftank_sump_pulse:
   alias: "Reef Tank Sump Pulse"
   sequence:
     - service: homeassistant.turn_on
@@ -504,7 +504,7 @@ octotank_evening_off:
       entity_id: automation.set_amazon_thermostat_max_night_selector
 
 #Freshwater Feeder
-freshwater_feeder_script:  
+freshwater_feeder_script:
   alias: "Feed the Fish"
   sequence:
     - service: switch.turn_on
@@ -545,7 +545,7 @@ freshwater_feeder_script:
           media: /home/homeassistant/.homeassistant/www/images/latest_octocam.jpg
 
 #Freshwater Waves
-freshwater_waves_on_script:  
+freshwater_waves_on_script:
   alias: "Turn On Freshwater Waves"
   sequence:
     - service: switch.turn_on
@@ -564,7 +564,7 @@ freshwater_waves_on_script:
       entity_id: switch.06200940dc4f22cbb432_1
 
 #Reef Waves
-reef_waves_lowtide_fade_script:  
+reef_waves_lowtide_fade_script:
   alias: "Low Tide Reef Waves Fade"
   sequence:
     - service: switch.turn_off
@@ -924,7 +924,7 @@ kiosk_good_morning:
     - service: media_player.play_media
       data:
         entity_id: media_player.volumio_mpd
-        media_content_id: 'https://thisisgabes.asuscomm.com:8008/local/sounds/janet_hithere.mp3'
+        media_content_id: 'REMOTEURL/sounds/janet_hithere.mp3'
         media_content_type: 'music'
     - delay: '00:00:01'
     - service: script.janet_speech_engine
@@ -958,7 +958,7 @@ kiosk_good_morning:
     - service: media_player.play_media
       data:
         entity_id: media_player.volumio_mpd
-        media_content_id: 'https://thisisgabes.asuscomm.com:8008/local/sounds/janet_boop.mp3'
+        media_content_id: 'REMOTEURL/sounds/janet_boop.mp3'
         media_content_type: music
     - delay: '00:00:01'
     - service: shell_command.volumio_emptytrack
@@ -982,7 +982,7 @@ kiosk_good_morning:
     - service: media_player.play_media
       data:
         entity_id: media_player.volumio_mpd
-        media_content_id: 'https://thisisgabes.asuscomm.com:8008/local/sounds/startrek_computer3.mp3'
+        media_content_id: 'REMOTEURL/sounds/startrek_computer3.mp3'
         media_content_type: music
     - service: script.janet_speech_engine
       data:
@@ -1073,20 +1073,20 @@ fart_machine:
         entity_id: media_player.volumio_mpd
         media_content_id: >-
           {%- set responses = [
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart1.mp3", 
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart2.mp3", 
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart3.mp3",
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart4.mp3", 
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart5.mp3", 
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart6.mp3",
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart7.mp3", 
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart8.mp3", 
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart9.mp3",
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart10.mp3", 
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart11.mp3", 
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart12.mp3",
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart13.mp3",
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart14.mp3"
+          "REMOTEURL/sounds/farts/fart1.mp3",
+          "REMOTEURL/sounds/farts/fart2.mp3",
+          "REMOTEURL/sounds/farts/fart3.mp3",
+          "REMOTEURL/sounds/farts/fart4.mp3",
+          "REMOTEURL/sounds/farts/fart5.mp3",
+          "REMOTEURL/sounds/farts/fart6.mp3",
+          "REMOTEURL/sounds/farts/fart7.mp3",
+          "REMOTEURL/sounds/farts/fart8.mp3",
+          "REMOTEURL/sounds/farts/fart9.mp3",
+          "REMOTEURL/sounds/farts/fart10.mp3",
+          "REMOTEURL/sounds/farts/fart11.mp3",
+          "REMOTEURL/sounds/farts/fart12.mp3",
+          "REMOTEURL/sounds/farts/fart13.mp3",
+          "REMOTEURL/sounds/farts/fart14.mp3"
           ] -%}
           {% set rindex =  (range(0, (responses | length - 1) )|random) -%}
           {{responses[rindex]}}
@@ -1105,20 +1105,20 @@ fart_machine:
         entity_id: media_player.volumio_mpd
         media_content_id: >-
           {%- set responses = [
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart1.mp3", 
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart2.mp3", 
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart3.mp3",
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart4.mp3", 
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart5.mp3", 
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart6.mp3",
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart7.mp3", 
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart8.mp3", 
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart9.mp3",
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart10.mp3", 
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart11.mp3", 
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart12.mp3",
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart13.mp3",
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart14.mp3"
+          "REMOTEURL/sounds/farts/fart1.mp3",
+          "REMOTEURL/sounds/farts/fart2.mp3",
+          "REMOTEURL/sounds/farts/fart3.mp3",
+          "REMOTEURL/sounds/farts/fart4.mp3",
+          "REMOTEURL/sounds/farts/fart5.mp3",
+          "REMOTEURL/sounds/farts/fart6.mp3",
+          "REMOTEURL/sounds/farts/fart7.mp3",
+          "REMOTEURL/sounds/farts/fart8.mp3",
+          "REMOTEURL/sounds/farts/fart9.mp3",
+          "REMOTEURL/sounds/farts/fart10.mp3",
+          "REMOTEURL/sounds/farts/fart11.mp3",
+          "REMOTEURL/sounds/farts/fart12.mp3",
+          "REMOTEURL/sounds/farts/fart13.mp3",
+          "REMOTEURL/sounds/farts/fart14.mp3"
           ] -%}
           {% set rindex =  (range(0, (responses | length - 1) )|random) -%}
           {{responses[rindex]}}
@@ -1137,20 +1137,20 @@ fart_machine:
         entity_id: media_player.volumio_mpd
         media_content_id: >-
           {%- set responses = [
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart1.mp3", 
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart2.mp3", 
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart3.mp3",
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart4.mp3", 
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart5.mp3", 
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart6.mp3",
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart7.mp3", 
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart8.mp3", 
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart9.mp3",
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart10.mp3", 
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart11.mp3", 
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart12.mp3",
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart13.mp3",
-          "https://thisisgabes.asuscomm.com:8008/local/sounds/farts/fart14.mp3"
+          "REMOTEURL/sounds/farts/fart1.mp3",
+          "REMOTEURL/sounds/farts/fart2.mp3",
+          "REMOTEURL/sounds/farts/fart3.mp3",
+          "REMOTEURL/sounds/farts/fart4.mp3",
+          "REMOTEURL/sounds/farts/fart5.mp3",
+          "REMOTEURL/sounds/farts/fart6.mp3",
+          "REMOTEURL/sounds/farts/fart7.mp3",
+          "REMOTEURL/sounds/farts/fart8.mp3",
+          "REMOTEURL/sounds/farts/fart9.mp3",
+          "REMOTEURL/sounds/farts/fart10.mp3",
+          "REMOTEURL/sounds/farts/fart11.mp3",
+          "REMOTEURL/sounds/farts/fart12.mp3",
+          "REMOTEURL/sounds/farts/fart13.mp3",
+          "REMOTEURL/sounds/farts/fart14.mp3"
           ] -%}
           {% set rindex =  (range(0, (responses | length - 1) )|random) -%}
           {{responses[rindex]}}
@@ -1162,7 +1162,7 @@ get_mailbox_temp:
     - service: switch.turn_on
       entity_id: switch.mailbox_temp_request
     - delay: 00:00:02
-    - service: switch.turn_off 
+    - service: switch.turn_off
       entity_id: switch.mailbox_temp_request
 
 #Lighting Scripts
@@ -1585,7 +1585,7 @@ soundbar_input_select:
           - Source
         device: 'Samsung Amp'
     - delay: 00:00:02
-    - service: switch.turn_off 
+    - service: switch.turn_off
       entity_id: switch.samsung_soundbar_input
 
 #Birdfeed
@@ -1605,7 +1605,7 @@ birdfeed_announce_begin:
     - service: media_player.play_media
       data:
         entity_id: media_player.volumio_mpd
-        media_content_id: 'https://thisisgabes.asuscomm.com:8008/local/sounds/empty_track_1min.mp3'
+        media_content_id: 'REMOTEURL/sounds/empty_track_1min.mp3'
         media_content_type: music
     - delay: 00:00:02
 
@@ -1619,11 +1619,11 @@ birdfeed_announce_end:
     - service: media_player.volume_set
       data:
         entity_id: media_player.snapcast_client_b8_27_eb_31_93_b7
-        volume_level: 0 
+        volume_level: 0
     - service: media_player.play_media
       data:
         entity_id: media_player.volumio_mpd
-        media_content_id: 'https://thisisgabes.asuscomm.com:8008/local/sounds/empty_track_1min.mp3'
+        media_content_id: 'REMOTEURL/sounds/empty_track_1min.mp3'
         media_content_type: music
     - delay: 00:00:01
 
@@ -1636,7 +1636,7 @@ birdfeed_tweet:
     - service: media_player.play_media
       data:
         entity_id: media_player.volumio_mpd
-        media_content_id: 'https://thisisgabes.asuscomm.com:8008/local/sounds/tweet.mp3'
+        media_content_id: 'REMOTEURL/sounds/tweet.mp3'
         media_content_type: music
     - delay: 00:00:04
     - service: script.turn_on
@@ -1646,8 +1646,8 @@ birdfeed_tweet:
 alexa_set_volume:
   sequence:
     - service: media_player.volume_set
-      data_template: 
-        entity_id: '{{ states.sensor.last_alexa.state }}' 
+      data_template:
+        entity_id: '{{ states.sensor.last_alexa.state }}'
         volume_level: >
           {% if is_state("sensor.last_alexa", "media_player.gabe_s_alexa") %}
             0.5
@@ -1656,13 +1656,13 @@ alexa_set_volume:
           {% endif %}
 
 alexa_tts:
-  sequence: 
+  sequence:
     - service: script.turn_on
       entity_id: script.alexa_set_volume
-    - delay: '00:00:01'      
+    - delay: '00:00:01'
     - service: media_player.alexa_tts
       data_template:
-        entity_id: '{{ states.sensor.last_alexa.state }}' 
+        entity_id: '{{ states.sensor.last_alexa.state }}'
         message: "YOUR MESSAGE"
 
 alexa_morning_weather:
@@ -1670,10 +1670,10 @@ alexa_morning_weather:
   sequence:
 #    - service: script.turn_on
 #      entity_id: script.alexa_connect_to_speaker
-#    - delay: '00:00:01' 
+#    - delay: '00:00:01'
     - service: script.turn_on
       entity_id: script.alexa_set_volume
-    - delay: '00:00:01' 
+    - delay: '00:00:01'
     - data:
         entity_id: media_player.gabe_s_alexa
         media_content_id: morningweather
@@ -1687,7 +1687,7 @@ alexa_joke:
 #      entity_id: script.alexa_connect_to_speaker
     - service: script.turn_on
       entity_id: script.alexa_set_volume
-    - delay: '00:00:01' 
+    - delay: '00:00:01'
     - service: media_player.play_media
       data:
         entity_id: media_player.gabe_s_alexa

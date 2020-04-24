@@ -286,15 +286,15 @@
     - service: media_player.play_media
       data:
         entity_id: media_player.volumio_mpd
-        media_content_id: 'https://thisisgabes.asuscomm.com:8008/local/sounds/battle.mp3'
+        media_content_id: 'REMOTEURL/sounds/battle.mp3'
         media_content_type: 'music'
     - delay: '00:00:01'
     - service: notify.html5_push
       data:
         data:
           renotify: 1
-          icon: https://thisisgabes.asuscomm.com:8008/local/icons/smarthome.png
-          badge: https://thisisgabes.asuscomm.com:8008/local/icons/badge_smarthome.png
+          icon: REMOTEURL/icons/smarthome.png
+          badge: REMOTEURL/icons/badge_smarthome.png
           timestamp: '%m'
           url: https://thisisgabes.asuscomm.com:8008
           vibrate: 700, 700, 700
@@ -354,8 +354,8 @@
       data:
         data:
           renotify: 1
-          icon: https://thisisgabes.asuscomm.com:8008/local/icons/ssl.png
-          badge: https://thisisgabes.asuscomm.com:8008/local/icons/badge_calendar.png
+          icon: REMOTEURL/icons/ssl.png
+          badge: REMOTEURL/icons/badge_calendar.png
           timestamp: '%m'
           url: https://thisisgabes.asuscomm.com:8008/lovelace/10
           vibrate: 700, 700, 700
@@ -817,8 +817,8 @@
       data:
         data:
           renotify: 1
-          icon: https://thisisgabes.asuscomm.com:8008/local/icons/plant.png
-          badge: https://thisisgabes.asuscomm.com:8008/local/icons/badge_plant.png
+          icon: REMOTEURL/icons/plant.png
+          badge: REMOTEURL/icons/badge_plant.png
           timestamp: '%m'
           url: https://thisisgabes.asuscomm.com:8008/lovelace/6
           vibrate: 700, 700, 700
@@ -856,8 +856,8 @@
       data:
         data:
           renotify: 1
-          icon: https://thisisgabes.asuscomm.com:8008/local/icons/plant.png
-          badge: https://thisisgabes.asuscomm.com:8008/local/icons/badge_plant.png
+          icon: REMOTEURL/icons/plant.png
+          badge: REMOTEURL/icons/badge_plant.png
           timestamp: '%m'
           url: https://thisisgabes.asuscomm.com:8008/lovelace/6
           vibrate: 700, 700, 700
@@ -892,8 +892,8 @@
       data:
         data:
           renotify: 1
-          icon: https://thisisgabes.asuscomm.com:8008/local/icons/plant.png
-          badge: https://thisisgabes.asuscomm.com:8008/local/icons/badge_pipe.png
+          icon: REMOTEURL/icons/plant.png
+          badge: REMOTEURL/icons/badge_pipe.png
           timestamp: '%m'
           url: https://thisisgabes.asuscomm.com:8008/lovelace/6
           vibrate: 700, 700, 700
@@ -999,9 +999,9 @@
       data:
         data:
           renotify: 1
-          icon: https://thisisgabes.asuscomm.com:8008/local/icons/robot5.png
-          badge: https://thisisgabes.asuscomm.com:8008/local/icons/badge_roomba.png
-          image: 'https://thisisgabes.asuscomm.com:8008/local/snapshots/3dprinter_{{ now().strftime("%Y%m%d-%H") }}.jpg'
+          icon: REMOTEURL/icons/robot5.png
+          badge: REMOTEURL/icons/badge_roomba.png
+          image: 'REMOTEURL/snapshots/3dprinter_{{ now().strftime("%Y%m%d-%H") }}.jpg'
           timestamp: '%m'
           url: https://thisisgabes.asuscomm.com:8008/lovelace/7
           vibrate: 700, 700, 700
@@ -1377,11 +1377,11 @@
           actions:
           - action: dismiss
             title: "Got it!"
-            icon: https://thisisgabes.asuscomm.com:8008/local/icons/badge_mailbox.png
-          image: "https://thisisgabes.asuscomm.com:8008/local/mail_images/todays_mail.gif"
+            icon: REMOTEURL/icons/badge_mailbox.png
+          image: "REMOTEURL/mail_images/todays_mail.gif"
           renotify: 1
-          icon: https://thisisgabes.asuscomm.com:8008/local/icons/mailbox_on.png
-          badge: https://thisisgabes.asuscomm.com:8008/local/icons/badge_mailbox.png
+          icon: REMOTEURL/icons/mailbox_on.png
+          badge: REMOTEURL/icons/badge_mailbox.png
           timestamp: '%m'
           url: https://thisisgabes.asuscomm.com:8008/states/group.homecams
           vibrate: 700, 700, 700
@@ -1408,10 +1408,10 @@
           actions:
           - action: dismiss
             title: "Got it!"
-            icon: https://thisisgabes.asuscomm.com:8008/local/icons/badge_package.png
+            icon: REMOTEURL/icons/badge_package.png
           renotify: 1
-          icon: https://thisisgabes.asuscomm.com:8008/local/icons/package.png
-          badge: https://thisisgabes.asuscomm.com:8008/local/icons/badge_package.png
+          icon: REMOTEURL/icons/package.png
+          badge: REMOTEURL/icons/badge_package.png
           timestamp: '%m'
           url: https://thisisgabes.asuscomm.com:8008/states/group.homecams
           vibrate: 700, 700, 700
@@ -1710,14 +1710,14 @@
           actions:
           - action: call_the_hounds
             title: "Call the Hounds!"
-            icon: https://thisisgabes.asuscomm.com:8008/local/icons/badge_dog.png
+            icon: REMOTEURL/icons/badge_dog.png
           - action: dismiss
             title: Dismiss
-            icon: https://thisisgabes.asuscomm.com:8008/local/icons/badge_dismiss.png
-          image: "https://thisisgabes.asuscomm.com:8008/local/motion/recent-motion-overall.jpg"
+            icon: REMOTEURL/icons/badge_dismiss.png
+          image: "REMOTEURL/motion/recent-motion-overall.jpg"
           renotify: 1
-          icon: https://thisisgabes.asuscomm.com:8008/local/icons/cctv.png
-          badge: https://thisisgabes.asuscomm.com:8008/local/icons/badge_camera.png
+          icon: REMOTEURL/icons/cctv.png
+          badge: REMOTEURL/icons/badge_camera.png
           timestamp: '%m'
           url: https://thisisgabes.asuscomm.com:8008/states/group.homecams
           vibrate: 700, 700, 700
@@ -2093,8 +2093,8 @@
       data:
         data:
           renotify: 1
-          icon: https://thisisgabes.asuscomm.com:8008/local/icons/fish_school.png
-          badge: https://thisisgabes.asuscomm.com:8008/local/icons/badge_pipe.png
+          icon: REMOTEURL/icons/fish_school.png
+          badge: REMOTEURL/icons/badge_pipe.png
           timestamp: '%m'
           url: https://thisisgabes.asuscomm.com:8008/lovelace/6
           vibrate: 700, 700, 700
@@ -3410,8 +3410,8 @@
       data:
         data:
           renotify: 1
-          icon: https://thisisgabes.asuscomm.com:8008/local/icons/roomba.png
-          badge: https://thisisgabes.asuscomm.com:8008/local/icons/badge_roomba.png
+          icon: REMOTEURL/icons/roomba.png
+          badge: REMOTEURL/icons/badge_roomba.png
           timestamp: '%m'
           url: https://thisisgabes.asuscomm.com:8008/lovelace/6
           vibrate: 700, 700, 700
@@ -3443,8 +3443,8 @@
       data:
         data:
           renotify: 1
-          icon: https://thisisgabes.asuscomm.com:8008/local/icons/dust.png
-          badge: https://thisisgabes.asuscomm.com:8008/local/icons/badge_roomba.png
+          icon: REMOTEURL/icons/dust.png
+          badge: REMOTEURL/icons/badge_roomba.png
           timestamp: '%m'
           url: https://thisisgabes.asuscomm.com:8008/lovelace/6
           vibrate: 700, 700, 700
