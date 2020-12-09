@@ -1,0 +1,163 @@
+{
+    "0": {
+        "sensor_id": 0,
+        "children": {},
+        "type": 18,
+        "sketch_name": null,
+        "sketch_version": null,
+        "battery_level": 0,
+        "protocol_version": "2.2.0",
+        "heartbeat": 0
+    },
+    "53": {
+        "sensor_id": 53,
+        "children": {
+            "17": {
+                "id": 17,
+                "type": 3,
+                "description": "LED",
+                "values": {
+                    "2": "0"
+                }
+            },
+            "11": {
+                "id": 11,
+                "type": 3,
+                "description": "Ringtone 1",
+                "values": {
+                    "2": "0"
+                }
+            },
+            "12": {
+                "id": 12,
+                "type": 3,
+                "description": "Ringtone 2",
+                "values": {
+                    "2": "0"
+                }
+            },
+            "13": {
+                "id": 13,
+                "type": 3,
+                "description": "Ringtone 3",
+                "values": {
+                    "2": "0"
+                }
+            },
+            "14": {
+                "id": 14,
+                "type": 3,
+                "description": "Ringtone 4",
+                "values": {
+                    "2": "0"
+                }
+            },
+            "15": {
+                "id": 15,
+                "type": 3,
+                "description": "Ringtone 5",
+                "values": {
+                    "2": "0"
+                }
+            },
+            "101": {
+                "id": 101,
+                "type": 3,
+                "description": "Rotary Dial 1",
+                "values": {
+                    "2": "0"
+                }
+            },
+            "102": {
+                "id": 102,
+                "type": 3,
+                "description": "Rotary Dial 2",
+                "values": {
+                    "2": "0"
+                }
+            },
+            "103": {
+                "id": 103,
+                "type": 3,
+                "description": "Rotary Dial 3",
+                "values": {
+                    "2": "0"
+                }
+            },
+            "104": {
+                "id": 104,
+                "type": 3,
+                "description": "Rotary Dial 4",
+                "values": {
+                    "2": "0"
+                }
+            },
+            "105": {
+                "id": 105,
+                "type": 3,
+                "description": "Rotary Dial 5",
+                "values": {
+                    "2": "0"
+                }
+            },
+            "106": {
+                "id": 106,
+                "type": 3,
+                "description": "Rotary Dial 6",
+                "values": {
+                    "2": "0"
+                }
+            },
+            "107": {
+                "id": 107,
+                "type": 3,
+                "description": "Rotary Dial 7",
+                "values": {
+                    "2": "0"
+                }
+            },
+            "108": {
+                "id": 108,
+                "type": 3,
+                "description": "Rotary Dial 8",
+                "values": {
+                    "2": "0"
+                }
+            },
+            "109": {
+                "id": 109,
+                "type": 3,
+                "description": "Rotary Dial 9",
+                "values": {
+                    "2": "0"
+                }
+            },
+            "110": {
+                "id": 110,
+                "type": 3,
+                "description": "Rotary Dial 0",
+                "values": {
+                    "2": "0"
+                }
+            },
+            "1": {
+                "id": 1,
+                "type": 3,
+                "description": "Ring Button",
+                "values": {}
+            },
+            "16": {
+                "id": 16,
+                "type": 3,
+                "description": "Ring Alarm",
+                "values": {}
+            }
+        },
+        "type": 17,
+        "sketch_name": "RingARing",
+        "sketch_version": "v0.1",
+        "battery_level": 0,
+        "protocol_version": "2.2.0",
+        "heartbeat": 0
+    }
+}

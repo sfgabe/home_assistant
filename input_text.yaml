@@ -1,0 +1,7 @@
+base_url:
+  initial: !secret config_base_url_full
+
+notification_text:
+  name: Notification Text
+  pattern: '[a-fA-F0-9]*'
+  initial: No Message

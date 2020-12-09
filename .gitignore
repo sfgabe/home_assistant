@@ -14,7 +14,6 @@
 .cloud
 .config
 .google.token
-hass_tts_key.json
 compiled
 bash
 build
@@ -30,6 +29,8 @@ TwitterGeoPics
 sfgabe_tweets
 octocam_tweets
 panels
+scripts
+scripts3
 ui-lovelace.yaml.sb*
 python_scripts/lib
 .well_known
@@ -50,6 +51,7 @@ google_calendars_all.txt
 tweets_octocam.txt
 tweets_sfgabe.txt
 cameras.yaml
+hass_tts_key.json
 rest_command.yaml
 appdaemon.yaml
 shell_commands.yaml

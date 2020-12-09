@@ -1,6 +1,14 @@
 {
     "state": {
-        "today": "Idag",
-        "tomorrow": "Imorgon"
+        "today": "idag",
+        "tomorrow": "imorgon",
+        "Today": "Idag",
+        "Tomorrow": "Imorgon"
+    },
+    "other": {
+      "due": "genomförs",
+      "Due": "Genomförs",
+      "due_today_order": "true",
+      "in_days": "om DAYS dagar"
     }
 }

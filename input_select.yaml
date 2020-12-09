@@ -17,7 +17,7 @@ radio_station:
     - Calm Radio - Sleep
     - Dinamo.FM Sleep
   initial: Classic FM
-  icon: mdi:radio 
+  icon: mdi:radio
 
 speaker_radio:
   name: 'Select Speakers'
@@ -38,6 +38,7 @@ harmony:
     - Watch Roku
     - Watch a Movie
     - Fishtank Morning
+    - Play PS4
   icon: mdi:monitor
 
 ambient_sounds:
@@ -71,7 +72,18 @@ gabe_status_dropdown:
     - At Moms House
     - In Bed
     - M15 Bus Uptown
+    - Driving
   initial: Home
+
+mini_cooper_status_dropdown:
+  name: Mini Cooper
+  options:
+    - Stopped
+    - Just Arrived
+    - Just Left
+    - Driving
+    - Parked
+  initial: Parked
 
 alexa_livingroom_ac:
   name: Living Room AC

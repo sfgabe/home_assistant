@@ -1121,53 +1121,53 @@
 #        {% set prefix = "@sfgabe: " %}
 #        {{ [prefix, twit] | join("") }}
 
-- platform: command_line
-  name: "Latest Octo Tweet Text"
-  command: "cat /home/homeassistant/.homeassistant/www/images/tweets_octocam.txt"
-  value_template: >
-    {% set tweet_text = (value.split("TWEET")[1].split("DATE")[0] ) %}
-    {% set prefix = "@Octo_Cam_Bot" %}
-    {{ [prefix, tweet_text] | join("") }}
-
-- platform: command_line
-  name: "Latest Octo Tweet Date"
-  command: "cat /home/homeassistant/.homeassistant/www/images/tweets_octocam.txt"
-  value_template: >
-    {% set tweet_date = (value.split("DATE")[1].split("+")[0] ) %}
-    {% set prefix = "Posted" %}
-    {{ [prefix, tweet_date] | join("") }}
-
-- platform: command_line
-  name: "Latest Octo Image Link"
-  command: "cat /home/homeassistant/.homeassistant/www/images/tweets_octocam.txt"
-  value_template: >
-    {% set media_link = (value.split("pbs.twimg.com")[1].split("'")[0] ) %}
-    {% set prefix = "http://pbs.twimg.com" %}
-    {{ [prefix, media_link] | join("") }}
-
-- platform: command_line
-  name: "Latest SFGabe Tweet Text"
-  command: "cat /home/homeassistant/.homeassistant/www/images/tweets_sfgabe.txt"
-  value_template: >
-    {% set tweet_text = (value.split("TWEET")[1].split("DATE")[0] ) %}
-    {% set prefix = "@sfgabe" %}
-    {{ [prefix, tweet_text] | join("") }}
-
-- platform: command_line
-  name: "Latest SFGabe Tweet Date"
-  command: "cat /home/homeassistant/.homeassistant/www/images/tweets_sfgabe.txt"
-  value_template: >
-    {% set tweet_date = (value.split("DATE")[1].split("+")[0] ) %}
-    {% set prefix = "Posted" %}
-    {{ [prefix, tweet_date] | join("") }}
-
-- platform: command_line
-  name: "Latest SFGabe Image Link"
-  command: "cat /home/homeassistant/.homeassistant/www/images/tweets_sfgabe.txt"
-  value_template: >
-    {% set media_link = (value.split("pbs.twimg.com")[1].split("'")[0] ) %}
-    {% set prefix = "http://pbs.twimg.com" %}
-    {{ [prefix, media_link] | join("") }}
+# - platform: command_line
+#   name: "Latest Octo Tweet Text"
+#   command: "cat /home/homeassistant/.homeassistant/www/images/tweets_octocam.txt"
+#   value_template: >
+#     {% set tweet_text = (value.split("TWEET")[1].split("DATE")[0] ) %}
+#     {% set prefix = "@Octo_Cam_Bot" %}
+#     {{ [prefix, tweet_text] | join("") }}
+#
+# - platform: command_line
+#   name: "Latest Octo Tweet Date"
+#   command: "cat /home/homeassistant/.homeassistant/www/images/tweets_octocam.txt"
+#   value_template: >
+#     {% set tweet_date = (value.split("DATE")[1].split("+")[0] ) %}
+#     {% set prefix = "Posted" %}
+#     {{ [prefix, tweet_date] | join("") }}
+#
+# - platform: command_line
+#   name: "Latest Octo Image Link"
+#   command: "cat /home/homeassistant/.homeassistant/www/images/tweets_octocam.txt"
+#   value_template: >
+#     {% set media_link = (value.split("pbs.twimg.com")[1].split("'")[0] ) %}
+#     {% set prefix = "http://pbs.twimg.com" %}
+#     {{ [prefix, media_link] | join("") }}
+#
+# - platform: command_line
+#   name: "Latest SFGabe Tweet Text"
+#   command: "cat /home/homeassistant/.homeassistant/www/images/tweets_sfgabe.txt"
+#   value_template: >
+#     {% set tweet_text = (value.split("TWEET")[1].split("DATE")[0] ) %}
+#     {% set prefix = "@sfgabe" %}
+#     {{ [prefix, tweet_text] | join("") }}
+#
+# - platform: command_line
+#   name: "Latest SFGabe Tweet Date"
+#   command: "cat /home/homeassistant/.homeassistant/www/images/tweets_sfgabe.txt"
+#   value_template: >
+#     {% set tweet_date = (value.split("DATE")[1].split("+")[0] ) %}
+#     {% set prefix = "Posted" %}
+#     {{ [prefix, tweet_date] | join("") }}
+#
+# - platform: command_line
+#   name: "Latest SFGabe Image Link"
+#   command: "cat /home/homeassistant/.homeassistant/www/images/tweets_sfgabe.txt"
+#   value_template: >
+#     {% set media_link = (value.split("pbs.twimg.com")[1].split("'")[0] ) %}
+#     {% set prefix = "http://pbs.twimg.com" %}
+#     {{ [prefix, media_link] | join("") }}
 
 #- platform: random
 #  name: Amazon Random Day Temp Number
@@ -1365,7 +1365,8 @@
   sensors:
     switches_on_count:
       friendly_name: Switches On
-      value_template: "{{ states.switch|selectattr('state','equalto','on')|list|length }}"
+      value_template: >
+        {{ states.switch|selectattr('state','equalto','on')|list|length }}
     lights_on_count:
       friendly_name: Lights On
       value_template: >
@@ -1382,9 +1383,19 @@
           states.light.thundercloud
          ] -%}
          {{lights | selectattr('state','eq','on') | list | count}}
-    devices_online_count:
-      friendly_name: Devices Online
-      value_template: "{{ states.sensor|selectattr('state','equalto','Online')|list|length }}"
+    motion_detected_count:
+      friendly_name: Motion Detected Count
+      value_template: >
+          {%- set detectors = [
+            states.binary_sensor.bedroom_motion,
+            states.binary_sensor.birdfeed_motion,
+            states.binary_sensor.bathroom_motion,
+            states.binary_sensor.dashboard_motion,
+            states.binary_sensor.entry_motion,
+            states.binary_sensor.homecam_motion,
+            states.binary_sensor.kiosk_att_motion
+          ] -%}
+          {{detectors | selectattr('state','eq','on') | list | count}}
     switches_count:
       friendly_name: 'Number of Switches'
       value_template: >
@@ -1419,41 +1430,52 @@
           {%- endfor -%}
         {%- endfor -%}
 
-#Empire State Colors White
+#Empire State Colors
 - platform: scrape
-  name: empire_state_lights_info_white
+  name: empire_state_lights_info_date
   resource: http://www.esbnyc.com/explore/tower-lights
-  select: 'div.view-empty h1#page-title.title'
+  select: 'div.is-today h2'
   scan_interval: 10800
 
-- platform: scrape
-  resource: http://www.esbnyc.com/explore/tower-lights
-  select: 'div.view-empty p img'
-  attribute: src
-  name: empire_state_lights_pic_url
-  scan_interval: 10800
-  value_template: >
-    {% set url = value.split("sites/")[1] %}
-    {% set prefix = "http://www.esbnyc.com/sites/" %}
-    {{ [prefix, url] | join("") }}
-
-#Empire State Colors Other
 - platform: scrape
   name: empire_state_lights_info_color
   resource: http://www.esbnyc.com/explore/tower-lights
-  select: 'div.views-row h1#page-title.title'
+  select: 'div.is-today h3'
   scan_interval: 10800
 
 - platform: scrape
   resource: http://www.esbnyc.com/explore/tower-lights
-  select: 'div.field--type-image picture img'
-  attribute: src
-  name: empire_state_lights_pic_url_color
+  select: '.background-image-wrapper'
+  attribute: style
+  name: empire_state_lights_pic_url
   scan_interval: 10800
   value_template: >
-    {% set url = value.split("sites/")[1] %}
-    {% set prefix = "http://www.esbnyc.com/sites/" %}
-    {{ [prefix, url] | join("") }}
+    {% set url = value.split("(", 1)[1].split(")")[0] %}
+    {{ url }}
+
+  # value_template: >
+  #   {% set url = value.split("sites/")[1].split("jpg")[0] %}
+  #   {% set prefix = "http://www.esbnyc.com/sites/" %}
+  #   {% set filetype = "jpg" %}
+  #   {{ [prefix, url, filetype] | join("") }}
+
+#Empire State Colors Other
+# - platform: scrape
+#   name: empire_state_lights_info_color
+#   resource: http://www.esbnyc.com/explore/tower-lights
+#   select: 'div.is-today h3'
+#   scan_interval: 10800
+#
+# - platform: scrape
+#   resource: http://www.esbnyc.com/explore/tower-lights
+#   select: 'div.field--type-image picture img'
+#   attribute: src
+#   name: empire_state_lights_pic_url_color
+#   scan_interval: 10800
+#   value_template: >
+#     {% set url = value.split("sites/")[1] %}
+#     {% set prefix = "http://www.esbnyc.com/sites/" %}
+#     {{ [prefix, url] | join("") }}
 
 #Calendars
 - platform: template
@@ -1509,6 +1531,27 @@
     template_calendar_birthday_date:
       value_template: '{{ states.calendar.contacts.attributes.start_time| timestamp_custom("%h %d, %Y %k:%M %P")}}'
       friendly_name: 'Date'
+
+    amazonsysinfo_template_name:
+      value_template: '{{ states.sensor.amazonpisysuptime.attributes.name }}'
+      friendly_name: Amazon Server Name
+      entity_id: sensor.reefsysinfo_template_name
+    amazonsysinfo_template_version:
+      value_template: '{{ states.sensor.amazonpisysuptime.attributes.version }}'
+      friendly_name: Amazon Server Version
+      entity_id: sensor.rreefsysinfo_template_version
+    amazonsysinfo_template_uptime:
+      value_template: '{{ states.sensor.amazonpisysuptime.attributes.uptime }}'
+      friendly_name: Amazon Server Uptime
+      entity_id: sensor.reefsysinfo_template_uptime
+    amazonsysinfo_template_ip:
+      value_template: '{{ states.sensor.amazonpisysuptime.attributes.ip }}'
+      friendly_name: Amazon Server IP
+      entity_id: sensor.reefsysinfo_template_ip
+    amazonsysinfo_template_cpu_temperature:
+      value_template: '{{ states.sensor.amazonpisysuptime.attributes.cpu_temperature }}'
+      friendly_name: Amazon Server CPU Temp
+      entity_id: sensor.amazonsysinfo_template_cpu_temperature
 
 #Bustime Sensors
 #- platform: gtfs_realtime
@@ -1886,8 +1929,6 @@
   resources:
     - type: disk_use_percent
       arg: /
-    - type: disk_use_percent
-      arg: /var/log
     - type: memory_use_percent
     - type: memory_use
     - type: memory_free
@@ -1896,56 +1937,24 @@
     - type: swap_use
     - type: swap_free
     - type: last_boot
-## LAN Adapter
+## enp1s0
     - type: network_in
-      arg: eth0
+      arg: enp1s0
     - type: network_out
-      arg: eth0
+      arg: enp1s0
     - type: packets_in
-      arg: eth0
+      arg: enp1s0
     - type: packets_out
-      arg: eth0
+      arg: enp1s0
     - type: ipv4_address
-      arg: eth0
+      arg: enp1s0
     - type: ipv6_address
-      arg: eth0
-## WLAN Adapter
-    - type: network_in
-      arg: wlan0
-    - type: network_out
-      arg: wlan0
-    - type: packets_in
-      arg: wlan0
-    - type: packets_out
-      arg: wlan0
-    - type: ipv4_address
-      arg: wlan0
-    - type: ipv6_address
-      arg: wlan0
+      arg: enp1s0
 
-- platform: rpi_power
-#  name: RPi Power Status
-  text_state: true
-
-- platform: synologydsm
-  host: !secret synology_host
-  username: !secret synology_username
-  password: !secret synology_password
-  monitored_conditions:
-    - cpu_total_load
-    - memory_real_usage
-    - cpu_system_load
-    - memory_available_real
-    - memory_available_swap
-    - memory_total_swap
-    - network_up
-    - disk_device
-    - disk_name
-    - disk_temp
-    - disk_status
-    - volume_size_total
-    - volume_size_used
-    - volume_percentage_used
+# - platform: synologydsm
+#   host: !secret synology_host
+#   username: !secret synology_username
+#   password: !secret synology_password
 
 - platform: command_line
   name: "HA Uptime"
@@ -1984,41 +1993,52 @@
 - platform: dnsip
   name: "IP Address"
 
-#PiHole
-- platform: rest
-  name: PiHoleSystem
-  username: !secret pihole_username
-  password: !secret pihole_password
-  authentication: basic
-  json_attributes:
-    - domains_being_blocked
-    - dns_queries_today
-    - ads_blocked_today
-    - ads_percentage_today
-    - unique_domains
-    - queries_forwarded
-    - queries_cached
-    - clients_ever_seen
-    - unique_clients
-    - dns_queries_all_types
-    - reply_NODATA
-    - reply_NXDOMAIN
-    - reply_CNAME
-    - reply_IP
-    - privacy_level
-    - status
-  resource: https://localhost/admin/api.php
-  headers:
-      Connection: keep-alive
-      content-type: application/json
-      X-Pi-hole-Authenticate: !secret pihole_password
+#atomicpi uptime
+- platform: template
+  sensors:
+    atomicpi_last_boot:
+      friendly_name: Atomic Pi Last Boot
+      value_template: >
+        {% set date = as_timestamp(states('sensor.last_boot')) | timestamp_custom('%d') %}
+        {% set date = '{:01}'.format(date | int) %}
+        {% if date in ('1', '21', '31') %}
+            {% set date = date ~ 'st' %}
+        {% elif date in ('2', '22') %}
+            {% set date = date ~ 'nd' %}
+        {% elif date in ('3', '23') %}
+            {% set date = date ~ 'rd' %}
+        {% else %}
+            {% set date = date ~ 'th' %}
+        {% endif %}
+        {{ as_timestamp(states('sensor.last_boot')) | timestamp_custom('%H:%M on %a') }} {{ date }} {{ as_timestamp(states('sensor.last_boot')) | timestamp_custom('%b %Y') }}
+    atomicpi_uptime:
+      friendly_name: Atomic Pi Uptime
+      entity_id: sensor.time
+      value_template: >
+        {% set up_time = as_timestamp(now()) - as_timestamp(states('sensor.last_boot')) %}
+        {% set minutes = (up_time // 60) | int %}
+        {% set hours = (minutes // 60) %}
+        {% set days = (hours // 24) %}
+        {% set weeks = (days // 7) %}
+        {% set minutes = (minutes % 60) %}
+        {% set hours =  (hours % 24) %}
+        {% set days = (days % 7) %}
+        {% macro phrase(value, name) %}
+                    {%- set value = value %}
+                    {%- set end = 's' if value > 1 else '' %}
+                    {{- '{} {}{}'.format(value, name, end) if value | int > 0 else '' }}
+        {%- endmacro %}
+        {% set text = [ phrase(weeks, 'week'), phrase(days, 'day'), phrase(hours, 'hr'), phrase(minutes, 'min') ] | select('!=','') | list | join(', ') %}
+        {% set last_comma = text.rfind(',') %}
+        {% if last_comma != -1 %}
+            {% set text = text[:last_comma] + ' and' + text[last_comma + 1:] %}
+        {% endif %}
+        {{ text }}
 
-- platform: command_line
-  name: Pi-hole
-  scan_interval: 10
-  command: curl -X GET 'http://localhost/admin/api.php?status'
-  value_template: >
-    {{ value_json.status }}
+- platform: steam_online
+  api_key: !secret steam_api_key
+  accounts:
+    - 76561199086159554
 
 - platform: template
   sensors:
@@ -2068,7 +2088,7 @@
 
 - platform: history_stats
   name: stats_work
-  entity_id: device_tracker.5re0217120001465
+  entity_id: people.gabe
   state: 'Work'
   type: time
   end: '{{ now() }}'
@@ -2086,7 +2106,7 @@
 
 - platform: history_stats
   name: stats_home
-  entity_id: device_tracker.5re0217120001465
+  entity_id: people.gabe
   state: 'home'
   type: time
   end: '{{ now() }}'
@@ -2150,22 +2170,22 @@
 
 - platform: rest
   name: Octoprint Power Switch 1 Status
-  resource: http://octopi/plugin/enclosure/outputs/2
+  resource: http://octopi.local/plugin/enclosure/outputs/2
   value_template: '{{ value_json }}'
 
 - platform: rest
   name: Octoprint Power Switch 2 Status
-  resource: http://octopi/plugin/enclosure/outputs/3
+  resource: http://octopi.local/plugin/enclosure/outputs/3
   value_template: '{{ value_json }}'
 
 - platform: rest
   name: Octoprint Bedlight Switch Status
-  resource: http://octopi/plugin/enclosure/outputs/5
+  resource: http://octopi.local/plugin/enclosure/outputs/5
   value_template: '{{ value_json }}'
 
 - platform: rest
   name: Octoprint 12v External Switch Status
-  resource: http://octopi/plugin/enclosure/outputs/6
+  resource: http://octopi.local/plugin/enclosure/outputs/6
   value_template: '{{ value_json }}'
 
 - platform: rest
@@ -2188,7 +2208,7 @@
     octoprint_timelapse_url_full:
       value_template: >-
         {% set url = states.sensor.octoprint_timelapse_url.state %}
-        {% set prefix = "http://octopi" %}
+        {% set prefix = "http://octopi.local" %}
         {% set suffix = "?apikey=D46893BD9B1E40E8B7137F5BDDDD614E" %}
         {{ [prefix, url, suffix] | join("") }}
 
@@ -2272,7 +2292,7 @@
 #Amazon ATO Level
 - platform: rest
   name: Amazon ATO Level
-  resource: http://esp_b7c590/checklevel
+  resource: http://192.168.50.201/checklevel
   scan_interval: 170000
   headers:
       content-type: application/json
@@ -2645,7 +2665,7 @@
     outside_alerts:
       value_template: >
         Current Location: {{ states('device_tracker.5re0217120001465') }}
-        ({{ (as_timestamp (now()) -as_timestamp (states.device_tracker.gabes_mate.last_changed)) }})
+        ({{ (as_timestamp (now()) -as_timestamp (states.device_tracker.huawei_mate.last_changed)) }})
     gps_occupancy_chance:
       value_template: >-
         {%- if is_state("device_tracker.5re0217120001465", "home") %}
@@ -2672,9 +2692,9 @@
   state: PA
   county: 43
 
-- platform: cert_expiry
-  host: !secret cert_expiry_host
-  port: !secret cert_expiry_port
+#- platform: cert_expiry
+#  host: !secret cert_expiry_host
+#  port: !secret cert_expiry_port
 
 #- platform: pilight
 #  name: 'Some Inside Temperature Sensor'
@@ -2739,8 +2759,237 @@
 #    protocol: auriol
 #  unit_of_measurement: '°F'
 
+# Fitbit
+- platform: fitbit
+  clock_format: 12H
+  monitored_resources:
+      - "activities/heart"
+      - "activities/steps"
+      - "activities/minutesFairlyActive"
+      - "activities/minutesSedentary"
+      - "activities/steps"
+      - "activities/floors"
+      - "activities/elevation"
+      - "activities/floors"
+      - "activities/distance"
+      - "activities/tracker/floors"
+      - "activities/tracker/elevation"
+      - "activities/tracker/floors"
+      - "activities/tracker/distance"
+      - "activities/tracker/minutesVeryActive"
+      - "activities/tracker/minutesSedentary"
+      - "activities/tracker/minutesLightlyActive"
+      - "activities/tracker/minutesFairlyActive"
+      - "activities/tracker/steps"
+      - "devices/battery"
+      - "sleep/awakeningsCount"
+      - "sleep/efficiency"
+      - "sleep/minutesAfterWakeup"
+      - "sleep/minutesAsleep"
+      - "sleep/minutesAwake"
+      - "sleep/minutesToFallAsleep"
+      - "sleep/startTime"
+      - "sleep/timeInBed"
+
+- platform: mqtt
+  state_topic: "et/reading"
+  name: ET
+  value_template: "{{ value }}"
+
+#Desk buttons
+- platform: mqtt
+  state_topic: "button_a/reading"
+  name: Desk Button A
+  value_template: "{{ value }}"
+
+- platform: mqtt
+  state_topic: "button_b/reading"
+  name: Desk Button B
+  value_template: "{{ value }}"
+
+- platform: mqtt
+  state_topic: "button_c/reading"
+  name: Desk Button C
+  value_template: "{{ value }}"
+
+- platform: mqtt
+  state_topic: "button_d/reading"
+  name: Desk Button D
+  value_template: "{{ value }}"
+
+- platform: mqtt
+  state_topic: "button_e/reading"
+  name: Desk Button E
+  value_template: "{{ value }}"
+
+- platform: mqtt
+  state_topic: "numpad/reading/current"
+  name: NumPad All
+  value_template: "{{ value }}"
+
+#Bed Sensor
+- platform: mqtt
+  state_topic: "bed_occupancy/reading/load"
+  name: Bed Occupancy Load
+  value_template: "{{ value }}"
+  unit_of_measurement: "oz"
+
+- platform: mqtt
+  state_topic: "bed_occupancy/reading/tare"
+  name: Bed Occupancy Tare
+  value_template: "{{ value }}"
+  unit_of_measurement: "oz"
+
 - platform: template
   sensors:
+    bed_occupancy_load_percent:
+      value_template: '{{ states("sensor.bed_occupancy_load") | float / 10 | round(0) }}'
+      unit_of_measurement: "%"
+    bed_occupancy_count:
+      icon_template: >-
+        {% set bed_load = states.sensor.bed_occupancy_load.state | int %}
+        {% if bed_load < 300 %}
+          icon: mdi:white-balance-sunny
+        {% elif 301 <= bed_load < 1700 %}
+          icon: mdi:bed-king
+        {% elif 1701 <= bed_load < 3000 %}
+          icon: mdi:account-supervisor
+        {% elif 3001 <= bed_load < 10000 %}
+          icon: mdi:party-popper
+        {% else %}
+          icon: fas:question-circle
+        {% endif %}
+      value_template: >
+        {% set bed_load = states.sensor.bed_occupancy_load.state | int %}
+        {% if bed_load < 300 %}
+          Empty
+        {% elif 301 <= bed_load < 1100 %}
+          Single
+        {% elif 1101 <= bed_load < 2000 %}
+          Double
+        {% elif 2001 <= bed_load < 10000 %}
+          Party Time!
+        {% else %}
+          N/A
+        {% endif %}
+
+    harmony_activity:
+      value_template: >
+        {% if is_state("remote.gabes_harmony_hub", 'on') %}
+          {{ states.remote.gabes_harmony_hub.attributes.current_activity }}
+        {% else %}
+          PowerOff
+        {% endif %}
+
+    last_alexa:
+      entity_id:
+        - media_player.gabe_s_alexa
+      value_template: >
+        {{ states.media_player | selectattr('attributes.last_called','eq',True) | map(attribute='entity_id') | first }}
+
+    tablet_screen:
+      friendly_name: 'Tablet Screen'
+      value_template: '{{ states.light.tablet_screen.state }}'
+      entity_id: sensor.tablet_screen
+    tablet_charging:
+      friendly_name: 'Tablet Charging'
+      value_template: '{{ states.light.tablet_screen.attributes.charging }}'
+      entity_id: sensor.tablet_charging
+    tablet_battery:
+      friendly_name: 'Tablet Battery'
+      value_template: '{{ states.light.tablet_screen.attributes.battery_level }}'
+      entity_id: sensor.tablet_battery
+    tablet_brightness:
+      friendly_name: 'Tablet Brightness'
+      value_template: '{{ states.light.tablet_screen.attributes.brightness }}'
+      entity_id: sensor.tablet_brightness
+
+    kiosk_screen:
+      friendly_name: 'Kiosk Screen'
+      value_template: '{{ states.light.dashboard_screen.state }}'
+      entity_id: sensor.kiosk_screen
+    kiosk_charging:
+      friendly_name: 'Kiosk Charging'
+      value_template: '{{ states.light.dashboard_screen.attributes.charging }}'
+      entity_id: sensor.kiosk_charging
+    kiosk_battery:
+      friendly_name: 'Kiosk Battery'
+      value_template: '{{ states.light.dashboard_screen.attributes.battery_level }}'
+      entity_id: sensor.kiosk_battery
+    kiosk_brightness:
+      friendly_name: 'Kiosk Brightness'
+      value_template: '{{ states.light.dashboard_screen.attributes.brightness }}'
+      entity_id: sensor.kiosk_brightness
+
+    roomba_batt:
+      value_template: '{{ states.vacuum.roomba.attributes.battery_level }}'
+      friendly_name: 'Roomba Battery'
+      unit_of_measurement: '%'
+      device_class: battery
+    roomba_last_run:
+      value_template: >-
+        {% set today = now().day | int %}
+        {% set roomba_date = ((as_timestamp(states.input_boolean.roomba_ran.last_changed) | timestamp_custom("%d")) | int) %}
+        {% if today == roomba_date %}
+          {% set day = "Today" %}
+        {% elif (today - 1) == roomba_date %}
+          {% set day = "Yesterday" %}
+        {% elif today == 1 and roomba_date > 27 %}
+          {% set day = "Yesterday" %}
+        {% else %}
+          {% set day = as_timestamp(states.input_boolean.roomba_ran.last_changed) | timestamp_custom("%A")%}
+        {% endif %}
+        {% set time = as_timestamp(states.input_boolean.roomba_ran.last_changed) | timestamp_custom("%l:%M %p")%}
+        {{[day,time]|join(" at ")}}
+      friendly_name: 'Roomba Last Run'
+
+    fitbit_steps:
+      friendly_name: 'Steps'
+      value_template: >
+        {{ states.sensor.steps.state | replace(",","") }}
+      unit_of_measurement: 'steps'
+
+#Soundbar Connection
+    soundbar_connected:
+      friendly_name: 'Soundbar Connected'
+      value_template: >
+        {%- if state_attr('media_player.gabe_s_alexa', 'source') == '[AV] Samsung Soundbar K360 K-Series' %}
+         on
+        {%- else -%}
+         off
+        {%- endif %}
+      entity_id: sensor.soundbar_connected
+
+    mini_bt_connected:
+      friendly_name: 'Mini Cooper BT'
+      value_template: >
+        {% if 'A0:14:3D:3F:AA:66' in states('sensor.mini_occupantslist') %}
+         on
+        {%- else -%}
+         off
+        {%- endif %}
+      entity_id: sensor.mini_cooper_bt
+
+    mini_obd_connected:
+      friendly_name: 'Mini Cooper OBD'
+      value_template: >
+        {% if '34:81:F4:D1:2C:CB' in states('sensor.mini_occupantslist') %}
+         on
+        {%- else -%}
+         off
+        {%- endif %}
+      entity_id: sensor.mini_cooper_obd
+
+    mini_aj_connected:
+      friendly_name: 'Mini Cooper Passenger AJ'
+      value_template: >
+        {% if '60:5b:b4:86:05:a7' in states('sensor.mini_occupantslist') %}
+         on
+        {%- else -%}
+         off
+        {%- endif %}
+      entity_id: sensor.mini_cooper_aj
+
     outside_temp:
       friendly_name: "Outside Temperature"
       unit_of_measurement: '°F'
@@ -2802,439 +3051,12 @@
            /local/images/icons/weather_icons/animated/weather.svg
         {% endif %}
 
-# Fitbit
-- platform: fitbit
-  clock_format: 12H
-  monitored_resources:
-      - "activities/heart"
-      - "activities/steps"
-      - "activities/minutesFairlyActive"
-      - "activities/minutesSedentary"
-      - "activities/steps"
-      - "activities/floors"
-      - "activities/elevation"
-      - "activities/floors"
-      - "activities/distance"
-      - "activities/tracker/floors"
-      - "activities/tracker/elevation"
-      - "activities/tracker/floors"
-      - "activities/tracker/distance"
-      - "activities/tracker/minutesVeryActive"
-      - "activities/tracker/minutesSedentary"
-      - "activities/tracker/minutesLightlyActive"
-      - "activities/tracker/minutesFairlyActive"
-      - "activities/tracker/steps"
-      - "devices/battery"
-      - "sleep/awakeningsCount"
-      - "sleep/efficiency"
-      - "sleep/minutesAfterWakeup"
-      - "sleep/minutesAsleep"
-      - "sleep/minutesAwake"
-      - "sleep/minutesToFallAsleep"
-      - "sleep/startTime"
-      - "sleep/timeInBed"
-
-- platform: template
-  sensors:
-    fitbit_steps:
-      friendly_name: 'Steps'
-      value_template: >
-        {{ states.sensor.steps.state | replace(",","") }}
-      unit_of_measurement: 'steps'
-#    fitbit_calories:
-#      friendly_name: 'Calories'
-#      value_template: >
-#        {{ states.sensor.calories.state | replace(",","") }}
-#      unit_of_measurement: 'calories'
-#    weight_loss:
-#      friendly_name: 'Weight Loss'
-#      value_template: "{{ '%.1f' | format(245.0 - (states.sensor.weight.state | float)) }}"
-#      unit_of_measurement: 'lbs'
-
-#Kiosk
-- platform: template
-  sensors:
-    kiosk_screen:
-      friendly_name: 'Kiosk Screen'
-      value_template: '{{ states.light.dashboard_screen.state }}'
-      entity_id: sensor.kiosk_screen
-    kiosk_charging:
-      friendly_name: 'Kiosk Charging'
-      value_template: '{{ states.light.dashboard_screen.attributes.charging }}'
-      entity_id: sensor.kiosk_charging
-    kiosk_battery:
-      friendly_name: 'Kiosk Battery'
-      value_template: '{{ states.light.dashboard_screen.attributes.battery_level }}'
-      entity_id: sensor.kiosk_battery
-    kiosk_brightness:
-      friendly_name: 'Kiosk Brightness'
-      value_template: '{{ states.light.dashboard_screen.attributes.brightness }}'
-      entity_id: sensor.kiosk_brightness
-#Soundbar Connection
-    soundbar_connected:
-      friendly_name: 'Soundbar Connected'
-      value_template: >
-        {%- if state_attr('media_player.gabe_s_alexa', 'source') == '[AV] Samsung Soundbar K360 K-Series' %}
-         on
-        {%- else -%}
-         off
-        {%- endif %}
-      entity_id: sensor.soundbar_connected
-
-- platform: template
-  sensors:
-    tablet_screen:
-      friendly_name: 'Tablet Screen'
-      value_template: '{{ states.light.tablet_screen.state }}'
-      entity_id: sensor.tablet_screen
-    tablet_charging:
-      friendly_name: 'Tablet Charging'
-      value_template: '{{ states.light.tablet_screen.attributes.charging }}'
-      entity_id: sensor.tablet_charging
-    tablet_battery:
-      friendly_name: 'Tablet Battery'
-      value_template: '{{ states.light.tablet_screen.attributes.battery_level }}'
-      entity_id: sensor.tablet_battery
-    tablet_brightness:
-      friendly_name: 'Tablet Brightness'
-      value_template: '{{ states.light.tablet_screen.attributes.brightness }}'
-      entity_id: sensor.tablet_brightness
-
-- platform: mqtt
-  state_topic: "et/reading"
-  name: ET
-  value_template: "{{ value }}"
-
-#Desk buttons
-- platform: mqtt
-  state_topic: "button_a/reading"
-  name: Desk Button A
-  value_template: "{{ value }}"
-
-- platform: mqtt
-  state_topic: "button_b/reading"
-  name: Desk Button B
-  value_template: "{{ value }}"
-
-- platform: mqtt
-  state_topic: "button_c/reading"
-  name: Desk Button C
-  value_template: "{{ value }}"
-
-- platform: mqtt
-  state_topic: "button_d/reading"
-  name: Desk Button D
-  value_template: "{{ value }}"
-
-- platform: mqtt
-  state_topic: "button_e/reading"
-  name: Desk Button E
-  value_template: "{{ value }}"
-
-#Bed Sensor
-- platform: mqtt
-  state_topic: "bed_occupancy/reading/load"
-  name: Bed Occupancy Load
-  value_template: "{{ value }}"
-  unit_of_measurement: "oz"
-
-- platform: mqtt
-  state_topic: "bed_occupancy/reading/tare"
-  name: Bed Occupancy Tare
-  value_template: "{{ value }}"
-  unit_of_measurement: "oz"
-
-- platform: template
-  sensors:
-    bed_occupancy_load_percent:
-      value_template: '{{ states("sensor.bed_occupancy_load") | float / 10 | round(0) }}'
-      unit_of_measurement: "%"
-    bed_occupancy_count:
-      icon_template: >-
-        {% set bed_load = states.sensor.bed_occupancy_load.state | int %}
-        {% if bed_load < 300 %}
-          icon: mdi:bed-empty
-        {% elif 301 <= bed_load < 1700 %}
-          icon: mdi:bed-king
-        {% elif 1701 <= bed_load < 3000 %}
-          icon: mdi:account-multiple
-        {% elif 3001 <= bed_load < 10000 %}
-          icon: mdi:party-popper
-        {% else %}
-          icon: mdi:help-circle
-        {% endif %}
-      value_template: >
-        {% set bed_load = states.sensor.bed_occupancy_load.state | int %}
-        {% if bed_load < 300 %}
-          Empty
-        {% elif 301 <= bed_load < 1100 %}
-          Single
-        {% elif 1101 <= bed_load < 2000 %}
-          Double
-        {% elif 2001 <= bed_load < 10000 %}
-          Party Time!
-        {% else %}
-          N/A
-        {% endif %}
-
-#This is to use the remote
-#- platform: huesensor
-
-#monitor devices
-- platform: template
-  sensors:
-    online_device_bluray_player:
-      friendly_name: "BluRay Player"
-      value_template: >-
-        {% if is_state('device_tracker.104fa8d6e235', 'home') %}
-          Online
-        {% else %}
-          Offline
-        {% endif %}
-    online_device_amazon_echo:
-      friendly_name: "Amazon Echo Dot"
-      value_template: >-
-        {% if states.device_tracker.amazon_9dff0b9a7 %}
-        {% if is_state('device_tracker.amazon_9dff0b9a7', 'home') %}
-          Online
-        {% else %}
-          Offline
-        {% endif %}
-        {% else %}
-          Unknown
-        {% endif %}
-    online_device_samsung_soundbar:
-      friendly_name: "Samsung Soundbar"
-      value_template: >-
-        {% if states.device_tracker.av_samsung_soundbar_k360_kseries %}
-        {% if is_state('device_tracker.av_samsung_soundbar_k360_kseries', 'home') %}
-          Online
-        {% else %}
-          Offline
-        {% endif %}
-        {% else %}
-          Unknown
-        {% endif %}
-    online_device_roku_dongle:
-      friendly_name: "Roku Dongle"
-      value_template: >-
-        {% if states.device_tracker.d04d2c107c33 %}
-        {% if is_state('device_tracker.d04d2c107c33', 'home') %}
-          Online
-        {% else %}
-          Offline
-        {% endif %}
-        {% else %}
-          Unknown
-        {% endif %}
-    online_device_mailbox:
-      friendly_name: "Smart Mailbox"
-      value_template: >-
-        {% if states.device_tracker.esp_2fdf0d %}
-        {% if is_state('device_tracker.esp_2fdf0d', 'home') %}
-          Online
-        {% else %}
-          Offline
-        {% endif %}
-        {% else %}
-          Unknown
-        {% endif %}
-    online_device_white_macbook:
-      friendly_name: "White MacBook"
-      value_template: >-
-        {% if states.device_tracker.gabes_macbook %}
-        {% if is_state('device_tracker.gabes_macbook', 'home') %}
-          Online
-        {% else %}
-          Offline
-        {% endif %}
-        {% else %}
-          Unknown
-        {% endif %}
-    online_device_harmony_hub:
-      friendly_name: "Harmony Hub"
-      value_template: >-
-        {% if states.device_tracker.harmonyhub %}
-        {% if is_state('device_tracker.harmonyhub', 'home') %}
-          Online
-        {% else %}
-          Offline
-        {% endif %}
-        {% else %}
-          Unknown
-        {% endif %}
-    online_device_homecam_pi:
-      friendly_name: "Home Cam"
-      value_template: >-
-        {% if states.device_tracker.homecam %}
-        {% if is_state('device_tracker.homecam', 'home') %}
-          Online
-        {% else %}
-          Offline
-        {% endif %}
-        {% else %}
-          Unknown
-        {% endif %}
-    online_device_huawei_mate:
-      friendly_name: "Huawei Mate"
-      value_template: >-
-        {% if states.device_tracker.huawei_mate_9_92528f2b1a5 %}
-        {% if is_state('device_tracker.huawei_mate_9_92528f2b1a5', 'home') %}
-          Online
-        {% else %}
-          Offline
-        {% endif %}
-        {% else %}
-          Unknown
-        {% endif %}
-    online_device_octoprint:
-      friendly_name: "OctoPrint Server"
-      value_template: >-
-        {% if states.device_tracker.octopi_2 %}
-        {% if is_state('device_tracker.octopi_2', 'home') %}
-          Online
-        {% else %}
-          Offline
-        {% endif %}
-        {% else %}
-          Unknown
-        {% endif %}
-    online_device_phillips_hue:
-      value_template: >-
-        {% if states.device_tracker.philipshue %}
-        {% if is_state('device_tracker.philipshue', 'home') %}
-          Online
-        {% else %}
-          Offline
-        {% endif %}
-        {% else %}
-          Unknown
-        {% endif %}
-      friendly_name: 'Phillips Hue'
-    online_device_entry_pi:
-      value_template: >-
-        {% if states.device_tracker.lightswitch_pi %}
-        {% if is_state('device_tracker.lightswitch_pi', 'home') %}
-          Online
-        {% else %}
-          Offline
-        {% endif %}
-        {% else %}
-          Unknown
-        {% endif %}
-      friendly_name: 'Entry Pi'
-    online_device_reefcam_pantilt:
-      value_template: >-
-        {% if states.device_tracker.reefcam_pantilt %}
-        {% if is_state('device_tracker.reefcam_pantilt', 'home') %}
-          Online
-        {% else %}
-          Offline
-        {% endif %}
-        {% else %}
-          Unknown
-        {% endif %}
-      friendly_name: 'Pan Tilt ReefCam'
-    online_device_reef_pi:
-      value_template: >-
-        {% if states.device_tracker.reefcontrolpi %}
-        {% if is_state('device_tracker.reefcontrolpi', 'home') %}
-          Online
-        {% else %}
-          Offline
-        {% endif %}
-        {% else %}
-          Unknown
-        {% endif %}
-      friendly_name: 'Reef Pi'
-    online_device_entry_kiosk:
-      value_template: >-
-        {% if states.device_tracker.android_ac43312d0683f1c6 %}
-        {% if is_state('device_tracker.android_ac43312d0683f1c6', 'home') %}
-          Online
-        {% else %}
-          Offline
-        {% endif %}
-        {% else %}
-          Unknown
-        {% endif %}
-      friendly_name: 'Entry Kiosk'
-    online_device_flux_capacitor:
-      value_template: >-
-        {% if states.device_tracker.esp_2fdf0d %}
-        {% if is_state('device_tracker.esp_2fdf0d', 'home') %}
-          Online
-        {% else %}
-          Offline
-        {% endif %}
-        {% else %}
-          Unknown
-        {% endif %}
-      friendly_name: 'Flux Capacitor'
-    online_device_music_server:
-      value_template: >-
-        {% if states.device_tracker.gabesmusic %}
-        {% if is_state('device_tracker.gabesmusic', 'home') %}
-          Online
-        {% else %}
-          Offline
-        {% endif %}
-        {% else %}
-          Unknown
-        {% endif %}
-      friendly_name: 'Music Server'
-    online_device_gardenbot:
-      value_template: >-
-        {% if states.device_tracker.octocam %}
-        {% if is_state('device_tracker.octocam', 'home') %}
-          Online
-        {% else %}
-          Offline
-        {% endif %}
-        {% else %}
-          Unknown
-        {% endif %}
-      friendly_name: 'Garden Robot'
-    online_device_plant_monitor_1:
-      value_template: >-
-        {% if states.device_tracker.esp_55f8c6 %}
-        {% if is_state('device_tracker.esp_55f8c6', 'home') %}
-          Online
-        {% else %}
-          Offline
-        {% endif %}
-        {% else %}
-          Unknown
-        {% endif %}
-      friendly_name: 'Plant Monitor 1'
-    online_device_plant_monitor_2:
-      value_template: >-
-        {% if states.device_tracker.esp_55f7c6 %}
-        {% if is_state('device_tracker.esp_55f7c6', 'home') %}
-          Online
-        {% else %}
-          Offline
-        {% endif %}
-        {% else %}
-          Unknown
-        {% endif %}
-      friendly_name: 'Plant Monitor 2'
-    harmony_activity:
-      value_template: >
-        {% if is_state("remote.gabes_harmony_hub", 'on') %}
-          {{ states.remote.gabes_harmony_hub.attributes.current_activity }}
-        {% else %}
-          PowerOff
-        {% endif %}
-
-# Alexa
-- platform: template
-  sensors:
-    last_alexa:
-      entity_id:
-        - media_player.gabe_s_alexa
-      value_template: >
-        {{ states.media_player | selectattr('attributes.last_called','eq',True) | map(attribute='entity_id') | first }}
+- platform: plex_recently_added
+  token: !secret plex_token
+  host: !secret plex_host
+  port: 32400
+#  ssl: true
+#  ssl_cert: true
 
 # Presence Monitor
 - platform: mqtt
@@ -3307,27 +3129,320 @@
     - sensor.ionic_bt_hass
     - sensor.gabes_mate_hotspot_bt_hass
 
-#Roomba
+#Car tracker - https://childof69.co.uk/ha-car-telemetry/#comment-59
+- platform: mqtt
+  name: "Mini Torque"
+  state_topic: "devices/Mini/torque"
+  value_template: "{{ state_attr('sensor.mini_torque', 'GPS Time') }}"
+  json_attributes_topic: "devices/Mini/torque"
+
+- platform: mqtt
+  name: "Mini Occupants"
+  state_topic: "devices/Mini"
+  value_template: "{{ state_attr('sensor.mini_occupants', 'time') }}"
+  json_attributes_topic: "devices/Mini"
+
 - platform: template
   sensors:
-    roomba_batt:
-      value_template: '{{ states.vacuum.roomba.attributes.battery_level }}'
-      friendly_name: 'Roomba Battery'
+    mini_occupantslist:
+      value_template: "{{ state_attr('sensor.mini_occupants', 'addresses') }}"
+      friendly_name: Mini Cooper Occupants
+
+    mini_gpsspeed:
+      value_template: "{{ state_attr('sensor.mini_torque', 'GPS Speed (Meters/second)') }}"
+      friendly_name: Mini Cooper GPS Speed (Meters/second)
+      unit_of_measurement: 'm'
+
+    mini_gpsaltitude:
+      value_template: "{{ state_attr('sensor.mini_torque', 'GPS Altitude(ft)') }}"
+      friendly_name: Mini Cooper GPS Altitude
+      unit_of_measurement: 'ft'
+
+    mini_accelerationsensor:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Acceleration Sensor(Total)(g)') }}"
+      friendly_name: Mini Cooper Acceleration Sensor(Total)
+      unit_of_measurement: 'g'
+
+    mini_acceleratorpedalposition:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Accelerator PedalPosition D(%)') }}"
+      friendly_name: Mini Cooper Accelerator Pedal Position
       unit_of_measurement: '%'
-      device_class: battery
-    roomba_last_run:
+
+    mini_airfuelratio:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Air Fuel Ratio(Commanded)(:1)') }}"
+      friendly_name: Mini Cooper Air Fuel Ratio
+
+    mini_ambientairtemp:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Ambient air temp(°F)') }}"
+      friendly_name: Mini Cooper Ambient air temp
+      unit_of_measurement: '°F'
+
+    mini_androiddevicebattery:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Android device Battery Level(%)') }}"
+      friendly_name: Mini Cooper Android device Battery Level
+      unit_of_measurement: '%'
+
+    mini_catalysttemperature:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Catalyst Temperature (Bank 1 Sensor 1)(°F)') }}"
+      friendly_name: Mini Cooper Catalyst Temperature
+      unit_of_measurement: '°F'
+
+    mini_gpstime:
+      value_template: "{{ state_attr('sensor.mini_torque', 'GPS Time') }}"
+      friendly_name: Mini Cooper GPS Time
+
+    mini_costpermile:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Cost per mile/km (Instant)($/m)') }}"
+      friendly_name: Mini Cooper Cost per mile Instant
+      unit_of_measurement: '$'
+
+    mini_costpermiletrip:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Cost per mile/km (Trip)($/m)') }}"
+      friendly_name: Mini Cooper Cost per mile Trip
+      unit_of_measurement: '$'
+
+    mini_distancetoempty:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Distance to empty (Estimated)(miles)') }}"
+      friendly_name: Mini Cooper Distance to empty (Estimated)
+      unit_of_measurement: 'm'
+
+    mini_distancetravelledsincecleared:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Distance travelled since codes cleared(miles)') }}"
+      friendly_name: Mini Cooper Distance travelled since codes cleared
+      unit_of_measurement: 'm'
+
+    mini_engineload:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Engine Load(%)') }}"
+      friendly_name: Mini Cooper Engine Load
+      unit_of_measurement: '%'
+
+    mini_enginerpm:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Engine RPM(rpm)') }}"
+      friendly_name: Mini Cooper Engine RPM
+      unit_of_measurement: 'rpm'
+
+    mini_fuelcosttrip:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Fuel cost (trip)(cost)') }}"
+      friendly_name: Mini Cooper Fuel cost (trip)
+      unit_of_measurement: '$'
+
+    mini_fuelflowratehour:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Fuel flow rate/hour(gal/hr)') }}"
+      friendly_name: Mini Cooper Fuel flow rate/hour
+      unit_of_measurement: 'gal'
+
+    mini_fuellevelfromengine:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Fuel Level (From Engine ECU)(%)') }}"
+      friendly_name: Mini Cooper Fuel Level (From Engine ECU)
+      unit_of_measurement: '%'
+
+    mini_fuelrailpressure:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Fuel Rail Pressure(psi)') }}"
+      friendly_name: Mini Cooper Fuel Rail Pressure
+      unit_of_measurement: 'psi'
+
+    mini_fuelremaining:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Fuel Remaining (Calculated from vehicle profile)(%)') }}"
+      friendly_name: Mini Cooper Fuel Remaining
+      unit_of_measurement: '%'
+
+    mini_fuelusedtrip:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Fuel used (trip)(gal)') }}"
+      friendly_name: Mini Cooper Fuel used (trip)
+      unit_of_measurement: 'gal'
+
+    mini_intakeairtemperature:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Intake Air Temperature(°F)') }}"
+      friendly_name: Mini Cooper Intake Air Temperature
+      unit_of_measurement: '°F'
+
+    mini_intakemanifoldpressurepsi:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Intake Manifold Pressure(psi)') }}"
+      friendly_name: Mini Cooper Intake Manifold Pressure
+      unit_of_measurement: 'psi'
+
+    mini_milespergalloninstant:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Miles Per Gallon(Instant)(mpg)') }}"
+      friendly_name: Mini Cooper Miles Per Gallon(Instant)
+      unit_of_measurement: 'mpg'
+
+    mini_milespergallonlongtermaverage:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Miles Per Gallon(Long Term Average)(mpg)') }}"
+      friendly_name: Mini Cooper Miles Per Gallon(Long Term Average)
+      unit_of_measurement: 'mpg'
+
+    mini_percentageofcitydriving:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Percentage of City driving(%)') }}"
+      friendly_name: Mini Cooper Percentage of City driving
+      unit_of_measurement: '%'
+
+    mini_percentageofhighwaydriving:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Percentage of Highway driving(%)') }}"
+      friendly_name: Mini Cooper Percentage of Highway driving
+      unit_of_measurement: '%'
+
+    mini_percentageofidledriving:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Percentage of Idle driving(%)') }}"
+      friendly_name: Mini Cooper Percentage of Idle driving
+      unit_of_measurement: '%'
+
+    mini_relativethrottleposition:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Relative Throttle Position(%)') }}"
+      friendly_name: Mini Cooper Relative Throttle Position
+      unit_of_measurement: '%'
+
+    mini_runtimesinceenginestart:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Run time since engine start(s)') }}"
+      friendly_name: Mini Cooper Run time since start
+      unit_of_measurement: 's'
+
+    mini_runtimesinceenginestart_format:
+      friendly_name: 'Mini Cooper Run time since start Format'
       value_template: >-
-        {% set today = now().day | int %}
-        {% set roomba_date = ((as_timestamp(states.input_boolean.roomba_ran.last_changed) | timestamp_custom("%d")) | int) %}
-        {% if today == roomba_date %}
-          {% set day = "Today" %}
-        {% elif (today - 1) == roomba_date %}
-          {% set day = "Yesterday" %}
-        {% elif today == 1 and roomba_date > 27 %}
-          {% set day = "Yesterday" %}
-        {% else %}
-          {% set day = as_timestamp(states.input_boolean.roomba_ran.last_changed) | timestamp_custom("%A")%}
-        {% endif %}
-        {% set time = as_timestamp(states.input_boolean.roomba_ran.last_changed) | timestamp_custom("%l:%M %p")%}
-        {{[day,time]|join(" at ")}}
-      friendly_name: 'Roomba Last Run'
+        {% set etime = states.sensor.mini_runtimesinceenginestart.state | int %}
+        {% set seconds = etime % 60 %}
+        {% set minutes = ((etime % 3600) / 60) | int %}
+        {% set hours = ((etime % 86400) / 3600) | int %}
+        {% set days = (etime / 86400) | int %}
+        {%- if days > 0 -%}
+          {%- if days == 1 -%}
+            1 day
+          {%- else -%}
+            {{ days }} days
+          {%- endif -%}
+          {{ ', ' }}
+        {%- endif -%}
+        {%- if hours > 0 -%}
+          {%- if hours == 1 -%}
+            1 hour
+          {%- else -%}
+            {{ hours }} hours
+          {%- endif -%}
+          {{ ', ' }}
+        {%- endif -%}
+        {%- if minutes > 0 -%}
+          {%- if minutes == 1 -%}
+            1 minute
+          {%- else -%}
+            {{ minutes }} minutes
+          {%- endif -%}
+        {%- endif -%}
+
+    mini_speedgps:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Speed (GPS)(mph)') }}"
+      friendly_name: Mini Cooper Speed (GPS)
+      unit_of_measurement: 'mph'
+
+    mini_speedobd:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Speed (OBD)(mph)') }}"
+      friendly_name: Mini Cooper Speed (OBD)
+      unit_of_measurement: 'mph'
+
+    mini_throttlepositionmanifold:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Throttle Position(Manifold)(%)') }}"
+      friendly_name: Mini Cooper Throttle Position(Manifold)
+      unit_of_measurement: '%'
+
+    mini_transmissiontemperature:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Transmission Temperature(Method 1)(°F)') }}"
+      friendly_name: Mini Cooper Transmission Temperature
+      unit_of_measurement: '°F'
+
+    mini_tripaveragempg:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Trip average MPG(mpg)') }}"
+      friendly_name: Mini Cooper Trip average MPG
+      unit_of_measurement: 'mpg'
+
+    mini_triptimewhilstmoving:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Trip time(whilst moving)(s)') }}"
+      friendly_name: Mini Cooper Trip time(whilst moving)
+      unit_of_measurement: 's'
+
+    mini_triptimewhilstmoving_format:
+      friendly_name: 'Mini Cooper Trip time(whilst moving) Format'
+      value_template: >-
+        {% set etime = states.sensor.mini_triptimewhilstmoving.state | int %}
+        {% set seconds = etime % 60 %}
+        {% set minutes = ((etime % 3600) / 60) | int %}
+        {% set hours = ((etime % 86400) / 3600) | int %}
+        {% set days = (etime / 86400) | int %}
+        {%- if days > 0 -%}
+          {%- if days == 1 -%}
+            1 day
+          {%- else -%}
+            {{ days }} days
+          {%- endif -%}
+          {{ ', ' }}
+        {%- endif -%}
+        {%- if hours > 0 -%}
+          {%- if hours == 1 -%}
+            1 hour
+          {%- else -%}
+            {{ hours }} hours
+          {%- endif -%}
+          {{ ', ' }}
+        {%- endif -%}
+        {%- if minutes > 0 -%}
+          {%- if minutes == 1 -%}
+            1 minute
+          {%- else -%}
+            {{ minutes }} minutes
+          {%- endif -%}
+        {%- endif -%}
+
+    mini_triptimewhilststationary:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Trip time(whilst stationary)(s)') }}"
+      friendly_name: Mini Cooper Trip time(whilst stationary)
+      unit_of_measurement: 's'
+
+    mini_triptimewhilststationary_format:
+      friendly_name: 'Mini Cooper Trip time(whilst stationary) Format'
+      value_template: >-
+        {% set etime = states.sensor.mini_triptimewhilststationary.state | int %}
+        {% set seconds = etime % 60 %}
+        {% set minutes = ((etime % 3600) / 60) | int %}
+        {% set hours = ((etime % 86400) / 3600) | int %}
+        {% set days = (etime / 86400) | int %}
+        {%- if days > 0 -%}
+          {%- if days == 1 -%}
+            1 day
+          {%- else -%}
+            {{ days }} days
+          {%- endif -%}
+          {{ ', ' }}
+        {%- endif -%}
+        {%- if hours > 0 -%}
+          {%- if hours == 1 -%}
+            1 hour
+          {%- else -%}
+            {{ hours }} hours
+          {%- endif -%}
+          {{ ', ' }}
+        {%- endif -%}
+        {%- if minutes > 0 -%}
+          {%- if minutes == 1 -%}
+            1 minute
+          {%- else -%}
+            {{ minutes }} minutes
+          {%- endif -%}
+        {%- endif -%}
+
+    mini_turboboostvacuumgaugepsi:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Turbo Boost & Vacuum Gauge(psi)') }}"
+      friendly_name: Mini Cooper Turbo Boost & Vacuum Gauge
+      unit_of_measurement: 'psi'
+
+    mini_voltagecontrolmodule:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Voltage (Control Module)(V)') }}"
+      friendly_name: Mini Cooper Voltage (Control Module)
+      unit_of_measurement: 'V'
+
+    mini_volumetricefficiencycalculated:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Volumetric Efficiency (Calculated)(%)') }}"
+      friendly_name: Mini Cooper Volumetric Efficiency
+      unit_of_measurement: '%'
+
+    mini_voltageobdadapter:
+      value_template: "{{ state_attr('sensor.mini_torque', 'Voltage (OBD Adapter)(V)') }}"
+      friendly_name: Mini Cooper Voltage (OBD Adapter)
+      unit_of_measurement: 'V'

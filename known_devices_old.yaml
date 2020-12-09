@@ -1,0 +1,597 @@
+gabes_macbook:
+  hide_if_away: false
+  icon:
+  mac: 60:33:4B:22:6F:06
+  name: Gabes-MacBook
+  picture: /local/images/device_macbook.jpeg
+  track: true
+
+lightswitch_pi:
+  hide_if_away: false
+  icon:
+  mac: B8:27:EB:2D:2F:95
+  name: lightswitch-pi
+  picture: /local/images/lightswitch_pi.jpg
+  track: true
+
+reefcam_pantilt:
+  hide_if_away: false
+  icon:
+  mac: B8:27:EB:4E:B3:84
+  name: reefcam-pantilt
+  picture:
+  track: true
+
+esp_695715:
+  hide_if_away: false
+  icon:
+  mac: 84:F3:EB:69:57:15
+  name: Outlet 2
+  picture: /local/images/outlet.png
+  track: true
+
+esp_9e141d:
+  hide_if_away: false
+  icon:
+  mac: BC:DD:C2:9E:14:1D
+  name: Outlet 1
+  picture: /local/images/outlet.png
+  track: true
+
+esp_695327:
+  hide_if_away: false
+  icon:
+  mac: 84:F3:EB:69:53:27
+  name: Outlet 3
+  picture: /local/images/outlet.png
+  track: true
+
+bc_dd_c2_25_fa_65:
+  hide_if_away: false
+  icon:
+  mac: BC:DD:C2:25:FA:65
+  name: bc dd c2 25 fa 65
+  picture:
+  track: true
+
+d0_4d_2c_10_7c_33:
+  hide_if_away: false
+  icon:
+  mac: D0:4D:2C:10:7C:33
+  name: Roku
+  picture: /local/images/devicepic_roku.png
+  track: true
+
+b8_27_eb_14_b0_50:
+  hide_if_away: false
+  icon:
+  mac: B8:27:EB:14:B0:50
+  name: HomeCam Pi
+  picture: /local/images/devicepic_rpizero.png
+  track: true
+
+huawei_mate_9_92528f2b1a5:
+  hide_if_away: false
+  icon:
+  mac: 44:C3:46:04:F1:ED
+  name: Gabes Huawei Mate
+  picture: /local/images/devicepic_mate.png
+  track: true
+
+3c_71_bf_29_1d_19:
+  hide_if_away: false
+  icon:
+  mac: 3C:71:BF:29:1D:19
+  name: Weather Cloud
+  picture: /local/images/weathercloud.png
+  track: true
+
+esp_55f7c6:
+  hide_if_away: false
+  icon:
+  mac: CC:50:E3:55:F7:C6
+  name: Outlet 4
+  picture: /local/images/outlet.png
+  track: true
+
+90_e1_7b_b0_4d_52:
+  hide_if_away: false
+  icon:
+  mac: 90:E1:7B:B0:4D:52
+  name: 90 e1 7b b0 4d 52
+  picture:
+  track: true
+
+android_c42e1d9b846bb1c6:
+  hide_if_away: false
+  icon:
+  mac: 1C:99:4C:AF:1C:FC
+  name: Entry Kiosk
+  picture: /local/images/device_entry_kiosk.jpg
+  track: true
+
+esp_695276:
+  hide_if_away: false
+  icon:
+  mac: 84:F3:EB:69:52:76
+  name: Outlet 5
+  picture: /local/images/outlet.png
+  track: true
+
+harmonyhub:
+  hide_if_away: false
+  icon:
+  mac: 00:04:20:F6:61:5F
+  name: Harmony Hub
+  picture: /local/images/devicepic_harmony.png
+  track: true
+
+42_a6_77_4d_b0_cd:
+  hide_if_away: false
+  icon:
+  mac: 42:A6:77:4D:B0:CD
+  name: ASUS Router
+  picture: /local/images/devicepic_asus.png
+  track: true
+
+reefcontrolpi:
+  hide_if_away: false
+  icon:
+  mac: B8:27:EB:D6:22:5B
+  name: Reef Tank
+  picture: /local/images/devicepic_clownfish.png
+  track: true
+
+amazon_9dff0b9a7:
+  hide_if_away: false
+  icon:
+  mac: 00:FC:8B:71:A4:F2
+  name: Amazon Alexa
+  picture: /local/images/devicepic_alexa.png
+  track: true
+
+esp_25f89b:
+  hide_if_away: false
+  icon:
+  mac: BC:DD:C2:25:F8:9B
+  name: "E.T."
+  picture: /local/images/device_et.jpg
+  track: true
+
+esp_25fa65:
+  hide_if_away: false
+  icon: mdi:motion
+  mac: BC:DD:C2:25:FA:65
+  name: "Bedroom Motion"
+  picture: /local/images/devicepic_pir.png
+  track: true
+
+esp_cbb94b:
+  hide_if_away: false
+  icon:
+  mac: DC:4F:22:CB:B9:4B
+  name: Outlet 7
+  picture: /local/images/outlet.png
+  track: true
+
+esp_69e784:
+  hide_if_away: false
+  icon:
+  mac: 84:F3:EB:69:E7:84
+  name: Outlet 8
+  picture: /local/images/outlet.png
+  track: true
+
+home_assistant_pi:
+  hide_if_away: false
+  icon:
+  mac: B8:27:EB:79:E8:44
+  name: Atomic Pi
+  picture: /local/images/devicepic_atomicpi.png
+  track: true
+
+00_17_88_17_08_b9:
+  hide_if_away: false
+  icon:
+  mac: 00:17:88:17:08:B9
+  name: Hue Bridge
+  picture: /local/images/devicepic_hue.png
+  track: true
+
+esp_3c3315:
+  hide_if_away: false
+  icon:
+  mac: 2C:3A:E8:3C:33:15
+  name: Outlet 6
+  picture: /local/images/outlet.png
+  track: true
+
+esp_cbb432:
+  hide_if_away: false
+  icon:
+  mac: DC:4F:22:CB:B4:32
+  name: ESP CBB432
+  picture: /local/images/outlet.png
+  track: true
+
+00_1b_c7_05_17_d8:
+  hide_if_away: false
+  icon:
+  mac: 00:1B:C7:05:17:D8
+  name: Lorex Camera
+  picture: /local/images/devicepic_lorex.png
+  track: true
+
+octocam:
+  hide_if_away: false
+  icon:
+  mac: B8:27:EB:BE:DA:F2
+  name: octocam
+  picture: /local/images/octocam.jpg
+  track: true
+
+esp_55f8c6:
+  hide_if_away: false
+  icon:
+  mac: CC:50:E3:55:F8:C6
+  name: ESP 55F8C6
+  picture: /local/images/outlet.png
+  track: true
+
+esp_9e10b7:
+  hide_if_away: false
+  icon:
+  mac: BC:DD:C2:9E:10:B7
+  name: ESP 9E10B7
+  picture: /local/images/outlet.png
+  track: true
+
+60_33_4b_99_3d_00:
+  hide_if_away: false
+  icon:
+  mac: 60:33:4B:99:3D:00
+  name: 60 33 4b 99 3d 00
+  picture:
+  track: true
+
+esp_2483ff:
+  hide_if_away: false
+  icon:
+  mac: BC:DD:C2:24:83:FF
+  name: ESP 2483FF
+  picture: /local/images/outlet.png
+  track: true
+
+modlet_bn_wifi_00a1ad:
+  hide_if_away: false
+  icon:
+  mac: 80:4F:58:00:A1:AD
+  name: AirCon 2
+  picture: /local/images/devicepic_aircon.png
+  track: true
+
+modlet_bn_wifi_00a254:
+  hide_if_away: false
+  icon:
+  mac: 80:4F:58:00:A2:54
+  name: AirCon 1
+  picture: /local/images/devicepic_aircon.png
+  track: true
+
+android_8125e5019688295f:
+  hide_if_away: false
+  icon:
+  mac: E0:99:71:5B:15:A0
+  name: Gabes Huawei Mate
+  picture: /local/images/devicepic_mate.png
+  track: true
+
+bernys_iphone:
+  hide_if_away: false
+  icon:
+  mac: E4:B2:FB:7F:17:DF
+  name: Bernys iPhone
+  picture:
+  track: true
+
+gabes_ipod:
+  hide_if_away: false
+  icon:
+  mac: 00:1D:4F:40:24:D7
+  name: Gabes iPod
+  picture:
+  track: true
+
+b8_27_eb_b3_09_c7:
+  hide_if_away: false
+  icon:
+  mac: B8:27:EB:B3:09:C7
+  name: 3D Printer
+  picture: /local/images/devicepic_printer.png
+  track: true
+
+octopi:
+  hide_if_away: false
+  icon:
+  mac: B8:27:EB:E6:5C:92
+  name: 3D Printer
+  picture: /local/images/devicepic_printer.png
+  track: true
+
+5c_cf_7f_48_6a_2a:
+  hide_if_away: false
+  icon:
+  mac: 5C:CF:7F:48:6A:2A
+  name: 5c cf 7f 48 6a 2a
+  picture:
+  track: true
+
+esp_ba4cae:
+  hide_if_away: false
+  icon:
+  mac: 5C:CF:7F:BA:4C:AE
+  name: ESP BA4CAE
+  picture: /local/images/devicepic_nodemcu.png
+  track: true
+
+esp_b7c590:
+  hide_if_away: false
+  icon:
+  mac: 5C:CF:7F:B7:C5:90
+  name: ESP B7C590
+  picture: /local/images/devicepic_nodemcu.png
+  track: true
+
+esp_b9e930:
+  hide_if_away: false
+  icon:
+  mac: 5C:CF:7F:B9:E9:30
+  name: ESP B9E930
+  picture: /local/images/devicepic_nodemcu.png
+  track: true
+
+roomba_3176c01071213650:
+  hide_if_away: false
+  icon:
+  mac: D0:C5:D3:90:2A:6D
+  name: Roomba
+  picture:  /local/images/devicepic_roomba.png
+  track: true
+
+iphone:
+  hide_if_away: false
+  icon:
+  mac: 58:E2:8F:48:62:85
+  name: iPhone
+  picture:
+  track: true
+
+10_4f_a8_d6_e2_35:
+  hide_if_away: false
+  icon:
+  mac: 10:4F:A8:D6:E2:35
+  name: 10 4f a8 d6 e2 35
+  picture:
+  track: true
+
+esp_a7ffbc:
+  hide_if_away: false
+  icon:
+  mac: 60:01:94:A7:FF:BC
+  name: ESP A7FFBC
+  picture: /local/images/devicepic_nodemcu.png
+  track: true
+
+octocam_2:
+  hide_if_away: false
+  icon:
+  mac: B8:27:EB:C6:90:5A
+  name: octocam
+  picture: /local/images/devicepic_tetra.png
+  track: true
+
+amazon_pi:
+  hide_if_away: false
+  icon:
+  mac: B8:27:EB:02:43:FD
+  name: Amazon Tank
+  picture: /local/images/devicepic_tetra.png
+  track: true
+
+28_ef_01_23_e0_4f:
+  hide_if_away: false
+  icon:
+  mac: 28:EF:01:23:E0:4F
+  name: 28 ef 01 23 e0 4f
+  picture:
+  track: true
+
+amazon_pi_2:
+  hide_if_away: false
+  icon:
+  mac: B8:27:EB:AA:72:13
+  name: Amazon Tank
+  picture: /local/images/devicepic_tetra.png
+  track: true
+
+raspberrypi:
+  hide_if_away: false
+  icon:
+  mac: DC:A6:32:0D:7A:F7
+  name: PiTop
+  picture:
+  track: true
+
+00_e0_4d_6a_59_0a:
+  hide_if_away: false
+  icon:
+  mac: 00:E0:4D:6A:59:0A
+  name: 00 e0 4d 6a 59 0a
+  picture:
+  track: true
+
+reef_pi:
+  hide_if_away: false
+  icon:
+  mac: 3C:8C:F8:FB:4A:C7
+  name: Reef Tank
+  picture: /local/images/devicepic_clownfish.png
+  track: true
+
+reef_pi_2:
+  hide_if_away: false
+  icon:
+  mac: B8:27:EB:83:77:0E
+  name: Reef Tank
+  picture: /local/images/devicepic_clownfish.png
+  track: true
+
+android_6e0208c6a10b72a0:
+  hide_if_away: false
+  icon:
+  mac: F0:25:B7:C3:96:16
+  name: android-6e0208c6a10b72a0
+  picture:
+  track: true
+
+reefcam_pantilt_2:
+  hide_if_away: false
+  icon:
+  mac: B8:27:EB:2F:48:26
+  name: reefcam-pantilt
+  picture: /local/images/device_reefcam_pantilt.jpg
+  track: true
+
+esp_6bd538:
+  hide_if_away: false
+  icon:
+  mac: BC:DD:C2:6B:D5:38
+  name: ESP 6BD538
+  picture: /local/images/devicepic_nodemcu.png
+  track: true
+
+esp_6846fc:
+  hide_if_away: false
+  icon:
+  mac: 50:02:91:68:46:FC
+  name: ESP 6846FC
+  picture: /local/images/devicepic_nodemcu.png
+  track: true
+
+esp_684c98:
+  hide_if_away: false
+  icon:
+  mac: 50:02:91:68:4C:98
+  name: ESP 684C98
+  picture: /local/images/devicepic_nodemcu.png
+  track: true
+
+00_07_32_4d_e4_91:
+  hide_if_away: false
+  icon:
+  mac: 00:07:32:4D:E4:91
+  name: Hue Bridge
+  picture: /local/images/devicepic_hue.png
+  track: true
+
+gabesmusic:
+  hide_if_away: false
+  icon:
+  mac: B8:27:EB:2C:BD:11
+  name: gabesmusic
+  picture: /local/images/devicepic_fluxcap.png
+  track: true
+
+esp_2fdf0d:
+  hide_if_away: false
+  icon:
+  mac: EC:FA:BC:2F:DF:0D
+  name: ESP 2FDF0D
+  picture: /local/images/devicepic_nodemcu.png
+  track: true
+
+#Aaron
+magickal_guy:
+  hide_if_away: false
+  icon:
+  mac: A0:4E:A7:28:90:55
+  name: Magickal-Guy
+  picture:
+  track: true
+
+# Jen / Rachel / Tom / Drae
+pamplemousse:
+  hide_if_away: false
+  icon:
+  mac: 54:62:E2:22:AC:A3
+  name: Pamplemousse
+  picture:
+  track: true
+
+# Jen / Rachel / Tom / Drae
+farfalla:
+  hide_if_away: false
+  icon:
+  mac: AC:88:FD:20:B3:94
+  name: Farfalla
+  picture:
+  track: true
+
+orangepizero:
+  hide_if_away: false
+  icon:
+  mac: 02:42:BF:4F:88:4F
+  name: Bedroom Speaker
+  picture: /local/images/devicepic_orangepi.png
+  track: true
+
+orangepizero_2:
+  hide_if_away: false
+  icon:
+  mac: 12:42:BF:4F:88:4F
+  name: Bedroom Speaker
+  picture: /local/images/devicepic_orangepi.png
+  track: true
+
+magickal_guy_2:
+  hide_if_away: false
+  icon:
+  mac: 88:A9:B7:9F:2B:87
+  name: Magickal-Guy
+  picture:
+  track: true
+
+esp_e0d678:
+  icon:
+  mac: BC:DD:C2:E0:D6:78
+  name: ESP_E0D678
+  picture: /local/images/devicepic_nodemcu.png
+  track: true
+
+gabes_macbook_pro:
+  icon:
+  mac: 38:F9:D3:EB:97:08
+  name: MacBook Pro
+  picture: /local/images/devicepic_macbookpro.png
+  track: true
+
+synology_diskstation:
+  icon:
+  mac: 00:11:32:C4:16:F2
+  name: DiskStation
+  picture: /local/images/devicepic_synology.png
+  track: true
+
+esp_948562:
+  icon:
+  mac: FC:F5:C4:94:85:62
+  name: ESP_948562
+  picture:
+  track: true
+
+snapcast_ipod:
+  icon:
+  mac: B8:27:EB:84:9D:15
+  name: Bathroom Speaker
+  picture: /local/images/devicepic_raspberrypi.png
+  track: true

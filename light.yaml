@@ -44,7 +44,7 @@
 - platform: mqtt
   schema: json
   command_topic: "thundercloud/reading/set"
-  state_topic: "thundercloud/reading/current" 
+  state_topic: "thundercloud/reading/current"
   name: "Thundercloud"
   optimistic: true
   retain: true
@@ -72,7 +72,7 @@
 - platform: mqtt
   schema: json
   command_topic: "flux-capacitor/set"
-  state_topic: "flux-capacitor/current" 
+  state_topic: "flux-capacitor/current"
   name: "Flux Capacitor"
   optimistic: true
   retain: true
@@ -106,9 +106,37 @@
   brightness: true
   rgb: true
   effect: true
-  effect_list: 
+  effect_list:
     - "colorfade_slow"
     - "colorfade_fast"
     - "flash"
   optimistic: false
   qos: 0
+
+#desklight
+- platform: mqtt
+  schema: json
+  command_topic: "desklight/set"
+  state_topic: "desklight/current"
+  name: "Desk Overhead"
+  optimistic: true
+  retain: true
+  brightness: true
+  effect: true
+  rgb: true
+  effect_list:
+    - "solid"
+    - "rainbow"
+    - "rainbow with glitter"
+    - "candy cane"
+    - "bpm"
+    - "confetti"
+    - "noise"
+    - "ripple"
+    - "fire"
+    - "twinkle"
+    - "lightning"
+    - "dots"
+    - "glitter"
+    - "juggle"
+    - "police all"

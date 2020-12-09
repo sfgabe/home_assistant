@@ -1,3 +1,6 @@
+input_text.base_url:
+  hidden: true
+
 input_boolean.weather:
   custom_ui_state_card: custom-weather-card
   config:
@@ -6,26 +9,26 @@ input_boolean.weather:
 
 sensor.dark_sky_temperature:
   friendly_name: Temperature
-  
+
 sensor.dark_sky_apparent_temperature:
   friendly_name: Apparent Temperature
-  
+
 sensor.dark_sky_humidity:
   friendly_name: Humidity
-  
+
 sensor.dark_sky_wind_speed:
   friendly_name: Wind Speed
-  
+
 sensor.dark_sky_daily_max_precip_intensity:
   friendly_name: Daily Max Precip Intensity
   icon: mdi:beaker
-  
+
 sensor.dark_sky_cloud_coverage:
   friendly_name: Cloud Coverage
-  
+
 sensor.wind:
   icon: mdi:weather-windy
-  
+
 sensor.weather_week_text:
   icon: mdi:calendar-range
 
@@ -252,47 +255,47 @@ climate.reef_tank_therm:
 climate.octo_tank_therm:
   target_temp_step: 0.01
 
-switch.reef_pump_2: 
+switch.reef_pump_2:
   icon: mdi:fast-forward
 
-switch.reef_pump_1: 
+switch.reef_pump_1:
   icon: mdi:fast-forward
 
-switch.reef_pump_1_reverse: 
+switch.reef_pump_1_reverse:
   icon: mdi:rewind
 
-switch.reef_pump_1_scheduled: 
+switch.reef_pump_1_scheduled:
   icon: mdi:clock
 
-sensor.reefcontrolpipump2power: 
+sensor.reefcontrolpipump2power:
   icon: mdi:eyedropper
 
-sensor.reefcontrolpipump1status: 
+sensor.reefcontrolpipump1status:
   icon: mdi:pipe
 
-switch.kessil_light_level_1: 
+switch.kessil_light_level_1:
   icon: mdi:alpha-a-box
-switch.kessil_light_level_2: 
+switch.kessil_light_level_2:
   icon: mdi:alpha-b-box
-switch.kessil_light_level_3: 
+switch.kessil_light_level_3:
   icon: mdi:alpha-c-box
-switch.kessil_light_level_4: 
+switch.kessil_light_level_4:
   icon: mdi:alpha-d-box
-switch.kessil_light_level_5: 
+switch.kessil_light_level_5:
   icon: mdi:alpha-e-box
-switch.kessil_light_level_6: 
+switch.kessil_light_level_6:
   icon: mdi:alpha-f-box
-switch.kessil_light_level_7: 
+switch.kessil_light_level_7:
   icon: mdi:alpha-g-box
-switch.kessil_light_level_8: 
+switch.kessil_light_level_8:
   icon: mdi:alpha-h-box
-switch.kessil_light_level_9: 
+switch.kessil_light_level_9:
   icon: mdi:alpha-i-box
-switch.kessil_light_level_10: 
+switch.kessil_light_level_10:
   icon: mdi:alpha-j-box
-switch.kessil_light_level_11: 
+switch.kessil_light_level_11:
   icon: mdi:alpha-k-box
-switch.kessil_light_level_12: 
+switch.kessil_light_level_12:
   icon: mdi:alpha-l-box
 
 switch.06200940dc4f22cbb94b_4:
@@ -325,10 +328,22 @@ switch.pantilt_right:
   icon: mdi:arrow-right-box
 switch.pantilt_center:
   icon: mdi:image-filter-center-focus
-binary_sensor.homecam_motion_sensor:
-  icon: mdi:motion-sensor
 switch.2437254184f3eb69e784:
   icon: mdi:power-plug
+
+binary_sensor.homecam_motion_sensor:
+  icon: fas:video
+binary_sensor.bedroom_motion:
+  icon: fas:bed
+binary_sensor.bathroom_motion:
+  icon: fas:bath
+binary_sensor.birdfeed_motion:
+  icon: fas:crow
+binary_sensor.entry_motion:
+  icon: fas:door-open
+binary_sensor.tablet_motion:
+  icon: fas:tablet-alt
+
 
 script.radio_tune:
   friendly_name: Start Playing
@@ -350,6 +365,10 @@ binary_sensor.kiosk_screen:
   hidden: true
 input_number.kiosk_brightness:
   hidden: true
+  icon: mdi:mobile
+binary_sensor.browser_note_kiosk:
+  friendly_name: "Entry Kiosk"
+  icon: mdi:mobile
 
 switch.sonoff_10006b7f44:
   entity_picture: /local/images/humidifier.jpg
@@ -357,11 +376,20 @@ switch.sonoff_10006b7f44:
 sensor.gabe_status:
   entity_picture: https://pbs.twimg.com/profile_images/729829958621773825/6tR5_2u-_400x400.jpg
 
-group.gabe:
-  entity_picture: https://pbs.twimg.com/profile_images/729829958621773825/6tR5_2u-_400x400.jpg
+person.gabe:
+  entity_picture: /local/icons/badge_gabe.png
 
-person.gabe_2:
-  entity_picture: https://pbs.twimg.com/profile_images/729829958621773825/6tR5_2u-_400x400.jpg
+person.aaron_2:
+  entity_picture: /local/icons/badge_aj.jpg
+
+person.mini_cooper:
+  entity_picture: /local/icons/badge_mini.jpg
+
+person.berny_2:
+  entity_picture: /local/icons/badge_berny.png
+
+person.janet:
+  entity_picture: /local/icons/badge_janet.png
 
 switch.call_the_hounds:
   friendly_name: "Call the Hounds!"
@@ -377,96 +405,56 @@ media_player.snapcast_client_12_42_bf_4f_88_4f:
   friendly_name: "BedroomSnapcastClient"
 media_player.snapcast_client_b8_27_eb_31_93_b7:
   friendly_name: "BirdfeedSnapcastClient"
+media_player.snapcast_client_b8_27_eb_84_9d_15:
+  friendly_name: "BathroomSnapcastClient"
 
 # Devices
-sensor.online_device_lorex_cam:
-  entity_picture: /local/images/device_lorexcam.jpg
-sensor.online_device_bluray_player:
-  entity_picture: /local/images/device_bluray.jpg
-sensor.online_device_asus_router:
-  entity_picture: /local/images/device_asus_router.jpeg
-sensor.online_device_amazon_echo:
-  entity_picture: /local/images/amazon_echo_dot.jpg
-sensor.online_device_samsung_soundbar:
-  entity_picture: /local/images/device_samsung_soundbar.jpg
-sensor.online_device_roku_dongle:
-  entity_picture: /local/images/device_roku_dongle.jpg
-sensor.online_device_mailbox:
-  entity_picture: /local/images/device_mailbox.jpg
-sensor.online_device_white_macbook:
-  entity_picture: /local/images/device_macbook.jpeg
-sensor.online_device_harmony_hub:
-  entity_picture: /local/images/device_harmony_hub.jpg
-sensor.online_device_homecam_pi:
-  entity_picture: /local/images/device_homecam_pi.jpg
-sensor.online_device_huawei_mate:
-  entity_picture: /local/images/device_huawei_mate.jpg
-sensor.gabes_mate_hotspot_bt_hass:
-  entity_picture: /local/images/device_huawei_mate.jpg
-sensor.online_device_octoprint:
-  entity_picture: /local/images/mpms_printer.jpg
-sensor.online_device_philipshue:
-  entity_picture: /local/images/device_philipshue.jpeg
-sensor.online_device_entry_pi:
-  entity_picture: /local/images/device_entry_pi.jpg
-sensor.online_device_reefcam_pantilt:
-  entity_picture: /local/images/device_reefcam_pantilt.jpg
-sensor.online_device_reef_pi:
-  entity_picture: /local/images/device_reef_pi.jpg
-sensor.online_device_entry_kiosk:
-  entity_picture: /local/images/device_entry_kiosk.jpg
-sensor.online_device_flux_capacitor:
-  entity_picture: /local/images/device_flux_capacitor.jpg
-sensor.online_device_garden_robot:
-  entity_picture: /local/images/device_garden_robot.jpg
-sensor.online_device_plant_monitor:
-  entity_picture: /local/images/device_plant_monitor.jpg
 device_tracker.001bc70517d8:
   entity_picture: /local/images/device_lorexcam.jpg
 device_tracker.104fa8d6e235:
   entity_picture: /local/images/device_bluray.jpg
 device_tracker.42a6774db0cd:
-  entity_picture: /local/images/device_asus_router.jpeg
+  entity_picture: /local/images/devicepic_asus.png
 device_tracker.amazon_9dff0b9a7:
-  entity_picture: /local/images/amazon_echo_dot.jpg
+  entity_picture: /local/images/devicepic_alexa.png
 device_tracker.av_samsung_soundbar_k360_kseries:
-  entity_picture: /local/images/device_samsung_soundbar.jpg
+  entity_picture: /local/images/devicepic_soundbar.png
 device_tracker.d04d2c107c33:
-  entity_picture: /local/images/device_roku_dongle.jpg
+  entity_picture: /local/images/devicepic_roku.png
 device_tracker.esp_2fdf0d:
   entity_picture: /local/images/device_mailbox.jpg
 device_tracker.harmonyhub:
   entity_picture: /local/images/device_harmony_hub.jpg
 device_tracker.homecam:
-  entity_picture: /local/images/device_homecam_pi.jpg
+  entity_picture: /local/images/devicepic_rpizero.png
 device_tracker.huawei_mate_9_92528f2b1a5:
-  entity_picture: /local/images/device_huawei_mate.jpg
+  entity_picture: /local/images/devicepic_mate.png
 device_tracker.octopi_2:
-  entity_picture: /local/images/mpms_printer.jpg
+  entity_picture: /local/images/devicepic_printer.png
 device_tracker.philipshue:
-  entity_picture: /local/images/device_philipshue.jpeg
-device_tracker.lightswitch_pi:
-  entity_picture: /local/images/device_entry_pi.jpg
+  entity_picture: /local/images/devicepic_hue.png
 device_tracker.reefcam_pantilt:
-  entity_picture: /local/images/device_reefcam_pantilt.jpg
+  entity_picture: /local/images/devicepic_rpizero.png
 device_tracker.reefcontrolpi:
-  entity_picture: /local/images/device_reef_pi.jpg
+  entity_picture: /local/images/devicepic_clownfish.png
 device_tracker.android_ac43312d0683f1c6:
   entity_picture: /local/images/device_entry_kiosk.jpg
 device_tracker.retropie:
-  entity_picture: /local/images/device_flux_capacitor.jpg
+  entity_picture: /local/images/devicepic_fluxcap.png
 device_tracker.octocam:
-  entity_picture: /local/images/device_garden_robot.jpg
-device_tracker.esp_55f7c6:
-  entity_picture: /local/images/device_plant_monitor_2.jpg
+  entity_picture: /local/images/devicepic_herbs.png
 device_tracker.esp_55f8c6:
-  entity_picture: /local/images/device_plant_monitor_2.jpg
+  entity_picture: /local/images/devicepic_ferns.png
 device_tracker.gabes_macbook:
   entity_picture: /local/images/device_macbook.jpeg
-device_tracker.5re0217120001465_2:
-  entity_picture: /local/images/device_huawei_mate.jpg
+device_tracker.5re0217120001465:
+  entity_picture: /local/images/devicepic_mate.png
 device_tracker.esp_25f89b:
   entity_picture: /local/images/device_et.jpg
+sensor.ip_address:
+  entity_picture: /local/images/devicepic_asus.png
+sensor.mariadb_database_size:
+  entity_picture: /local/images/devicepic_hass.png
 
 binary_sensor.people_home:
   templates:

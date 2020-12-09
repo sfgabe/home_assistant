@@ -95,8 +95,8 @@ script:
       - service: script.janet_notification_hub
         data_template:
           media_content_type: music
-          media_player: media_player.volumio_mpd
-          #TODO
+          media_player: media_player.192_168_50_111
+# TODO
 #          media_player: >-
 #            {%- for device in states.media_player -%}
 #              {%- if device.name == states.input_select.janet_notification_media_player.state -%}
@@ -130,7 +130,7 @@ script:
 
             {%- macro introduction() -%}
               {% set introduction = [
-                " I'm an informational delivery system, I liter-raly know everything. ",
+                " I'm an informational delivery system, I literaly know everything. ",
                 " I'm sort of the janitor around here. ",
                 " I'm like a walking database. You can ask me about the creation of the universe... or history. ",
                 " Every time a Janet is rebooted, she increases her social awareness and abilities. I might be the most advanced Janet in the universe. ",
@@ -241,7 +241,7 @@ script:
             {%- endmacro -%}
 
             {%- macro weather_alert_warning()-%}
-                The National Weather Service has issued a {{ states.sensor.weatheralerts.attributes.Description }} for your area. It expires at {{ states.sensor.weatheralerts.attributes.Expires }}.
+                The National Weather Service has issued a warning. It is expected to be {{ states.weather.kjrb_daynight.attributes.forecast[0].detailed_description }}.
             {%- endmacro -%}
 
             {%- macro okay()-%}
@@ -334,7 +334,7 @@ script:
             {%- endmacro -%}
 
              {%- macro morning_weather() -%}
-                The time is now, {{ states('sensor.time') }}. Outside the temperature is, {{ states('sensor.dark_sky_temperature') }} degrees fahrenheit and {{ states('sensor.dark_sky_minutely_summary') }}. You can expect {{ states('sensor.dark_sky_daily_summary') }}
+                The time is now, {{ states('sensor.time') }}. Outside the temperature is, {{ states('sensor.dark_sky_temperature') }} degrees fahrenheit and {{ states('sensor.dark_sky_minutely_summary') }}. Today you will be {{ states.weather.kjrb_daynight.attributes.forecast[0].detailed_description }}
              {%- endmacro -%}
 
             {%- macro morning_news() -%}
@@ -573,7 +573,7 @@ script:
       - service: script.janet_speech_processing
         data_template:
           media_content_type: music
-          media_player: media_player.volumio_mpd
+          media_player: media_player.192_168_50_111
 #          media_player: >-
 #            {{ media_player }}
           speech_message: >-
@@ -594,7 +594,7 @@ script:
           - condition: or
             conditions:
               - condition: time
-                after: '02:00:00'
+                after: '08:00:00'
                 before: '23:00:00'
               - condition: state
                 entity_id: input_boolean.janet_alert_mode
@@ -629,15 +629,21 @@ script:
 
       - service: media_player.play_media
         data:
-          entity_id: media_player.volumio_mpd
-          media_content_id: "REMOTEURL/sounds/janet_boop.mp3"
+          entity_id: media_player.192_168_50_111
+          # media_content_id: >-
+          #   {% set url = states('input_text.base_url') %}
+          #   {% set path = '/local/sounds/'%}
+          #   {% set file = 'janet_boop' %}
+          #   {% set ext = '.mp3' %}
+          #   {{[url,path,file,ext]|join}}
+          media_content_id: "localhost-fill/local/sounds/janet_boop.mp3"
           media_content_type: music
       - delay:
           seconds: 2
 
       - service: tts.google_translate_say
         data_template:
-          entity_id: media_player.volumio_mpd
+          entity_id: media_player.192_168_50_111
           message: >-
               {{ speech_message | replace("\n","") | replace("   ","") | replace("  "," ") }}
 
@@ -646,7 +652,7 @@ script:
 #      - service: media_player.media_pause
 #        entity_id: media_player.gabes_music_server
       - service: media_player.turn_off
-        entity_id: media_player.volumio_mpd
+        entity_id: media_player.192_168_50_111
 
 #      - service: notify.alexa_media
 #        data_template:
@@ -667,7 +673,7 @@ script:
         state: 'on'
       - service: tts.google_translate_say
         data_template:
-          entity_id: media_player.volumio_mpd
+          entity_id: media_player.192_168_50_111
           message: >-
             {{ speech_message | replace("\n","") | replace("   ","") |
                replace("eight hundred and sixty one thousand","861.000") }}

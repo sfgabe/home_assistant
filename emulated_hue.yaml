@@ -1,8 +1,26 @@
-listen_port: 8300
-host_ip: 192.168.50.159
+listen_port: 80
+host_ip: 71.167.113.166
 expose_by_default: true
 exposed_domains:
   - light
+  - media_player
+  - switch
 entities:
-  media_player.volumio_mpd:
+  media_player.gabes_music_server:
     name: "Gabes Music"
+  media_player.snapcast_client_12_42_bf_4f_88_4f:
+    name: "Bedroom Speaker"
+  media_player.snapcast_client_b8_27_eb_84_9d_15:
+    name: "Bathroom Speaker"
+  media_player.snapcast_client_b8_27_eb_79_e8_44:
+    name: "Living Room Speaker"
+  light.desk:
+    name: "Desk Light"
+  light.kitchen:
+    name: "Kitchen Light"
+  light.big_o:
+    name: "Big O"
+  light.kitchen_overhead_light:
+    name: "Kitchen Overhead"
+  switch.06200928600194a7ffbc_1:
+    name: "PS4"

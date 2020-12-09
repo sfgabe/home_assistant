@@ -1,6 +1,6 @@
 #HomeCam
 - platform: mqtt
-  name: homecam_motion
+  name: Homecam Motion
   state_topic: 'homecam/motion/reading'
   value_template: '{{ states.sensor.homecam_motion_raw_json.state.split("status\": \"")[1].split("\"")[0] }}'
   payload_on: "MOTION"
@@ -20,12 +20,12 @@
 
 #Kiosk
 - platform: mqtt
-  name: dashboard_motion
+  name: Dashboard Motion
   state_topic: note3/kiosk
   device_class: motion
 
 - platform: mqtt
-  name: tablet_motion
+  name: Tablet Motion
   state_topic: tablet/kiosk
   device_class: motion
 
@@ -70,6 +70,12 @@
           mdi:close-circle-outline
         {% endif %}
 
+#Printer
+- platform: octoprint
+  monitored_conditions:
+    - Printing
+    - Printing Error
+
 #Mailbox
 - platform: mqtt
   state_topic: "mailbox-flag/reading"
@@ -88,7 +94,7 @@
 
 #Entry Motion
 - platform: mqtt
-  name: entry_motion
+  name: Entry Motion
   state_topic: 'lightswitch/reading/current'
   value_template: '{{ value_json.motion }}'
   payload_on: "motion detected"
@@ -98,7 +104,7 @@
   off_delay: 120
 
 - platform: mqtt
-  name: birdfeed_motion
+  name: Birdfeed Motion
   state_topic: 'birdfeed/reading/current'
   value_template: '{{ value_json.motion }}'
   payload_on: "motion detected"
@@ -108,7 +114,14 @@
   off_delay: 30
 
 - platform: mqtt
-  name: bedroom_motion
+  name: Bathroom Motion
+  state_topic: "homeassistant/binary_sensor/motion_bathroom/state"
+  expire_after: 120
+  off_delay: 120
+  device_class: motion
+
+- platform: mqtt
+  name: Bedroom Motion
   state_topic: "homeassistant/binary_sensor/motion_battery/state"
 #  availability_topic: "homeassistant/binary_sensor/motion_battery/config"
   expire_after: 120
@@ -165,7 +178,7 @@
     people_home:
       friendly_name: "People Home"
       value_template: >-
-         {{ is_state('group.gabe', 'home') or is_state('input_boolean.guest_mode', 'on') }}
+         {{ is_state('person.gabe', 'home') or is_state('input_boolean.guest_mode', 'on') }}
     recent_motion_trigger:
       friendly_name: "Recent Motion Trigger"
       value_template: >-

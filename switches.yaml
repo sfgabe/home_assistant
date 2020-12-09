@@ -9,13 +9,6 @@
   payload_off: "3"
   value_template: '{{ value_json.state }}'
 
-#Switch for Entry Hello
-- platform: command_line
-  switches:
-    entry_hello:
-      friendly_name: Entry Hello
-      command_on: !secret switches_entry_hello_on
-
 #Hounds Alarm
 - platform: command_line
   switches:
@@ -157,7 +150,7 @@
   name: Reef ATO Scheduled
   resource: http://192.168.50.250/api/doser/pumps/4
   username: !secret reefcontrolpi_username
-  password: !secret reefcontrolpi_password 
+  password: !secret reefcontrolpi_password
   body_on: '{"id":"4","name":"ATO Pump","jack":"2","pin":2,"regiment":{"enable":true,"schedule":{"day":"*","hour":"23","minute":"30","second":"0","week":"*","month":"*"},"duration":14,"speed":100}}'
   body_off: '{"id":"4","name":"ATO Pump","jack":"2","pin":2,"regiment":{"enable":false,"schedule":{"day":"*","hour":"23","minute":"30","second":"0","week":"*","month":"*"},"duration":14,"speed":100}}'
   is_on_template: '{{ value_json.regiment.enable }}'
@@ -476,6 +469,16 @@
   state_off: "OFF"
   payload_off: "3_OFF"
 
+# 3x3 Numpad
+- platform: mqtt
+  name: Numpad Light
+  command_topic: "numpad/light/set"
+  state_topic: "numpad/light/current"
+  state_on: "ON"
+  payload_on: "J"
+  state_off: "OFF"
+  payload_off: "K"
+
 #Switch for Motion Detection
 # This should change to notify on motion
 #- platform: command_line
@@ -493,17 +496,71 @@
       command_on: !secret switches_homecam_motion_text
       command_off: !secret switches_homecam_no_motion_text
 
-- platform: template
+- platform: telnet
   switches:
-    pi_hole_switch:
-      friendly_name: "Pi-hole Enabled"
-      value_template: "{{ is_state('sensor.pi_hole', 'enabled') }}"
-      turn_on:
-        service: pi_hole.enable
-      turn_off:
-        service: pi_hole.disable
-        data:
-          duration: '12:00:00'
+#led light
+    ringaling_led:
+      resource: 192.168.50.121
+      port: 5003
+      command_on: 53;17;1;0;2;1
+      command_off: 53;17;1;0;2;0
+#      value_template: '{{ value == "53;17;1;0;2;1" }}'
+      timeout: 0.9
+      name: Phone LED Light
+#continous long ring - no off
+    ringaling_ring6:
+      resource: 192.168.50.121
+      port: 5003
+      command_on: 53;16;1;0;2;1
+      command_off: 53;16;1;0;2;0
+#      value_template: '{{ value == "53;16;1;0;2;1" }}'
+      timeout: 0.9
+      name: Phone Continous Ring
+#five short rings
+    ringaling_ring5:
+      resource: 192.168.50.121
+      port: 5003
+      command_on: 53;15;1;0;2;1
+      command_off: 53;15;1;0;2;0
+#      value_template: '{{ value == "53;15;1;0;2;1" }}'
+      timeout: 0.9
+      name: Phone 5 Short Rings
+#one loooong ring
+    ringaling_ring4:
+      resource: 192.168.50.121
+      port: 5003
+      command_on: 53;14;1;0;2;1
+      command_off: 53;14;1;0;2;0
+#      value_template: '{{ value == "53;14;1;0;2;1" }}'
+      timeout: 0.9
+      name: Phone 1 Long Ring
+#four long rings
+    ringaling_ring3:
+      resource: 192.168.50.121
+      port: 5003
+      command_on: 53;13;1;0;2;1
+      command_off: 53;13;1;0;2;0
+#      value_template: '{{ value == "53;13;1;0;2;1" }}'
+      timeout: 0.9
+      name: Phone 4 Long Rings
+#two short rings
+    ringaling_ring2:
+      resource: 192.168.50.121
+      port: 5003
+      command_on: 53;12;1;0;2;1
+      command_off: 53;12;1;0;2;0
+#      value_template: '{{ value == "53;12;1;0;2;1" }}'
+      timeout: 0.9
+      name: Phone 2 Short Rings
+#three long rings
+    ringaling_ring1:
+      resource: 192.168.50.121
+      port: 5003
+      command_on: 53;11;1;0;2;1
+      command_off: 53;11;1;0;2;0
+#      value_template: '{{ value == "53;11;1;0;2;1" }}'
+      timeout: 0.9
+      name: Phone 3 Long Rings
 
 #Harmony
 - platform: template
@@ -536,7 +593,7 @@
               - Source
             device: 'Samsung Amp'
         - delay: 00:00:02
-        - service: switch.turn_off 
+        - service: switch.turn_off
           entity_id: switch.samsung_soundbar_input
       turn_off:
         - service: remote.send_command
@@ -556,7 +613,7 @@
               - InputBT
             device: 'Samsung Amp'
         - delay: 00:00:02
-        - service: switch.turn_off 
+        - service: switch.turn_off
           entity_id: switch.samsung_soundbar_input
       turn_off:
         - service: remote.send_command

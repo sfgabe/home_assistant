@@ -1,9 +1,9 @@
-- name: octo_cam_bot_notifier
-  platform: twitter
-  consumer_key: !secret twitter_consumer_key
-  consumer_secret: !secret twitter_consumer_secret
-  access_token: !secret twitter_access_token
-  access_token_secret: !secret twitter_access_token_secret
+# - name: octo_cam_bot_notifier
+#   platform: twitter
+#   consumer_key: !secret twitter_consumer_key
+#   consumer_secret: !secret twitter_consumer_secret
+#   access_token: !secret twitter_access_token
+#   access_token_secret: !secret twitter_access_token_secret
 
 #- platform: command_line
 #  name: gabes_alexa

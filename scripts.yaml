@@ -878,7 +878,7 @@ kiosk_weather_report:
     - service: script.janet_speech_engine
       data:
         call_greeting: 1
-        call_morning_weather: 1
+#        call_morning_weather: 1
 
 kiosk_good_morning:
   sequence:
@@ -902,18 +902,22 @@ kiosk_good_morning:
       entity_id: remote.gabes_harmony_hub
       data:
         activity: "Speaker"
-    - service: shell_command.volumio_emptytrack
-    - delay: '00:00:02'
+#    - service: shell_command.volumio_emptytrack
+#    - delay: '00:00:02'
     - service: media_player.media_pause
       entity_id: media_player.gabes_music_server
     - service: media_player.volume_set
       data:
-        entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44
+        entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44 #Livingroom
         volume_level: 1
     - service: media_player.volume_set
       data:
-        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
-        volume_level: 0
+        entity_id: media_player.snapcast_client_b8_27_eb_84_9d_15 #Bathroom
+        volume_level: 1
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f #Bedroom
+        volume_level: 0.3
 #    - service: script.soundbar_volume_up
 #    - delay: '00:01:00'
 #    - service: media_player.play_media
@@ -923,17 +927,17 @@ kiosk_good_morning:
 #        media_content_id: amzn_sfx_trumpet_bugle_03
     - service: media_player.play_media
       data:
-        entity_id: media_player.volumio_mpd
-        media_content_id: 'REMOTEURL/sounds/janet_hithere.mp3'
+        entity_id: media_player.gabesmusic_3
+        media_content_id: 'localhost-fill/local/sounds/janet_hithere.mp3'
         media_content_type: 'music'
     - delay: '00:00:01'
     - service: script.janet_speech_engine
       data:
         call_morning_greeting: 1
     - delay: '00:00:05'
-    - service: script.janet_speech_engine
-      data:
-        call_morning_weather: 1
+    # - service: script.janet_speech_engine
+    #   data:
+    #     call_morning_weather: 1
 #    - wait_template: "{{ not is_state( media_player.browser_note_kiosk, 'playing') }}"
 #      timeout: 00:00:10
 #    - service: script.janet_speech_engine
@@ -951,29 +955,29 @@ kiosk_good_morning:
         rgb_color: [255,251,4]
         brightness: 255
         transition: 120
-    - service: shell_command.volumio_emptytrack
-    - delay: '00:00:02'
+#    - service: shell_command.volumio_emptytrack
+#    - delay: '00:00:02'
     - service: media_player.media_pause
       entity_id: media_player.gabes_music_server
     - service: media_player.play_media
       data:
-        entity_id: media_player.volumio_mpd
-        media_content_id: 'REMOTEURL/sounds/janet_boop.mp3'
+        entity_id: media_player.gabesmusic_3
+        media_content_id: 'localhost-fill/local/sounds/janet_boop.mp3'
         media_content_type: music
-    - delay: '00:00:01'
-    - service: shell_command.volumio_emptytrack
+#    - delay: '00:00:01'
+#    - service: shell_command.volumio_emptytrack
     - delay: '00:00:02'
     - service: media_player.media_pause
       entity_id: media_player.gabes_music_server
     - service: media_player.play_media
       data:
-        entity_id: media_player.volumio_mpd
+        entity_id: media_player.gabesmusic_3
         media_content_type: music
         media_content_id: 'http://pd.npr.org/anon.npr-mp3/npr/news/newscast.mp3'
     - delay: '00:05:00'
     - service: media_player.media_pause
       entity_id: media_player.gabes_music_server
-    - service: shell_command.volumio_emptytrack
+#    - service: shell_command.volumio_emptytrack
     - delay: '00:00:02'
     - service: media_player.media_pause
       entity_id: media_player.gabes_music_server
@@ -981,8 +985,8 @@ kiosk_good_morning:
       value_template: "{{ ((as_timestamp(states.calendar.gabethisisgabescom.attributes.start_time) - as_timestamp(now())) < 64800) and ((as_timestamp(states.calendar.gabethisisgabescom.attributes.start_time) - as_timestamp(now())) > 0) }}"
     - service: media_player.play_media
       data:
-        entity_id: media_player.volumio_mpd
-        media_content_id: 'REMOTEURL/sounds/startrek_computer3.mp3'
+        entity_id: media_player.gabesmusic_3
+        media_content_id: 'localhost-fill/local/sounds/startrek_computer3.mp3'
         media_content_type: music
     - service: script.janet_speech_engine
       data:
@@ -1005,12 +1009,20 @@ kiosk_good_morning:
           - browser_note_kiosk
     - delay: '00:05:00'
     - service: media_player.media_stop
-      entity_id: media_player.volumio_mpd
+      entity_id: media_player.gabesmusic_3
     - service: media_player.turn_off
-      entity_id: media_player.volumio_mpd
+      entity_id: media_player.gabesmusic_3
     - service: automation.turn_off
       entity_id: automation.morning_greeting_update
     - service: script.soundbar_volume_down
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44 #Livingroom
+        volume_level: 1
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f #Bedroom
+        volume_level: 0
 
 kiosk_play_the_news:
   sequence:
@@ -1023,7 +1035,7 @@ kiosk_play_the_news:
         seconds: 30
     - service: media_player.play_media
       data:
-        entity_id: media_player.volumio_mpd
+        entity_id: media_player.gabesmusic_3
         media_content_type: music
         media_content_id: 'http://pd.npr.org/anon.npr-mp3/npr/news/newscast.mp3'
     - delay:
@@ -1031,7 +1043,7 @@ kiosk_play_the_news:
     - service: media_player.media_pause
       entity_id: media_player.gabes_music_server
     - service: media_player.turn_off
-      entity_id: media_player.volumio_mpd
+      entity_id: media_player.gabesmusic_3
     - service: script.soundbar_volume_down
 
 soundfx_drumriff:
@@ -1060,9 +1072,45 @@ soundfx_applause:
 
 fart_machine:
   sequence:
+    - service: snapcast.snapshot
+      entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44 #Livingroom
+    - service: snapcast.snapshot
+      entity_id: media_player.snapcast_client_b8_27_eb_84_9d_15 #Bathroom
+    - service: snapcast.snapshot
+      entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f #Bedroom
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44 #Livingroom
+        volume_level: 1
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_b8_27_eb_84_9d_15 #Bathroom
+        volume_level: 0
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f #Bedroom
+        volume_level: 0
+    - service: media_player.play_media
+      data_template:
+        entity_id: media_player.gabesmusic_3
+        media_content_id: >-
+          {% set url = states('input_text.base_url') %}
+          {% set path = '/local/sounds/farts/fart'%}
+          {% set file = [
+          "1","2","3","4","5","6","7","8","9","10","11","13","14"
+          ] %}
+          {% set rindex =  (range(0, (file | length - 1) )|random) %}
+          {% set ext = '.mp3' %}
+          {{[url,path,file[rindex],ext]|join}}
+        media_content_type: music
+    - delay: 00:00:01
     - service: media_player.volume_set
       data:
         entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44
+        volume_level: 0
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_b8_27_eb_84_9d_15 #Bathroom
         volume_level: 1
     - service: media_player.volume_set
       data:
@@ -1070,31 +1118,25 @@ fart_machine:
         volume_level: 0
     - service: media_player.play_media
       data_template:
-        entity_id: media_player.volumio_mpd
+        entity_id: media_player.gabesmusic_3
         media_content_id: >-
-          {%- set responses = [
-          "REMOTEURL/sounds/farts/fart1.mp3",
-          "REMOTEURL/sounds/farts/fart2.mp3",
-          "REMOTEURL/sounds/farts/fart3.mp3",
-          "REMOTEURL/sounds/farts/fart4.mp3",
-          "REMOTEURL/sounds/farts/fart5.mp3",
-          "REMOTEURL/sounds/farts/fart6.mp3",
-          "REMOTEURL/sounds/farts/fart7.mp3",
-          "REMOTEURL/sounds/farts/fart8.mp3",
-          "REMOTEURL/sounds/farts/fart9.mp3",
-          "REMOTEURL/sounds/farts/fart10.mp3",
-          "REMOTEURL/sounds/farts/fart11.mp3",
-          "REMOTEURL/sounds/farts/fart12.mp3",
-          "REMOTEURL/sounds/farts/fart13.mp3",
-          "REMOTEURL/sounds/farts/fart14.mp3"
-          ] -%}
-          {% set rindex =  (range(0, (responses | length - 1) )|random) -%}
-          {{responses[rindex]}}
+          {% set url = states('input_text.base_url') %}
+          {% set path = '/local/sounds/farts/fart'%}
+          {% set file = [
+          "1","2","3","4","5","6","7","8","9","10","11","13","14"
+          ] %}
+          {% set rindex =  (range(0, (file | length - 1) )|random) %}
+          {% set ext = '.mp3' %}
+          {{[url,path,file[rindex],ext]|join}}
         media_content_type: music
-    - delay: 00:00:03
+    - delay: 00:00:01
     - service: media_player.volume_set
       data:
         entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44
+        volume_level: 0
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_b8_27_eb_84_9d_15 #Bathroom
         volume_level: 0
     - service: media_player.volume_set
       data:
@@ -1102,60 +1144,80 @@ fart_machine:
         volume_level: 1
     - service: media_player.play_media
       data_template:
-        entity_id: media_player.volumio_mpd
+        entity_id: media_player.gabesmusic_3
         media_content_id: >-
-          {%- set responses = [
-          "REMOTEURL/sounds/farts/fart1.mp3",
-          "REMOTEURL/sounds/farts/fart2.mp3",
-          "REMOTEURL/sounds/farts/fart3.mp3",
-          "REMOTEURL/sounds/farts/fart4.mp3",
-          "REMOTEURL/sounds/farts/fart5.mp3",
-          "REMOTEURL/sounds/farts/fart6.mp3",
-          "REMOTEURL/sounds/farts/fart7.mp3",
-          "REMOTEURL/sounds/farts/fart8.mp3",
-          "REMOTEURL/sounds/farts/fart9.mp3",
-          "REMOTEURL/sounds/farts/fart10.mp3",
-          "REMOTEURL/sounds/farts/fart11.mp3",
-          "REMOTEURL/sounds/farts/fart12.mp3",
-          "REMOTEURL/sounds/farts/fart13.mp3",
-          "REMOTEURL/sounds/farts/fart14.mp3"
-          ] -%}
-          {% set rindex =  (range(0, (responses | length - 1) )|random) -%}
-          {{responses[rindex]}}
+          {% set url = states('input_text.base_url') %}
+          {% set path = '/local/sounds/farts/fart'%}
+          {% set file = [
+          "1","2","3","4","5","6","7","8","9","10","11","13","14"
+          ] %}
+          {% set rindex =  (range(0, (file | length - 1) )|random) %}
+          {% set ext = '.mp3' %}
+          {{[url,path,file[rindex],ext]|join}}
         media_content_type: music
-    - delay: 00:00:03
+    - delay: 00:00:01
     - service: media_player.volume_set
       data:
         entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44
         volume_level: 1
     - service: media_player.volume_set
       data:
+        entity_id: media_player.snapcast_client_b8_27_eb_84_9d_15 #Bathroom
+        volume_level: 0
+    - service: media_player.volume_set
+      data:
         entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
         volume_level: 0
     - service: media_player.play_media
       data_template:
-        entity_id: media_player.volumio_mpd
+        entity_id: media_player.gabesmusic_3
         media_content_id: >-
-          {%- set responses = [
-          "REMOTEURL/sounds/farts/fart1.mp3",
-          "REMOTEURL/sounds/farts/fart2.mp3",
-          "REMOTEURL/sounds/farts/fart3.mp3",
-          "REMOTEURL/sounds/farts/fart4.mp3",
-          "REMOTEURL/sounds/farts/fart5.mp3",
-          "REMOTEURL/sounds/farts/fart6.mp3",
-          "REMOTEURL/sounds/farts/fart7.mp3",
-          "REMOTEURL/sounds/farts/fart8.mp3",
-          "REMOTEURL/sounds/farts/fart9.mp3",
-          "REMOTEURL/sounds/farts/fart10.mp3",
-          "REMOTEURL/sounds/farts/fart11.mp3",
-          "REMOTEURL/sounds/farts/fart12.mp3",
-          "REMOTEURL/sounds/farts/fart13.mp3",
-          "REMOTEURL/sounds/farts/fart14.mp3"
-          ] -%}
-          {% set rindex =  (range(0, (responses | length - 1) )|random) -%}
-          {{responses[rindex]}}
+          {% set url = states('input_text.base_url') %}
+          {% set path = '/local/sounds/farts/fart'%}
+          {% set file = [
+          "1","2","3","4","5","6","7","8","9","10","11","13","14"
+          ] %}
+          {% set rindex =  (range(0, (file | length - 1) )|random) %}
+          {% set ext = '.mp3' %}
+          {{[url,path,file[rindex],ext]|join}}
         media_content_type: music
-    - delay: 00:00:03
+    - delay: 00:00:02
+    - service: snapcast.restore
+      entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44
+    - service: snapcast.restore
+      entity_id: media_player.snapcast_client_b8_27_eb_84_9d_15 #Bathroom
+    - service: snapcast.restore
+      entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+
+rickroll:
+  sequence:
+    - service: shell_command.volumio_clear_queue
+    - service: shell_command.volumio_rickroll
+    - service: snapcast.snapshot
+      entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44 #Livingroom
+    - service: snapcast.snapshot
+      entity_id: media_player.snapcast_client_b8_27_eb_84_9d_15 #Bathroom
+    - service: snapcast.snapshot
+      entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f #Bedroom
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44 #Livingroom
+        volume_level: 1
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_b8_27_eb_84_9d_15 #Bathroom
+        volume_level: 1
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f #Bedroom
+        volume_level: 1
+    - delay: 00:30:00
+    - service: snapcast.restore
+      entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44
+    - service: snapcast.restore
+      entity_id: media_player.snapcast_client_b8_27_eb_84_9d_15 #Bathroom
+    - service: snapcast.restore
+      entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
 
 get_mailbox_temp:
   sequence:
@@ -1267,6 +1329,111 @@ welcome_lights_on:
     - service: script.turn_on
       data:
         entity: script.et_lightshow
+
+#Tags
+tag_desk_on:
+  sequence:
+    - service: switch.turn_on
+      entity_id: switch.06200928600194a7ffbc_4
+    - service: script.turn_on
+      entity_id: script.et_lightshow
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44
+        volume_level: 0.7
+    - service: light.turn_on
+      data:
+        entity_id: light.desk
+        rgb_color: [255, 226, 145]
+        brightness: 250
+        transition: 5
+    - service: light.turn_on
+      entity_id: light.flux_capacitor
+      data:
+        brightness: 40
+        effect: ripple
+    - service: light.turn_on
+      data:
+        entity_id: light.desk_overhead
+        brightness: 180
+        effect: bpm
+    - delay: 00:00:05
+    - service: light.turn_on
+      data:
+        entity_id: light.desk_overhead
+        rgb_color: [255, 200, 145]
+        brightness: 255
+        effect: solid
+    - service: light.turn_on
+      data:
+        entity_id: light.desk
+        brightness: 250
+        transition: 5
+
+tag_desk_off:
+  sequence:
+    - service: light.turn_off
+      data:
+        entity_id: light.desk
+        transition: 10
+    - service: light.turn_on
+      data:
+        entity_id: light.desk_overhead
+        brightness: 180
+        effect: bpm
+    - delay: 00:00:05
+    - service: light.turn_off
+      data:
+        entity_id: light.desk_overhead
+        transition: 5
+    - service: light.turn_off
+      entity_id: light.flux_capacitor
+    - service: script.turn_off
+      entity_id: script.et_lightshow
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44
+        volume_level: 0.3
+    - delay: 00:00:03
+    - service: switch.turn_off
+      entity_id: switch.06200928600194a7ffbc_4
+
+
+tag_bed:
+  sequence:
+    - service: light.turn_off
+      entity_id:
+      - light.bed_light
+      - light.desk
+      - light.kitchen
+      - light.bedroom_desk
+      - light.kitchen_2
+      - light.table
+      - light.thundercloud
+      - light.big_o
+      data:
+        transition: 450
+    - service: light.turn_off
+      entity_id:
+      - light.entry_light
+      - light.et_figure
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44
+        volume_level: 0
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_b8_27_eb_84_9d_15
+        volume_level: 0
+    - service: media_player.volume_set
+      data:
+        entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+        volume_level: 0.7
+
+tag_couch:
+  sequence:
+    - service: switch.turn_on
+      entity_id: switch.harmony_watch_roku
 
 #Bed Occupancy
 zero_bed:
@@ -1604,8 +1771,8 @@ birdfeed_announce_begin:
         volume_level: 1
     - service: media_player.play_media
       data:
-        entity_id: media_player.volumio_mpd
-        media_content_id: 'REMOTEURL/sounds/empty_track_1min.mp3'
+        entity_id: media_player.gabesmusic_3
+        media_content_id: 'localhost-fill/local/sounds/empty_track_1min.mp3'
         media_content_type: music
     - delay: 00:00:02
 
@@ -1622,8 +1789,8 @@ birdfeed_announce_end:
         volume_level: 0
     - service: media_player.play_media
       data:
-        entity_id: media_player.volumio_mpd
-        media_content_id: 'REMOTEURL/sounds/empty_track_1min.mp3'
+        entity_id: media_player.gabesmusic_3
+        media_content_id: 'localhost-fill/local/sounds/empty_track_1min.mp3'
         media_content_type: music
     - delay: 00:00:01
 
@@ -1635,8 +1802,8 @@ birdfeed_tweet:
     - delay: 00:00:01
     - service: media_player.play_media
       data:
-        entity_id: media_player.volumio_mpd
-        media_content_id: 'REMOTEURL/sounds/tweet.mp3'
+        entity_id: media_player.gabesmusic_3
+        media_content_id: 'localhost-fill/local/sounds/tweet.mp3'
         media_content_type: music
     - delay: 00:00:04
     - service: script.turn_on
@@ -1892,37 +2059,3 @@ alexa_connect_to_speaker:
       data:
         source: "[AV] Samsung Soundbar K360 K-Series"
         entity_id: media_player.gabe_s_alexa
-
-radio_tune:
-  alias: Play Radio on Kiosk Speaker
-  sequence:
-#    - service: media_player.volume_set
-#      data:
-#        entity_id: media_player.entry
-#        volume_level: '0.35'
-#    -  service: media_player.volume_set
-#       data:
-#         entity_id: media_player.soundbar
-#         volume_level: '0.20'
-     - service: media_player.play_media
-#       entity: media_player.browser_note_kiosk
-       data_template:
-         entity_id: media_player.browser_note_kiosk
-         media_content_type: music
-         media_content_id: >
-            {% if is_state("input_select.radio_station", "BBC News") %} https://fm939.wnyc.org/wnycfm-web?nyprBrowserId=60b090e836734000
-            {% elif is_state("input_select.radio_station", "Q-Music") %} http://icecast-qmusic.cdp.triple-it.nl/Qmusic_nl_live_96.mp3
-            {% elif is_state("input_select.radio_station", "3FM") %} http://icecast.omroep.nl/3fm-bb-mp3
-            {% elif is_state("input_select.radio_station", "100% NL") %} http://stream.100p.nl/100pctnl.mp3
-            {% elif is_state("input_select.radio_station", "Veronica") %} http://8543.live.streamtheworld.com/VERONICACMP3
-            {% elif is_state("input_select.radio_station", "Sky Radio") %} http://8623.live.streamtheworld.com:80/SKYRADIOAAC_SC
-            {% elif is_state("input_select.radio_station", "Arrow Classic Rock") %} http://91.221.151.155/listen.mp3
-            {% elif is_state("input_select.radio_station", "Classic FM") %} http://19143.live.streamtheworld.com/CLASSICFM_SC
-            {% elif is_state("input_select.radio_station", "BNR Nieuwsradio") %} http://icecast-bnr.cdp.triple-it.nl/bnr_mp3_96_03
-            {% elif is_state("input_select.radio_station", "Sleep Radio") %} http://37.59.28.208:8722/stream
-            {% elif is_state("input_select.radio_station", "Ambient Sleeping Pill") %} http://perseus.shoutca.st:8447/h
-            {% elif is_state("input_select.radio_station", "Radio Art - Sleep") %} http://live.radioart.com/fSleep.mp3
-            {% elif is_state("input_select.radio_station", "Ambi Nature Radio") %} http://94.23.252.14:8067/stream
-            {% elif is_state("input_select.radio_station", "Calm Radio - Sleep") %} http://streams.calmradio.com/api/39/128/stream
-            {% elif is_state("input_select.radio_station", "Dinamo.FM Sleep") %} http://channels.dinamo.fm/sleep-aac
-            {% endif %}

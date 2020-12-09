@@ -67,15 +67,14 @@ automation:
 #          call_inform: 1
 #          call_rain_warning: 1
 
-  - alias: Weather Alert Notify NYC
-    trigger:
-      - platform: state
-        entity_id: sensor.weather_alert_active_nyc
-        from: 'Off'
-        to: 'On'
-    action:
-      - service: script.janet_speech_engine
-        data:
-          call_inform: 1
-          call_weather_alert: 1
-
+  # - alias: Weather Alert Notify NYC
+  #   trigger:
+  #     - platform: state
+  #       entity_id: sensor.weather_alert_active_nyc
+  #       from: 'Off'
+  #       to: 'On'
+  #   action:
+  #     - service: script.janet_speech_engine
+  #       data:
+  #         call_inform: 1
+  #         call_weather_alert: 1
