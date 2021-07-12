@@ -1,13 +1,13 @@
-#Switch for Entry Light
-- platform: mqtt
-  name: Entry Light
-  command_topic: "lightswitch/reading/set"
-  state_topic: "lightswitch/reading/current"
-  state_on: "ON"
-  payload_on: "P"
-  state_off: "OFF"
-  payload_off: "3"
-  value_template: '{{ value_json.state }}'
+# #Switch for Entry Light
+# - platform: mqtt
+#   name: Entry Light
+#   command_topic: "lightswitch/reading/set"
+#   state_topic: "lightswitch/reading/current"
+#   state_on: "ON"
+#   payload_on: "P"
+#   state_off: "OFF"
+#   payload_off: "3"
+#   value_template: '{{ value_json.state }}'
 
 #Hounds Alarm
 - platform: command_line
@@ -132,27 +132,27 @@
             command: ['1','Rewind','Rewind','Rewind','Rewind','Rewind','Rewind','Stop']
             device: 'Generic LED'
 
-- platform: rest
-  name: Reef Doser Scheduled
-  resource: http://192.168.50.250/api/doser/pumps/1
-  username: !secret reefcontrolpi_username
-  password: !secret reefcontrolpi_password
-  body_on: '{"id":"1","name":"Doser","jack":"3","pin":7,"regiment":{"enable":true,"schedule":{"day":"*","hour":"13","minute":"0","second":"0","week":"*","month":"*"},"duration":1,"speed":100}}'
-  body_off: '{"id":"1","name":"Doser","jack":"3","pin":7,"regiment":{"enable":false,"schedule":{"day":"*","hour":"13","minute":"0","second":"0","week":"*","month":"*"},"duration":1,"speed":100}}'
-  is_on_template: '{{ value_json.regiment.enable }}'
-  headers:
-      Connection: keep-alive
-      content-type: application/json
-      Referer: http://192.168.50.250/
-      Cookie: !secret reefcontrolpi_cookie
+# - platform: rest
+#   name: Reef Doser Scheduled
+#   resource: http://192.168.50.250/api/doser/pumps/1
+#   username: !secret reefcontrolpi_username
+#   password: !secret reefcontrolpi_password
+#   body_on: '{"id":"1","name":"Doser","jack":"3","pin":7,"regiment":{"enable":true,"schedule":{"day":"*","hour":"13","minute":"0","second":"0","week":"*","month":"*"},"duration":1,"speed":100}}'
+#   body_off: '{"id":"1","name":"Doser","jack":"3","pin":7,"regiment":{"enable":false,"schedule":{"day":"*","hour":"13","minute":"0","second":"0","week":"*","month":"*"},"duration":1,"speed":100}}'
+#   is_on_template: '{{ value_json.regiment.enable }}'
+#   headers:
+#       Connection: keep-alive
+#       content-type: application/json
+#       Referer: http://192.168.50.250/
+#       Cookie: !secret reefcontrolpi_cookie
 
 - platform: rest
   name: Reef ATO Scheduled
-  resource: http://192.168.50.250/api/doser/pumps/4
+  resource: http://192.168.50.250/api/doser/pumps/1
   username: !secret reefcontrolpi_username
   password: !secret reefcontrolpi_password
-  body_on: '{"id":"4","name":"ATO Pump","jack":"2","pin":2,"regiment":{"enable":true,"schedule":{"day":"*","hour":"23","minute":"30","second":"0","week":"*","month":"*"},"duration":14,"speed":100}}'
-  body_off: '{"id":"4","name":"ATO Pump","jack":"2","pin":2,"regiment":{"enable":false,"schedule":{"day":"*","hour":"23","minute":"30","second":"0","week":"*","month":"*"},"duration":14,"speed":100}}'
+  body_on: '{"id":"1","name":"Nightly ATO","jack":"5","pin":4,"regiment":{"enable":true,"schedule":{"day":"*","hour":"19","minute":"25","second":"0","week":"*","month":"*"},"duration":18,"speed":100}}'
+  body_off: '{"id":"1","name":"Nightly ATO","jack":"5","pin":4,"regiment":{"enable":false,"schedule":{"day":"*","hour":"19","minute":"25","second":"0","week":"*","month":"*"},"duration":18,"speed":100}}'
   is_on_template: '{{ value_json.regiment.enable }}'
   headers:
       Connection: keep-alive
@@ -162,11 +162,53 @@
 
 - platform: rest
   name: Reef ATO Switch
-  resource: http://192.168.50.250/api/equipment/8
+  resource: http://192.168.50.250/api/equipment/20
   username: !secret reefcontrolpi_username
   password: !secret reefcontrolpi_password
-  body_on: '{"id":"8","name":"ATO Manual","outlet":"8","on":true}'
-  body_off: '{"id":"8","name":"ATO Manual","outlet":"8","on":false}'
+  body_on: '{"id":"20","name":"Top Off Switch","outlet":"14","on":true}'
+  body_off: '{"id":"20","name":"Top Off Switch","outlet":"14","on":false}'
+  is_on_template: '{{ value_json.on }}'
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+
+- platform: rest
+  name: Reef Green Light Switch
+  resource: http://192.168.50.250/api/equipment/15
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  body_on: '{"id":"15","name":"Green LED","outlet":"12","on":true}'
+  body_off: '{"id":"15","name":"Green LED","outlet":"12","on":false}'
+  is_on_template: '{{ value_json.on }}'
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+
+- platform: rest
+  name: Reef Red Light Switch
+  resource: http://192.168.50.250/api/equipment/16
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  body_on: '{"id":"16","name":"Red LED","outlet":"13","on":true}'
+  body_off: '{"id":"16","name":"Red LED","outlet":"13","on":false}'
+  is_on_template: '{{ value_json.on }}'
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+
+- platform: rest
+  name: Reef Enclosure Fan Switch
+  resource: http://192.168.50.250/api/equipment/30
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  body_on: '{"id":"30","name":"Enclosure Fan","outlet":"1","on":true}'
+  body_off: '{"id":"30","name":"Enclosure Fan","outlet":"1","on":false}'
   is_on_template: '{{ value_json.on }}'
   headers:
       Connection: keep-alive
@@ -176,11 +218,11 @@
 
 - platform: rest
   name: Refugium Light Switch
-  resource: http://192.168.50.250/api/equipment/11
+  resource: http://192.168.50.250/api/equipment/6
   username: !secret reefcontrolpi_username
   password: !secret reefcontrolpi_password
-  body_on: '{"id":"11","name":"Refugium Light 2","outlet":"10","on":true}'
-  body_off: '{"id":"11","name":"Refugium Light 2","outlet":"10","on":false}'
+  body_on: '{"id":"6","name":"Refugium Switch","outlet":"3","on":true}'
+  body_off: '{"id":"6","name":"Refugium Switch","outlet":"3","on":false}'
   is_on_template: '{{ value_json.on }}'
   headers:
       Connection: keep-alive
@@ -188,28 +230,28 @@
       Referer: http://192.168.50.250/
       Cookie: !secret reefcontrolpi_cookie
 
-- platform: rest
-  name: Relay 2 Switch
-  resource: http://192.168.50.250/api/equipment/1
-  username: !secret reefcontrolpi_username
-  password: !secret reefcontrolpi_password
-  body_on: '{"id":"1","name":"Relay 1","outlet":"1","on":true}'
-  body_off: '{"id":"1","name":"Relay 1","outlet":"1","on":false}'
-  is_on_template: '{{ value_json.on }}'
-  headers:
-      Connection: keep-alive
-      content-type: application/json
-      Referer: http://192.168.50.250/
-      Cookie: !secret reefcontrolpi_cookie
+# - platform: rest
+#   name: Relay 2 Switch
+#   resource: http://192.168.50.250/api/equipment/1
+#   username: !secret reefcontrolpi_username
+#   password: !secret reefcontrolpi_password
+#   body_on: '{"id":"1","name":"Relay 1","outlet":"1","on":true}'
+#   body_off: '{"id":"1","name":"Relay 1","outlet":"1","on":false}'
+#   is_on_template: '{{ value_json.on }}'
+#   headers:
+#       Connection: keep-alive
+#       content-type: application/json
+#       Referer: http://192.168.50.250/
+#       Cookie: !secret reefcontrolpi_cookie
 
 - platform: rest
   name: Kessil Color Level
-  resource: http://192.168.50.250/api/lights/14
+  resource: http://192.168.50.250/api/lights/10
   username: !secret reefcontrolpi_username
   password: !secret reefcontrolpi_password
-  body_on: '{"id":"14","name":"Kessil","channels":{"14":{"name":"Color","on":true,"min":1,"max":99,"pin":14,"color":"#0010ff","manual":true,"value":{{ states.input_number.kessil_color.state }},"profile":{"name":"","type":"diurnal","config":{"start":"06:53:00","end":"19:26:00"},"min":0,"max":0}},"15":{"name":"Brightness","on":true,"min":1,"max":99,"pin":15,"color":"#f0ff00","manual":true,"value":{{ states.input_number.kessil_brightness.state }},"profile":{"name":"","type":"diurnal","config":{"start":"06:53:00","end":"19:26:00"},"min":0,"max":0}}},"jack":"9","enable":true}'
-  body_off: '{"id":"14","name":"Kessil","channels":{"14":{"name":"Color","on":true,"min":1,"max":99,"pin":14,"color":"#0010ff","manual":true,"value":0,"profile":{"name":"","type":"diurnal","config":{"start":"06:53:00","end":"19:26:00"},"min":0,"max":0}},"15":{"name":"Brightness","on":true,"min":1,"max":99,"pin":15,"color":"#f0ff00","manual":true,"value":0,"profile":{"name":"","type":"diurnal","config":{"start":"06:53:00","end":"19:26:00"},"min":0,"max":0}}},"jack":"9","enable":true}'
-  is_on_template: '{{ value_json.channels["14"].manual }}'
+  body_on: '{"id":"10","name":"Kessil Color","channels":{"3":{"name":"Kessil-Color","on":true,"min":34,"max":50,"pin":3,"color":"#0029ff","manual":false,"value":{{ states.input_number.kessil_brightness.state }},"profile":{"type":"sine","config":{"start":"08:00:00","end":"23:00:00"},"min":0,"max":0}}},"jack":"4","enable":true}'
+  body_off: '{"id":"10","name":"Kessil Color","channels":{"3":{"name":"Kessil-Color","on":true,"min":34,"max":50,"pin":3,"color":"#0029ff","manual":false,"value":0,"profile":{"type":"sine","config":{"start":"{{ states.sensor.reeftime_sunrise_adjustment.state }}:00","end":"{{ states.sensor.reeftime_sunset_adjustment.state }}:00"},"min":0,"max":0}}},"jack":"4","enable":true}'
+  is_on_template: '{{ value_json.channels["10"].manual }}'
   headers:
       Connection: keep-alive
       content-type: application/json
@@ -218,12 +260,26 @@
 
 - platform: rest
   name: Kessil Brightness Level
-  resource: http://192.168.50.250/api/lights/14
+  resource: http://192.168.50.250/api/lights/9
   username: !secret reefcontrolpi_username
   password: !secret reefcontrolpi_password
-  body_on: '{"id":"14","name":"Kessil","channels":{"14":{"name":"Color","on":true,"min":1,"max":99,"pin":14,"color":"#0010ff","manual":true,"value":{{ states.input_number.kessil_color.state }},"profile":{"name":"","type":"diurnal","config":{"start":"06:53:00","end":"19:26:00"},"min":0,"max":0}},"15":{"name":"Brightness","on":true,"min":1,"max":99,"pin":15,"color":"#f0ff00","manual":true,"value":{{ states.input_number.kessil_brightness.state }},"profile":{"name":"","type":"diurnal","config":{"start":"06:53:00","end":"19:26:00"},"min":0,"max":0}}},"jack":"9","enable":true}'
-  body_off: '{"id":"14","name":"Kessil","channels":{"14":{"name":"Color","on":true,"min":1,"max":99,"pin":14,"color":"#0010ff","manual":true,"value":0,"profile":{"name":"","type":"diurnal","config":{"start":"06:53:00","end":"19:26:00"},"min":0,"max":0}},"15":{"name":"Brightness","on":true,"min":1,"max":99,"pin":15,"color":"#f0ff00","manual":true,"value":0,"profile":{"name":"","type":"diurnal","config":{"start":"06:53:00","end":"19:26:00"},"min":0,"max":0}}},"jack":"9","enable":true}'
-  is_on_template: '{{ value_json.channels["15"].profile.type == "fixed" }}'
+  body_on: '{"id":"9","name":"Kessil Brightness","channels":{"2":{"name":"Kessil-Brightness","on":true,"min":64,"max":70,"pin":2,"color":"#ffef00","manual":false,"value":{{ states.input_number.kessil_brightness.state }},"profile":{"type":"sine","config":{"start":"08:00:00","end":"23:00:00"},"min":0,"max":0}}},"jack":"2","enable":true}'
+  body_off: '{"id":"9","name":"Kessil Brightness","channels":{"2":{"name":"Kessil-Brightness","on":true,"min":64,"max":70,"pin":2,"color":"#ffef00","manual":false,"value":0,"profile":{"type":"sine","config":{"start":"{{ states.sensor.reeftime_sunrise_adjustment.state }}:00","end":"{{ states.sensor.reeftime_sunset_adjustment.state }}:00"},"min":0,"max":0}}},"jack":"2","enable":true}'
+  is_on_template: '{{ value_json.channels["9"].manual }}'
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+
+- platform: rest
+  name: Refugium Brightness Level
+  resource: http://192.168.50.250/api/lights/3
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  body_on: '{"id":"3","name":"Refugium","channels":{"13":{"name":"Refugium","on":true,"min":20,"max":70,"pin":13,"color":"","manual":false,"value":{{ states.input_number.refugium_brightness.state }},"profile":{"type":"sine","config":{"start":"02:00:00","end":"23:00:00"},"min":0,"max":0}}},"jack":"3","enable":true}'
+  body_off: '{"id":"3","name":"Refugium","channels":{"13":{"name":"Refugium","on":true,"min":20,"max":70,"pin":13,"color":"","manual":false,"value":0,"profile":{"type":"sine","config":{"start":"22:30:00","end":"06:30:00"},"min":0,"max":0}}},"jack":"3","enable":true}'
+  is_on_template: '{{ value_json.channels["9"].manual }}'
   headers:
       Connection: keep-alive
       content-type: application/json
@@ -331,8 +387,48 @@
       command_off: !secret switches_octofishfeeder_off
 
 - platform: mqtt
+  name: Reef Notify Error
+  command_topic: "notifyscreen/errorlight"
+  state_on: "2"
+  payload_on: "2"
+  state_off: "0"
+  payload_off: "0"
+
+- platform: mqtt
+  name: Reef Clear Screen
+  command_topic: "notifyscreen/backlight"
+  state_on: "0"
+  payload_on: "0"
+  state_off: "9"
+  payload_off: "9"
+
+- platform: mqtt
+  name: Reef Screen On
+  command_topic: "notifyscreen/backlight"
+  state_on: "1"
+  payload_on: "1"
+  state_off: "9"
+  payload_off: "9"
+
+- platform: mqtt
+  name: Notify Box Clear Screen
+  command_topic: "notify_box/backlight"
+  state_on: "0"
+  payload_on: "0"
+  state_off: "9"
+  payload_off: "9"
+
+- platform: mqtt
+  name: Notify Box Screen On
+  command_topic: "notify_box/backlight"
+  state_on: "1"
+  payload_on: "1"
+  state_off: "9"
+  payload_off: "9"
+
+- platform: mqtt
   name: Birdfeed Flappy
-  command_topic: "birdfeed/reading"
+  command_topic: "homeassistant/binary_sensor/birdfeed-flappy/state"
   state_on: "ON"
   payload_on: "ON"
   state_off: "OFF"
@@ -505,7 +601,7 @@
       command_on: 53;17;1;0;2;1
       command_off: 53;17;1;0;2;0
 #      value_template: '{{ value == "53;17;1;0;2;1" }}'
-      timeout: 0.9
+#      timeout: 0.9
       name: Phone LED Light
 #continous long ring - no off
     ringaling_ring6:
@@ -514,7 +610,7 @@
       command_on: 53;16;1;0;2;1
       command_off: 53;16;1;0;2;0
 #      value_template: '{{ value == "53;16;1;0;2;1" }}'
-      timeout: 0.9
+#      timeout: 0.9
       name: Phone Continous Ring
 #five short rings
     ringaling_ring5:
@@ -523,7 +619,7 @@
       command_on: 53;15;1;0;2;1
       command_off: 53;15;1;0;2;0
 #      value_template: '{{ value == "53;15;1;0;2;1" }}'
-      timeout: 0.9
+#      timeout: 0.9
       name: Phone 5 Short Rings
 #one loooong ring
     ringaling_ring4:
@@ -532,7 +628,7 @@
       command_on: 53;14;1;0;2;1
       command_off: 53;14;1;0;2;0
 #      value_template: '{{ value == "53;14;1;0;2;1" }}'
-      timeout: 0.9
+#      timeout: 0.9
       name: Phone 1 Long Ring
 #four long rings
     ringaling_ring3:
@@ -541,7 +637,7 @@
       command_on: 53;13;1;0;2;1
       command_off: 53;13;1;0;2;0
 #      value_template: '{{ value == "53;13;1;0;2;1" }}'
-      timeout: 0.9
+#      timeout: 0.9
       name: Phone 4 Long Rings
 #two short rings
     ringaling_ring2:
@@ -550,7 +646,7 @@
       command_on: 53;12;1;0;2;1
       command_off: 53;12;1;0;2;0
 #      value_template: '{{ value == "53;12;1;0;2;1" }}'
-      timeout: 0.9
+#      timeout: 0.9
       name: Phone 2 Short Rings
 #three long rings
     ringaling_ring1:
@@ -559,7 +655,7 @@
       command_on: 53;11;1;0;2;1
       command_off: 53;11;1;0;2;0
 #      value_template: '{{ value == "53;11;1;0;2;1" }}'
-      timeout: 0.9
+#      timeout: 0.9
       name: Phone 3 Long Rings
 
 #Harmony

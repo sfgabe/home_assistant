@@ -8,7 +8,7 @@ homeassistant:
   customize: !include customize.yaml
   customize_glob: !include customize_glob.yaml
   packages: !include_dir_named packages
-  whitelist_external_dirs:
+  allowlist_external_dirs:
       - /home/homeassistant/.homeassistant/scripts
       - /home/homeassistant/.homeassistant/www/images/
       - /home/homeassistant/.homeassistant/www/images/icons/
@@ -79,7 +79,7 @@ lovelace:
       type: module
     - url: https://unpkg.com/moment@2.22.2/moment.js
       type: js
-    - url: /hacsfiles/custom-header/custom-header.js
+    - url: /hacsfiles/config-template-card/config-template-card.js
       type: module
     - url: /hacsfiles/lovelace-state-switch/state-switch.js
       type: module
@@ -134,6 +134,8 @@ lovelace:
     - url: /hacsfiles/entity-attributes-card/entity-attributes-card.js
       type: js
     - url: /hacsfiles/kiosk-mode/kiosk-mode.js
+      type: module
+    - url: /hacsfiles/lovelace-conditional-entity-row/conditional-entity-row.js
       type: module
 # Add more dashboards
 #  dashboards:
@@ -259,7 +261,7 @@ mobile_app:
 #    password: !secret roomba_password
 
 #Alexa
-alexa:
+#alexa:
 
 #plex:
 #  token: !secret plex_token
@@ -275,11 +277,9 @@ alexa:
 ifttt:
   key: !secret ifttt_key
 
-#printer settings
-# Recv: #define DEFAULT_Kp 35.05
-# Recv: #define DEFAULT_Ki 3.08
-# Recv: #define DEFAULT_Kd 99.78
-# M301 P35.05 I3.08 D99.78
+twilio:
+  account_sid: !secret twilio_account_sid
+  auth_token: !secret twilio_auth_token
 
 #NRF Sensor
 mysensors:
@@ -292,11 +292,6 @@ mysensors:
   #retain: true
   version: '2.2'
 
-#Pilight 433mhz receiver
-#pilight:
-#  host: 192.168.50.111
-#  port: 5000
-
 #Tuya Smart Switches
 tuya:
   username: !secret tuya_username
@@ -305,6 +300,7 @@ tuya:
 
 #Homebridge for AC
 homekit:
+  autostart: false
 
 #OctoPrint 3D Printer
 octoprint:
@@ -472,7 +468,7 @@ input_select: !include input_select.yaml
 # history_graph: !include history_graph.yaml
 climate: !include climate.yaml
 rest_command: !include rest_command.yaml
-#device_tracker: !include device_tracker.yaml
+device_tracker: !include device_tracker.yaml
 switch: !include switches.yaml
 camera: !include cameras.yaml
 sensor: !include sensors.yaml

@@ -420,8 +420,8 @@ reeftank_full_moon:
         seconds: 7200
     - service: switch.turn_off
       entity_id: switch.06200940dc4f22cbb94b_4
-    - service: homeassistant.turn_on
-      entity_id: rest_command.set_diurnal_reef_lights
+    # - service: homeassistant.turn_on
+    #   entity_id: rest_command.set_diurnal_reef_lights
     - service: remote.send_command
       data_template:
         entity_id: remote.gabes_harmony_hub
@@ -858,10 +858,26 @@ sunrise_sound:
 
 usps_sms_notification:
   sequence:
-    - service: ifttt.trigger
-      data_template: {"event":"usps_mail_alert_1", "value1":"{{ sensor.usps_mail }}", "value2":"{{ sensor.usps_packages }}"}
-    - service: ifttt.trigger
-      data_template: {"event":"usps_mail_alert_2", "value1":"{{ sensor.usps_mail }}", "value2":"{{ sensor.usps_packages }}"}
+    - service: notify.html5_push
+      data:
+        data:
+          actions:
+          - action: dismiss
+            title: Got it!
+            icon: https://thisisgabes.asuscomm.com/local/icons/badge_mailbox.png
+          image: https://thisisgabes.asuscomm.com/local/mail_images/todays_mail.gif
+          renotify: 1
+          icon: https://thisisgabes.asuscomm.com/local/icons/mailbox_on.png
+          badge: https://thisisgabes.asuscomm.com/local/icons/badge_mailbox.png
+          timestamp: '%m'
+          url: https://thisisgabes.asuscomm.com/states/group.homecams
+          vibrate: 700, 700, 700
+        message: You have {{ states.sensor.mail_usps_mail.state }} new snail mails!
+        title: New Snail Mail!
+        target:
+        - Gabes Note 10
+        - Macbook
+        - macbookpro
     - service: automation.turn_off
       entity_id: automation.usps_mail_alert
 
@@ -880,16 +896,26 @@ kiosk_weather_report:
         call_greeting: 1
 #        call_morning_weather: 1
 
+birdfeed_tweet:
+  sequence:
+    - service: switch.turn_on
+      data:
+        entity_id: switch.birdfeed_flappy
+    - delay:
+        seconds: 3
+    - service: media_player.play_media
+      data:
+        entity_id: media_player.mpd_birdfeed
+        media_content_id: "https://thisisgabes.asuscomm.com/local/sounds/tweet.mp3"
+        media_content_type: music
+    - delay:
+        seconds: 3
+    - service: switch.turn_off
+      data:
+        entity_id: switch.birdfeed_flappy
+
 kiosk_good_morning:
   sequence:
-#    - service: input_select.select_option
-#      data_template:
-#        entity_id: input_select.alexa_bedroom_ac
-#        option: 85
-#    - service: input_select.select_option
-#      data_template:
-#        entity_id: input_select.alexa_livingroom_ac
-#        option: 72
     - delay: '00:03:00'
     - service: browser_mod.navigate
       data:
@@ -905,30 +931,23 @@ kiosk_good_morning:
 #    - service: shell_command.volumio_emptytrack
 #    - delay: '00:00:02'
     - service: media_player.media_pause
-      entity_id: media_player.gabes_music_server
+      entity_id: media_player.mpd
     - service: media_player.volume_set
       data:
         entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44 #Livingroom
         volume_level: 1
     - service: media_player.volume_set
       data:
-        entity_id: media_player.snapcast_client_b8_27_eb_84_9d_15 #Bathroom
+        entity_id: media_player.snapcast_client_b8_27_eb_e1_e2_66 #Bathroom
         volume_level: 1
     - service: media_player.volume_set
       data:
         entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f #Bedroom
         volume_level: 0.3
-#    - service: script.soundbar_volume_up
-#    - delay: '00:01:00'
-#    - service: media_player.play_media
-#      data:
-#        entity_id: media_player.gabe_s_alexa
-#        media_content_type: sound
-#        media_content_id: amzn_sfx_trumpet_bugle_03
     - service: media_player.play_media
       data:
-        entity_id: media_player.gabesmusic_3
-        media_content_id: 'localhost-fill/local/sounds/janet_hithere.mp3'
+        entity_id: media_player.mpd
+        media_content_id: 'https://thisisgabes.asuscomm.com/local/sounds/janet_hithere.mp3'
         media_content_type: 'music'
     - delay: '00:00:01'
     - service: script.janet_speech_engine
@@ -948,7 +967,7 @@ kiosk_good_morning:
 #    - service: rest_command.kiosk_sound_startrek_computer2
     - delay: '00:00:15'
     - service: switch.turn_on
-      entity_id: switch.entry_light
+      entity_id: switch.10048470bcddc2e0cf71
     - service: light.turn_on
       data:
         entity_id: light.kitchen
@@ -958,35 +977,35 @@ kiosk_good_morning:
 #    - service: shell_command.volumio_emptytrack
 #    - delay: '00:00:02'
     - service: media_player.media_pause
-      entity_id: media_player.gabes_music_server
+      entity_id: media_player.mpd
     - service: media_player.play_media
       data:
-        entity_id: media_player.gabesmusic_3
-        media_content_id: 'localhost-fill/local/sounds/janet_boop.mp3'
+        entity_id: media_player.mpd
+        media_content_id: 'https://thisisgabes.asuscomm.com/local/sounds/janet_boop.mp3'
         media_content_type: music
 #    - delay: '00:00:01'
 #    - service: shell_command.volumio_emptytrack
     - delay: '00:00:02'
     - service: media_player.media_pause
-      entity_id: media_player.gabes_music_server
+      entity_id: media_player.mpd
     - service: media_player.play_media
       data:
-        entity_id: media_player.gabesmusic_3
+        entity_id: media_player.mpd
         media_content_type: music
         media_content_id: 'http://pd.npr.org/anon.npr-mp3/npr/news/newscast.mp3'
     - delay: '00:05:00'
     - service: media_player.media_pause
-      entity_id: media_player.gabes_music_server
+      entity_id: media_player.mpd
 #    - service: shell_command.volumio_emptytrack
     - delay: '00:00:02'
     - service: media_player.media_pause
-      entity_id: media_player.gabes_music_server
+      entity_id: media_player.mpd
     - condition: template
       value_template: "{{ ((as_timestamp(states.calendar.gabethisisgabescom.attributes.start_time) - as_timestamp(now())) < 64800) and ((as_timestamp(states.calendar.gabethisisgabescom.attributes.start_time) - as_timestamp(now())) > 0) }}"
     - service: media_player.play_media
       data:
-        entity_id: media_player.gabesmusic_3
-        media_content_id: 'localhost-fill/local/sounds/startrek_computer3.mp3'
+        entity_id: media_player.mpd
+        media_content_id: 'https://thisisgabes.asuscomm.com/local/sounds/startrek_computer3.mp3'
         media_content_type: music
     - service: script.janet_speech_engine
       data:
@@ -1009,9 +1028,9 @@ kiosk_good_morning:
           - browser_note_kiosk
     - delay: '00:05:00'
     - service: media_player.media_stop
-      entity_id: media_player.gabesmusic_3
+      entity_id: media_player.mpd
     - service: media_player.turn_off
-      entity_id: media_player.gabesmusic_3
+      entity_id: media_player.mpd
     - service: automation.turn_off
       entity_id: automation.morning_greeting_update
     - service: script.soundbar_volume_down
@@ -1035,15 +1054,15 @@ kiosk_play_the_news:
         seconds: 30
     - service: media_player.play_media
       data:
-        entity_id: media_player.gabesmusic_3
+        entity_id: media_player.mpd
         media_content_type: music
         media_content_id: 'http://pd.npr.org/anon.npr-mp3/npr/news/newscast.mp3'
     - delay:
         minutes: 6
     - service: media_player.media_pause
-      entity_id: media_player.gabes_music_server
+      entity_id: media_player.mpd
     - service: media_player.turn_off
-      entity_id: media_player.gabesmusic_3
+      entity_id: media_player.mpd
     - service: script.soundbar_volume_down
 
 soundfx_drumriff:
@@ -1075,7 +1094,7 @@ fart_machine:
     - service: snapcast.snapshot
       entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44 #Livingroom
     - service: snapcast.snapshot
-      entity_id: media_player.snapcast_client_b8_27_eb_84_9d_15 #Bathroom
+      entity_id: media_player.snapcast_client_b8_27_eb_e1_e2_66 #Bathroom
     - service: snapcast.snapshot
       entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f #Bedroom
     - service: media_player.volume_set
@@ -1084,7 +1103,7 @@ fart_machine:
         volume_level: 1
     - service: media_player.volume_set
       data:
-        entity_id: media_player.snapcast_client_b8_27_eb_84_9d_15 #Bathroom
+        entity_id: media_player.snapcast_client_b8_27_eb_e1_e2_66 #Bathroom
         volume_level: 0
     - service: media_player.volume_set
       data:
@@ -1092,7 +1111,7 @@ fart_machine:
         volume_level: 0
     - service: media_player.play_media
       data_template:
-        entity_id: media_player.gabesmusic_3
+        entity_id: media_player.mpd
         media_content_id: >-
           {% set url = states('input_text.base_url') %}
           {% set path = '/local/sounds/farts/fart'%}
@@ -1110,7 +1129,7 @@ fart_machine:
         volume_level: 0
     - service: media_player.volume_set
       data:
-        entity_id: media_player.snapcast_client_b8_27_eb_84_9d_15 #Bathroom
+        entity_id: media_player.snapcast_client_b8_27_eb_e1_e2_66 #Bathroom
         volume_level: 1
     - service: media_player.volume_set
       data:
@@ -1118,7 +1137,7 @@ fart_machine:
         volume_level: 0
     - service: media_player.play_media
       data_template:
-        entity_id: media_player.gabesmusic_3
+        entity_id: media_player.mpd
         media_content_id: >-
           {% set url = states('input_text.base_url') %}
           {% set path = '/local/sounds/farts/fart'%}
@@ -1136,7 +1155,7 @@ fart_machine:
         volume_level: 0
     - service: media_player.volume_set
       data:
-        entity_id: media_player.snapcast_client_b8_27_eb_84_9d_15 #Bathroom
+        entity_id: media_player.snapcast_client_b8_27_eb_e1_e2_66 #Bathroom
         volume_level: 0
     - service: media_player.volume_set
       data:
@@ -1144,7 +1163,7 @@ fart_machine:
         volume_level: 1
     - service: media_player.play_media
       data_template:
-        entity_id: media_player.gabesmusic_3
+        entity_id: media_player.mpd
         media_content_id: >-
           {% set url = states('input_text.base_url') %}
           {% set path = '/local/sounds/farts/fart'%}
@@ -1162,7 +1181,7 @@ fart_machine:
         volume_level: 1
     - service: media_player.volume_set
       data:
-        entity_id: media_player.snapcast_client_b8_27_eb_84_9d_15 #Bathroom
+        entity_id: media_player.snapcast_client_b8_27_eb_e1_e2_66 #Bathroom
         volume_level: 0
     - service: media_player.volume_set
       data:
@@ -1170,7 +1189,7 @@ fart_machine:
         volume_level: 0
     - service: media_player.play_media
       data_template:
-        entity_id: media_player.gabesmusic_3
+        entity_id: media_player.mpd
         media_content_id: >-
           {% set url = states('input_text.base_url') %}
           {% set path = '/local/sounds/farts/fart'%}
@@ -1185,7 +1204,7 @@ fart_machine:
     - service: snapcast.restore
       entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44
     - service: snapcast.restore
-      entity_id: media_player.snapcast_client_b8_27_eb_84_9d_15 #Bathroom
+      entity_id: media_player.snapcast_client_b8_27_eb_e1_e2_66 #Bathroom
     - service: snapcast.restore
       entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
 
@@ -1196,7 +1215,7 @@ rickroll:
     - service: snapcast.snapshot
       entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44 #Livingroom
     - service: snapcast.snapshot
-      entity_id: media_player.snapcast_client_b8_27_eb_84_9d_15 #Bathroom
+      entity_id: media_player.snapcast_client_b8_27_eb_e1_e2_66 #Bathroom
     - service: snapcast.snapshot
       entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f #Bedroom
     - service: media_player.volume_set
@@ -1205,7 +1224,7 @@ rickroll:
         volume_level: 1
     - service: media_player.volume_set
       data:
-        entity_id: media_player.snapcast_client_b8_27_eb_84_9d_15 #Bathroom
+        entity_id: media_player.snapcast_client_b8_27_eb_e1_e2_66 #Bathroom
         volume_level: 1
     - service: media_player.volume_set
       data:
@@ -1215,7 +1234,7 @@ rickroll:
     - service: snapcast.restore
       entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44
     - service: snapcast.restore
-      entity_id: media_player.snapcast_client_b8_27_eb_84_9d_15 #Bathroom
+      entity_id: media_player.snapcast_client_b8_27_eb_e1_e2_66 #Bathroom
     - service: snapcast.restore
       entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
 
@@ -1270,7 +1289,7 @@ tv_lights_off:
 tv_lights_on:
   sequence:
     - service: switch.turn_off
-      entity_id: switch.entry_light
+      entity_id: switch.10048470bcddc2e0cf71
     - service: light.turn_on
       data:
         entity_id: light.table
@@ -1334,6 +1353,14 @@ welcome_lights_on:
 tag_desk_on:
   sequence:
     - service: switch.turn_on
+      entity_id: switch.numpad_light
+    - service: switch.turn_on
+      entity_id: switch.06200928600194a7ffbc_1
+    - delay: 00:00:05
+    - service: switch.turn_on
+      entity_id: switch.06200928600194a7ffbc_3
+    - delay: 00:00:05
+    - service: switch.turn_on
       entity_id: switch.06200928600194a7ffbc_4
     - service: script.turn_on
       entity_id: script.et_lightshow
@@ -1369,9 +1396,35 @@ tag_desk_on:
         entity_id: light.desk
         brightness: 250
         transition: 5
+#    - service: script.soundbar_volume_up
+#    - delay: '00:01:00'
+    - service: media_player.play_media
+      data:
+        entity_id: media_player.gabe_s_alexa
+        media_content_type: sound
+        media_content_id: amzn_sfx_trumpet_bugle_03
+    - service: media_player.play_media
+      data:
+        entity_id: media_player.mpd
+        media_content_id: 'https://thisisgabes.asuscomm.com/local/sounds/janet_hithere.mp3'
+        media_content_type: 'music'
+    - delay: '00:00:01'
+    - service: script.janet_speech_engine
+      data:
+        call_morning_greeting: 1
+    - delay: '00:00:05'
+    - service: script.janet_speech_engine
+      data:
+        call_morning_weather: 1
+    - delay: '00:00:05'
+    - service: switch.turn_off
+      entity_id: switch.numpad_light
 
 tag_desk_off:
   sequence:
+    - service: script.janet_speech_engine
+      data:
+        call_bye: 1
     - service: light.turn_off
       data:
         entity_id: light.desk
@@ -1397,7 +1450,10 @@ tag_desk_off:
     - delay: 00:00:03
     - service: switch.turn_off
       entity_id: switch.06200928600194a7ffbc_4
-
+    - service: switch.turn_off
+      entity_id: switch.06200928600194a7ffbc_3
+    - service: switch.turn_off
+      entity_id: switch.06200928600194a7ffbc_1
 
 tag_bed:
   sequence:
@@ -1423,7 +1479,7 @@ tag_bed:
         volume_level: 0
     - service: media_player.volume_set
       data:
-        entity_id: media_player.snapcast_client_b8_27_eb_84_9d_15
+        entity_id: media_player.snapcast_client_b8_27_eb_e1_e2_66
         volume_level: 0
     - service: media_player.volume_set
       data:
@@ -1563,7 +1619,7 @@ lights_chill_blue:
         brightness: 50
         rgb_color: [0,0,255]
     - service: switch.turn_off
-      entity_id: switch.entry_light
+      entity_id: switch.10048470bcddc2e0cf71
 
 #Lighting Scripts
 lights_random:
@@ -1755,60 +1811,6 @@ soundbar_input_select:
     - service: switch.turn_off
       entity_id: switch.samsung_soundbar_input
 
-#Birdfeed
-birdfeed_announce_begin:
-  alias: Birdfeed Announce Begin
-  sequence:
-    - service: media_player.media_pause
-      entity_id: media_player.gabes_music_server
-    - service: media_player.volume_set
-      data:
-        entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44
-        volume_level: 0
-    - service: media_player.volume_set
-      data:
-        entity_id: media_player.snapcast_client_b8_27_eb_31_93_b7
-        volume_level: 1
-    - service: media_player.play_media
-      data:
-        entity_id: media_player.gabesmusic_3
-        media_content_id: 'localhost-fill/local/sounds/empty_track_1min.mp3'
-        media_content_type: music
-    - delay: 00:00:02
-
-birdfeed_announce_end:
-  alias: Birdfeed Announce End
-  sequence:
-    - service: media_player.volume_set
-      data:
-        entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44
-        volume_level: 1
-    - service: media_player.volume_set
-      data:
-        entity_id: media_player.snapcast_client_b8_27_eb_31_93_b7
-        volume_level: 0
-    - service: media_player.play_media
-      data:
-        entity_id: media_player.gabesmusic_3
-        media_content_id: 'localhost-fill/local/sounds/empty_track_1min.mp3'
-        media_content_type: music
-    - delay: 00:00:01
-
-birdfeed_tweet:
-  alias: Birdfeed Tweet
-  sequence:
-    - service: script.turn_on
-      entity_id: script.birdfeed_announce_begin
-    - delay: 00:00:01
-    - service: media_player.play_media
-      data:
-        entity_id: media_player.gabesmusic_3
-        media_content_id: 'localhost-fill/local/sounds/tweet.mp3'
-        media_content_type: music
-    - delay: 00:00:04
-    - service: script.turn_on
-      entity_id: script.birdfeed_announce_end
-
 #Alexa TTS
 alexa_set_volume:
   sequence:
@@ -1879,129 +1881,6 @@ alexa_humidifier_off:
       media_content_type: routine
     service: media_player.play_media
 
-#ac units
-alexa_bedroom_ac_on:
-  alias: Alexa Bedroom AC On
-  sequence:
-  - data:
-      entity_id: media_player.gabe_s_alexa
-      media_content_id: bedroomacon
-      media_content_type: routine
-    service: media_player.play_media
-
-alexa_bedroom_ac_off:
-  alias: Alexa Bedroom AC Off
-  sequence:
-  - data:
-      entity_id: media_player.gabe_s_alexa
-      media_content_id: bedroomacoff
-      media_content_type: routine
-    service: media_player.play_media
-
-alexa_livingroom_ac_on:
-  alias: Alexa Livingroom AC On
-  sequence:
-  - data:
-      media_content_id: livingroomacon
-      media_content_type: routine
-      entity_id: media_player.gabe_s_alexa
-    service: media_player.play_media
-
-alexa_livingroom_ac_off:
-  alias: Alexa Livingroom AC Off
-  sequence:
-  - data:
-      media_content_id: livingroomacoff
-      media_content_type: routine
-      entity_id: media_player.gabe_s_alexa
-    service: media_player.play_media
-
-alexa_livingroom_ac_set:
-  alias: Alexa Livingroom AC Set
-  sequence:
-  - service: media_player.play_media
-    data_template:
-      media_content_id: >
-          {% if is_state("input_select.alexa_livingroom_ac", "63") %}livingroomacsixthree
-          {% elif is_state("input_select.alexa_livingroom_ac", "64") %}livingroomacsixfour
-          {% elif is_state("input_select.alexa_livingroom_ac", "65") %}livingroomacsixfive
-          {% elif is_state("input_select.alexa_livingroom_ac", "66") %}livingroomacsixsix
-          {% elif is_state("input_select.alexa_livingroom_ac", "67") %}livingroomacsixseven
-          {% elif is_state("input_select.alexa_livingroom_ac", "68") %}livingroomacsixeight
-          {% elif is_state("input_select.alexa_livingroom_ac", "69") %}livingroomacsixnine
-          {% elif is_state("input_select.alexa_livingroom_ac", "70") %}livingroomacsevenzero
-          {% elif is_state("input_select.alexa_livingroom_ac", "71") %}livingroomacsevenone
-          {% elif is_state("input_select.alexa_livingroom_ac", "72") %}livingroomacseventwo
-          {% elif is_state("input_select.alexa_livingroom_ac", "73") %}livingroomacseventhree
-          {% elif is_state("input_select.alexa_livingroom_ac", "74") %}livingroomacsevenfour
-          {% elif is_state("input_select.alexa_livingroom_ac", "75") %}livingroomacsevenfive
-          {% elif is_state("input_select.alexa_livingroom_ac", "76") %}livingroomacsevensix
-          {% elif is_state("input_select.alexa_livingroom_ac", "77") %}livingroomacsevenseven
-          {% elif is_state("input_select.alexa_livingroom_ac", "78") %}livingroomacseveneight
-          {% elif is_state("input_select.alexa_livingroom_ac", "79") %}livingroomacsevennine
-          {% elif is_state("input_select.alexa_livingroom_ac", "80") %}livingroomaceightzero
-          {% elif is_state("input_select.alexa_livingroom_ac", "81") %}livingroomaceightone
-          {% elif is_state("input_select.alexa_livingroom_ac", "82") %}livingroomaceighttwo
-          {% elif is_state("input_select.alexa_livingroom_ac", "83") %}livingroomaceightthree
-          {% elif is_state("input_select.alexa_livingroom_ac", "84") %}livingroomaceightfour
-          {% elif is_state("input_select.alexa_livingroom_ac", "85") %}livingroomaceightfive
-          {% endif %}
-      entity_id: media_player.gabe_s_alexa
-      media_content_type: routine
-
-alexa_bedroom_ac_set:
-  alias: Alexa Bedroom AC Set
-  sequence:
-  - service: media_player.play_media
-    data_template:
-      media_content_id: >
-          {% if is_state("input_select.alexa_bedroom_ac", "63") %}bedroomacsixthree
-          {% elif is_state("input_select.alexa_bedroom_ac", "64") %}bedroomacsixfour
-          {% elif is_state("input_select.alexa_bedroom_ac", "65") %}bedroomacsixfive
-          {% elif is_state("input_select.alexa_bedroom_ac", "66") %}bedroomacsixsix
-          {% elif is_state("input_select.alexa_bedroom_ac", "67") %}bedroomacsixseven
-          {% elif is_state("input_select.alexa_bedroom_ac", "68") %}bedroomacsixeight
-          {% elif is_state("input_select.alexa_bedroom_ac", "69") %}bedroomacsixnine
-          {% elif is_state("input_select.alexa_bedroom_ac", "70") %}bedroomacsevenzero
-          {% elif is_state("input_select.alexa_bedroom_ac", "71") %}bedroomacsevenone
-          {% elif is_state("input_select.alexa_bedroom_ac", "72") %}bedroomacseventwo
-          {% elif is_state("input_select.alexa_bedroom_ac", "73") %}bedroomacseventhree
-          {% elif is_state("input_select.alexa_bedroom_ac", "74") %}bedroomacsevenfour
-          {% elif is_state("input_select.alexa_bedroom_ac", "75") %}bedroomacsevenfive
-          {% elif is_state("input_select.alexa_bedroom_ac", "76") %}bedroomacsevensix
-          {% elif is_state("input_select.alexa_bedroom_ac", "77") %}bedroomacsevenseven
-          {% elif is_state("input_select.alexa_bedroom_ac", "78") %}bedroomacseveneight
-          {% elif is_state("input_select.alexa_bedroom_ac", "79") %}bedroomacsevennine
-          {% elif is_state("input_select.alexa_bedroom_ac", "80") %}bedroomaceightzero
-          {% elif is_state("input_select.alexa_bedroom_ac", "81") %}bedroomaceightone
-          {% elif is_state("input_select.alexa_bedroom_ac", "82") %}bedroomaceighttwo
-          {% elif is_state("input_select.alexa_bedroom_ac", "83") %}bedroomaceightthree
-          {% elif is_state("input_select.alexa_bedroom_ac", "84") %}bedroomaceightfour
-          {% elif is_state("input_select.alexa_bedroom_ac", "85") %}bedroomaceightfive
-          {% endif %}
-      entity_id: media_player.gabe_s_alexa
-      media_content_type: routine
-
-sleep_mode_cool_room:
-  alias: Sleep Mode Cool Bedroom
-  sequence:
-    - service: switch.turn_off
-      entity_id: switch.entry_light
-    - service: input_select.select_option
-      data:
-        entity_id: input_select.alexa_bedroom_ac
-        option: 72
-    - service: input_select.select_option
-      data:
-        entity_id: input_select.alexa_livingroom_ac
-        option: 83
-    - service: script.turn_on
-      data:
-        entity: script.alexa_bedroom_ac_set
-    - service: script.turn_on
-      data:
-        entity: script.alexa_livingroom_ac_set
-
 sleep_mode_ambient_sounds:
   alias: Sleep Mode Ambient Sounds
   sequence:
@@ -2059,3 +1938,38 @@ alexa_connect_to_speaker:
       data:
         source: "[AV] Samsung Soundbar K360 K-Series"
         entity_id: media_player.gabe_s_alexa
+
+#Notify box split and update
+- alias: Notify Box Split and Update
+  sequence:
+    - service: switch.turn_on
+      entity_id: switch.notify_box_screen_on
+    - delay: 00:00:05
+    - service: light.turn_on
+      entity_id: light.notify_box
+    - service: input_text.set_value
+      target:
+        entity_id: input_text.notify_box_line1
+      data_template:
+        value: '{{ states.sensor.notify_box_line1_split.state }}'
+    - service: input_text.set_value
+      target:
+        entity_id: input_text.notify_box_line2
+      data_template:
+        value: '{{ states.sensor.notify_box_line2_split.state }}'
+    - service: input_text.set_value
+      target:
+        entity_id: input_text.notify_box_line3
+      data_template:
+        value: '{{ states.sensor.notify_box_line3_split.state }}'
+    - service: input_text.set_value
+      target:
+        entity_id: input_text.notify_box_line4
+      data_template:
+        value: '{{ states.sensor.notify_box_line4_split.state }}'
+    - delay: 00:10:00
+    - service: light.turn_off
+      entity_id: light.notify_box
+    - delay: 00:30:00
+    - service: switch.turn_off
+      entity_id: switch.notify_box_screen_on

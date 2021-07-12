@@ -70,11 +70,13 @@ class AdjustableLightEntityRow extends Polymer.Element {
           on-click="stopPropagation">
         </paper-slider>
     </div>
+<template is="dom-if" if="[[showTempButtons]]">
     <div class="flex-box">
         <template is="dom-repeat" items="[[tempButtons]]">
             <paper-button on-click="handleButton">{{item.name}}</paper-button>
         </template>
     </div>
+</template>    
 </template>    
 
 <template is="dom-if" if="[[showColorSliders]]">
@@ -130,7 +132,8 @@ class AdjustableLightEntityRow extends Polymer.Element {
       _config: Object,
       isOn: { type: Boolean },
       stateObj: { type: Object, value: null },
-      brightnessMin: { type: Number, value: 0 },
+      members: { type: Array, value: null },
+      brightnessMin: { type: Number, value: 1 },
       brightnessMax: { type: Number, value: 100 },
       tempMin: { type: Number, value: 175 },
       tempMax: { type: Number, value: 500 },
@@ -145,9 +148,10 @@ class AdjustableLightEntityRow extends Polymer.Element {
       },
       support: {},
       showBrightness: {type: Boolean, value: false},
+      showTempButtons: {type: Boolean, value: false},
       showColorTemp: {type: Boolean, value: false},
       showColorPicker: {type: Boolean, value: false},
-      showColorSliers: {type: Boolean, value: false},
+      showColorSliders: {type: Boolean, value: false},
       currentColor: {type: Object, value: {h: 0, s: 0}}
     };
   }
@@ -162,7 +166,7 @@ class AdjustableLightEntityRow extends Polymer.Element {
   setConfig(config)
   {
 
-    const checkServiceRegexp = /^light\./
+    const checkServiceRegexp = /^(light|group)\./
     if (!checkServiceRegexp.test(config.entity)) {
       throw new Error(`invalid entity ${config.entity}`)
     }
@@ -175,28 +179,21 @@ class AdjustableLightEntityRow extends Polymer.Element {
 
   set hass(hass) {
     this._hass = hass;
-    this.stateObj = this._config.entity in hass.states ? hass.states[this._config.entity] : null;
+    this.stateObj = this._config.entity in hass.states ? hass.states[this._config.entity] : null
     if(this.stateObj) {
+      if (this.isGroup && this.stateObj.attributes.entity_id) {
+        this.members = this.stateObj.attributes
+          .entity_id.map(e => e in hass.states ? hass.states[e] : null)
+      }
       const tempMid = this.tempMin + ((this.tempMax - this.tempMin) / 2)
-      this.tempButtons = [{
-        name: "Cool",
-        service_data: {
-          color_temp: this.tempMin
-        }
-      }, {
-        name: "Normal",
-        service_data: {
-          color_temp: tempMid
-        }
-      }, {
-        name: "Warm",
-        service_data: {
-          color_temp: this.tempMax
-        }
-      }]
       if(this.stateObj.state === 'on') {
-        this.brightness = this.stateObj.attributes.brightness/2.55;
-        this.color_temp = this.stateObj.attributes.color_temp;
+        if (this.brightness === undefined && this.isGroup && this.members && this.members.length) {
+          this.brightness = (this.members.reduce((b, e) => b + e.attributes.brightness, 0)/this.members.length)/2.55
+          this.color_temp = this.members.reduce((t, e) => t + e.attributes.color_temp, 0)/this.members.length
+        } else if (!this.group) {
+          this.brightness = this.stateObj.attributes.brightness/2.55;
+          this.color_temp = this.stateObj.attributes.color_temp;
+        }
         if (this.stateObj.attributes.hs_color && Array.isArray(this.stateObj.attributes.hs_color)) {
           this.color_hue = this.stateObj.attributes.hs_color[0];
           this.color_saturation = this.stateObj.attributes.hs_color[1];
@@ -217,6 +214,10 @@ class AdjustableLightEntityRow extends Polymer.Element {
         this.showBrightness = true
       }
       
+      if (!this._config.hideTempButtons && this.isSupported(SUPPORT_COLOR_TEMP)) {
+        this.showTempButtons = true
+      }
+      
       if (!this._config.hideColorTemp && this.isSupported(SUPPORT_COLOR_TEMP)) {
         this.showColorTemp = true
         if (this.stateObj.attributes.min_mireds) {
@@ -225,6 +226,22 @@ class AdjustableLightEntityRow extends Polymer.Element {
         if (this.stateObj.attributes.max_mireds) {
           this.tempMax = this.stateObj.attributes.max_mireds
         }
+        this.tempButtons = [{
+          name: "Cool",
+          service_data: {
+            color_temp: this.tempMin
+          }
+        }, {
+          name: "Normal",
+          service_data: {
+            color_temp: tempMid
+          }
+        }, {
+          name: "Warm",
+          service_data: {
+            color_temp: this.tempMax
+          }
+        }]
       }
       
       if (this._config.showColorPicker && this.isSupported(SUPPORT_RGB_COLOR)) {
@@ -288,7 +305,12 @@ class AdjustableLightEntityRow extends Polymer.Element {
     ev.stopPropagation();
   }
 
+  get isGroup() {
+    return this._config.entity.indexOf(/^group/)
+  }
+
   isSupported(feature) {
+    if (this.isGroup) return true
     const res = this.stateObj.attributes.supported_features & feature
     return res != 0
   }

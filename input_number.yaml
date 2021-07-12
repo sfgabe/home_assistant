@@ -20,15 +20,21 @@ kiosk_brightness:
   step: 1
 kessil_brightness:
   name: Kessil Brightness
-  initial: 99
+#  initial: 99
   min: 1
   max: 99
   step: 1
 kessil_color:
   name: Kessil Color
-  initial: 99
+#  initial: 99
   min: 1
-  max: 99 
+  max: 99
+  step: 1
+refugium_brightness:
+  name: Refugium Brightness
+#  initial: 99
+  min: 1
+  max: 99
   step: 1
 garden_brightness:
   name: Garden Brightness
@@ -36,3 +42,302 @@ garden_brightness:
   min: 0
   max: 100
   step: 1
+
+# Aquarium External Test Data log
+reef_calcium:
+  name: Reef CA Level
+  min: 300
+  max: 800
+  step: 1
+  mode: box
+#  initial: 530
+  unit_of_measurement: ppm
+reef_alkalinity:
+  name: Reef ALK Level
+  min: 0
+  max: 400
+  step: 1
+  mode: box
+#  initial: 125
+  unit_of_measurement: ppm
+reef_phosphate:
+  name: Reef Phosphate Level
+  min: 0
+  max: 20
+  step: 0.1
+  mode: box
+#  initial: 0
+  unit_of_measurement: ppm
+reef_iron:
+  name: Reef Iron Level
+  min: 0
+  max: 1
+  step: 0.01
+  mode: box
+#  initial: 0
+  unit_of_measurement: ppm
+reef_magnesium:
+  name: Reef MAG Level
+  min: 1200
+  max: 2000
+  step: 1
+  mode: box
+#  initial: 1580
+  unit_of_measurement: ppm
+reef_nitrate:
+  name: Reef NO3 Level
+  min: 0
+  max: 200
+  step: 1
+  mode: box
+#  initial: 25
+  unit_of_measurement: ppm
+reef_relative_density:
+  name: Reef Relative Density
+  min: 1.02
+  max: 1.03
+  step: 0.001
+  mode: box
+#  initial: 1.026
+  unit_of_measurement: psu
+reef_nitrite:
+  name: Reef Nitrite
+  min: 0
+  max: 200
+  step: 0.5
+  mode: box
+#  initial: 0
+  unit_of_measurement: ppm
+reef_ammonia:
+  name: Reef Ammonia
+  min: 0
+  max: 200
+  step: 0.5
+  mode: box
+#  initial: 0
+  unit_of_measurement: ppm
+
+reef_calcium_minimum:
+  name: Calcium Min
+  min: 300
+  max: 500
+  step: 1
+  mode: box
+#  initial: 300
+  unit_of_measurement: ppm
+reef_calcium_target:
+  name: Calcium Target
+  min: 450
+  max: 550
+  step: 1
+  mode: box
+#  initial: 530
+  unit_of_measurement: ppm
+reef_calcium_maximum:
+  name: Calcium Max
+  min: 550
+  max: 800
+  step: 1
+  mode: box
+#  initial: 800
+  unit_of_measurement: ppm
+reef_alkalinity_minimum:
+  name: Alkalinity Min
+  min: 0
+  max: 400
+  step: 1
+  mode: box
+#  initial: 0
+  unit_of_measurement: ppm
+reef_alkalinity_target:
+  name: Alkalinity Target
+  min: 0
+  max: 400
+  step: 1
+  mode: box
+#  initial: 125
+  unit_of_measurement: ppm
+reef_alkalinity_maximum:
+  name: Alkalinity Max
+  min: 0
+  max: 400
+  step: 1
+  mode: box
+#  initial: 325
+  unit_of_measurement: ppm
+reef_nitrate_minimum:
+  name: Nitrate Min
+  min: 0
+  max: 100
+  step: 1
+  mode: box
+#  initial: 0
+  unit_of_measurement: ppm
+reef_nitrate_target:
+  name: Nitrate Target
+  min: 0
+  max: 200
+  step: 1
+  mode: box
+#  initial: 10
+  unit_of_measurement: ppm
+reef_nitrate_maximum:
+  name: Nitrate Max
+  min: 0
+  max: 200
+  step: 1
+  mode: box
+#  initial: 200
+  unit_of_measurement: ppm
+reef_phosphate_maximum:
+  name: Reef Phosphate Maximum
+  min: 0
+  max: 20
+  step: 0.1
+  mode: box
+#  initial: 0
+  unit_of_measurement: ppm
+reef_phosphate_target:
+  name: Reef Phosphate Target
+  min: 0
+  max: 20
+  step: 0.1
+  mode: box
+#  initial: 0
+  unit_of_measurement: ppm
+reef_phosphate_minimum:
+  name: Reef Phosphate Min
+  min: 0
+  max: 20
+  step: 0.1
+  mode: box
+#  initial: 10
+  unit_of_measurement: ppm
+reef_relative_density_minimum:
+  name: Relative Density Min
+  min: 1.01
+  max: 1.03
+  step: 0.001
+  mode: box
+#  initial: 1.02
+  unit_of_measurement: psu
+reef_relative_density_target:
+  name: Relative Density Target
+  min: 1.01
+  max: 1.03
+  step: 0.001
+  mode: box
+#  initial: 1.026
+  unit_of_measurement: psu
+reef_relative_density_maximum:
+  name: Relative Density Max
+  min: 1.01
+  max: 1.03
+  step: 0.001
+  mode: box
+#  initial: 1.03
+  unit_of_measurement: psu
+reef_magnesium_minimum:
+  name: Magnesium Min
+  min: 1200
+  max: 2000
+  step: 1
+  mode: box
+#  initial: 1200
+  unit_of_measurement: ppm
+reef_magnesium_target:
+  name: Magnesium Target
+  min: 1200
+  max: 2000
+  step: 1
+  mode: box
+#  initial: 1580
+  unit_of_measurement: ppm
+reef_magnesium_maximum:
+  name: Magnesium Max
+  min: 1200
+  max: 2000
+  step: 1
+  mode: box
+#  initial: 2000
+  unit_of_measurement: ppm
+reef_nitrite_minimum:
+  name: Nitrite Min
+  min: 0
+  max: 200
+  step: 0.5
+  mode: box
+#  initial: 0
+  unit_of_measurement: ppm
+reef_nitrite_target:
+  name: Nitrite Target
+  min: 0
+  max: 200
+  step: 0.5
+  mode: box
+#  initial: 0
+  unit_of_measurement: ppm
+reef_nitrite_maximum:
+  name: Nitrite Max
+  min: 0
+  max: 200
+  step: 0.5
+  mode: box
+#  initial: 20
+  unit_of_measurement: ppm
+reef_ammonia_minimum:
+  name: Ammonia Min
+  min: 0
+  max: 200
+  step: 0.5
+  mode: box
+#  initial: 0
+  unit_of_measurement: ppm
+reef_ammonia_target:
+  name: Ammonia Target
+  min: 0
+  max: 200
+  step: 0.5
+  mode: box
+#  initial: 0
+  unit_of_measurement: ppm
+reef_ammonia_maximum:
+  name: Ammonia Max
+  min: 0
+  max: 200
+  step: 0.5
+  mode: box
+#  initial: 20
+  unit_of_measurement: ppm
+reef_redfield_ratio_minimum:
+  name: NO3 Ratio Min
+  min: 0
+  max: 30
+  step: 1
+  mode: box
+#  initial: 5
+  unit_of_measurement: ratio
+reef_redfield_ratio_target:
+  name: NO3 Ratio Target
+  min: 0
+  max: 30
+  step: 1
+  mode: box
+#  initial: 16
+  unit_of_measurement: ratio
+reef_redfield_ratio_maximum:
+  name: NO3 Ratio Max
+  min: 0
+  max: 30
+  step: 1
+  mode: box
+#  initial: 19
+  unit_of_measurement: ratio
+
+#baby stuff
+pregnancy_week:
+  name: Pregnancy week persistent number
+  max: 42
+  min: 4
+  step: 1
+  mode: box

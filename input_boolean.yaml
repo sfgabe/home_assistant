@@ -164,6 +164,11 @@ guest_mode:
   name: Guest Mode
   initial: off
 
+#Birdfeed
+birdfeed_status:
+  name: Birdfeed Status
+  initial: off
+
 #media buttons
 ambient_sounds:
   name: Ambient Sounds

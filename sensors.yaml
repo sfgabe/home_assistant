@@ -855,15 +855,51 @@
       Referer: http://192.168.50.251/
       Cookie: !secret amazonpi_cookie
 
-- platform: mqtt
-  name: 'USPS Mail'
-  state_topic: '/usps/mails'
-  value_template: "{{ value }}"
-
-- platform: mqtt
-  name: 'USPS Packages'
-  state_topic: '/usps/packages'
-  value_template: "{{ value }}"
+- platform: template
+  sensors:
+    mail_deliveries_message:
+      friendly_name: "Deliveries Summary"
+      value_template: >
+        {# Deliveries Sentence #}
+          {% macro deliveries_sentence() -%}
+                {%- if states("sensor.mail_usps_mail")|int == 0 -%}
+                  No
+                {%- else -%}
+                  {{states("sensor.mail_usps_mail")|int}}
+                {%- endif -%}
+              {{' '}}
+                {%- if states("sensor.mail_usps_mail")|int == 1 -%}
+                  piece of mail
+                {%- else -%}
+                  pieces of mail
+                {%- endif -%}
+              {{' '}}will be delivered.{{' '}}
+                {%- if states("sensor.mail_usps_delivering")|int == 0 -%}
+                  No
+                {%- else -%}
+                  {{states("sensor.mail_usps_delivering")|int}}
+                {%- endif -%}
+              {{' '}}
+                {%- if states("sensor.mail_usps_delivering")|int == 1 -%}
+                  USPS package is
+                {%- else -%}
+                  USPS packages are
+                {%- endif -%}
+              {{' '}}in transit.{{' '}}
+              {%- if states("sensor.mail_amazon_packages")|int == 0 -%}
+                  No
+                {%- else -%}
+                  {{states("sensor.mail_amazon_packages")|int}}
+                {%- endif -%}
+              {{' '}}
+                {%- if states("sensor.mail_amazon_packages")|int == 1 -%}
+                  Amazon package is
+                {%- else -%}
+                  Amazon packages are
+                {%- endif -%}
+              {{' '}}in transit.{{' '}}
+          {%- endmacro %}
+        {{deliveries_sentence()}}
 
 - platform: mqtt
   name: 'Mailbox Temp F'
@@ -1028,29 +1064,37 @@
   scan_interval: 14400
   value_template: '{{ value.split("de ")[1].split(" h")[0] }}'
 
-- platform: scrape
-  resource: https://tides4fishing.com/br/amapa/rio-amazonas-ponta-do-ceu
-  select: "#amanecer_anochecer_datos_salida_sol div.amanecer_anochecer_datos_salida_puesta_sol2"
-  name: AmazonSunriseTides
-#  entity_id: sensor.amazonsunrisetides
-  scan_interval: 7200
-  value_template: '{{ (value.split(" h")[0]) }}'
+# - platform: scrape
+#   resource: https://www.gaisma.com/en/location/manaus.html
+#   select: "td.sunshine:first"
+#   name: AmazonSunriseTides
+#   scan_interval: 7200
 #  value_template: "{{ (value.split(' h')[0])|timestamp_custom('%k:%M', false) }}"
+- platform: multiscrape
+  name: AmazonSunriseTides
+  resource: https://www.gaisma.com/en/location/manaus.html
+  scan_interval: 7200
+  selectors:
+    amazonsunrisetides:
+      name: AmazonSunriseTides
+      select: 'td.sunshine:nth-of-type(2)'
+      value_template: '{{ (value.split(",")[0]) }}'
 
-- platform: scrape
-  resource: https://tides4fishing.com/br/amapa/rio-amazonas-ponta-do-ceu
-  select: "#amanecer_anochecer_datos_puesta_sol div.amanecer_anochecer_datos_salida_puesta_sol2"
+- platform: multiscrape
   name: AmazonSunsetTides
-#  entity_id: sensor.amazonsunsettides
+  resource: https://www.gaisma.com/en/location/manaus.html
   scan_interval: 7200
-  value_template: '{{ (value.split(" h")[0]) }}'
-
-- platform: scrape
-  resource: https://tides4fishing.com/br/amapa/rio-amazonas-ponta-do-ceu
-  select: "#c_grafico_temp_agua_fondo #c_grafico_temp_agua_txt_grados_agua_actual"
-  name: AmazonWaterTempTides
-  scan_interval: 7200
-  value_template: '{{ (value.split("°C")[0]) }}'
+  selectors:
+    amazonsunsettides:
+      name: AmazonSunsetTides
+      select: 'td.sunshine:nth-of-type(3)'
+      value_template: '{{ (value.split(",")[0]) }}'
+# - platform: scrape
+#   resource: https://www.gaisma.com/en/location/manaus.html
+#   select: "td.sunshine:nth-of-type(3):first"
+#   name: AmazonSunsetTides
+#   scan_interval: 7200
+#  value_template: '{{ (value.split("")[0]) }}'
 
 - platform: command_line
   command: "cat /home/homeassistant/.homeassistant/scripts/BrancoRiver_CaracaraiWaterTemperature_ltv.txt"
@@ -1321,19 +1365,39 @@
       friendly_name: "Reef Ocean Temp Fahrenheit"
       value_template: '{{ ((float(states("sensor.reef_ocean_temp_c")) * 9 / 5 )  +  32) | round(1) }}'
 
-- platform: scrape
-  resource: https://tides4fishing.com/as/west-indonesia/banjuwangi-bali-str
-  select: "#amanecer_anochecer_datos_salida_sol div.amanecer_anochecer_datos_salida_puesta_sol2"
+- platform: multiscrape
   name: ReefSunriseTides
+  resource: https://www.gaisma.com/en/location/bali.html
   scan_interval: 7200
-  value_template: '{{ (value.split(" h")[0]) }}'
+  selectors:
+    reefsunrisetides:
+      name: ReefSunriseTides
+      select: 'td.sunshine:nth-of-type(2)'
+      value_template: '{{ (value.split(",")[0]) }}'
 
-- platform: scrape
-  resource: https://tides4fishing.com/as/west-indonesia/banjuwangi-bali-str
-  select: "#amanecer_anochecer_datos_puesta_sol div.amanecer_anochecer_datos_salida_puesta_sol2"
+- platform: multiscrape
   name: ReefSunsetTides
+  resource: https://www.gaisma.com/en/location/bali.html
   scan_interval: 7200
-  value_template: '{{ (value.split(" h")[0]) }}'
+  selectors:
+    reefsunsettides:
+      name: ReefSunsetTides
+      select: 'td.sunshine:nth-of-type(3)'
+      value_template: '{{ (value.split(",")[0]) }}'
+
+# - platform: scrape
+#   resource: https://www.gaisma.com/en/location/bali.html
+#   select: "td.sunshine:first"
+#   name: ReefSunriseTides
+#   scan_interval: 7200
+#  value_template: '{{ (value.split(" h")[0]) }}'
+
+# - platform: scrape
+#   resource: https://www.gaisma.com/en/location/bali.html
+#   select: "td.sunshine:nth-of-type(3):first"
+#   name: ReefSunsetTides
+#   scan_interval: 7200
+#  value_template: '{{ (value }}'
 
 - platform: scrape
   resource: https://tides4fishing.com/as/west-indonesia/banjuwangi-bali-str
@@ -1357,7 +1421,7 @@
   db_url: !secret config_db_fs_url
   queries:
     - name: "MariaDB Database Size"
-      query: 'SELECT table_schema "database", Round(Sum(data_length + index_length)/1024/1024, 1) "value" FROM information_schema.tables WHERE table_schema="hass_db" GROUP BY table_schema;'
+      query: 'SELECT table_schema "database", Round(Sum(data_length + index_length)/1024/1024, 1) "value" FROM information_schema.tables WHERE table_schema="hass" GROUP BY table_schema;'
       column: 'value'
       unit_of_measurement: MB
 
@@ -1391,6 +1455,8 @@
             states.binary_sensor.birdfeed_motion,
             states.binary_sensor.bathroom_motion,
             states.binary_sensor.dashboard_motion,
+            states.binary_sensor.reef_notify_motion,
+            states.binary_sensor.notify_box_motion,
             states.binary_sensor.entry_motion,
             states.binary_sensor.homecam_motion,
             states.binary_sensor.kiosk_att_motion
@@ -1452,30 +1518,6 @@
   value_template: >
     {% set url = value.split("(", 1)[1].split(")")[0] %}
     {{ url }}
-
-  # value_template: >
-  #   {% set url = value.split("sites/")[1].split("jpg")[0] %}
-  #   {% set prefix = "http://www.esbnyc.com/sites/" %}
-  #   {% set filetype = "jpg" %}
-  #   {{ [prefix, url, filetype] | join("") }}
-
-#Empire State Colors Other
-# - platform: scrape
-#   name: empire_state_lights_info_color
-#   resource: http://www.esbnyc.com/explore/tower-lights
-#   select: 'div.is-today h3'
-#   scan_interval: 10800
-#
-# - platform: scrape
-#   resource: http://www.esbnyc.com/explore/tower-lights
-#   select: 'div.field--type-image picture img'
-#   attribute: src
-#   name: empire_state_lights_pic_url_color
-#   scan_interval: 10800
-#   value_template: >
-#     {% set url = value.split("sites/")[1] %}
-#     {% set prefix = "http://www.esbnyc.com/sites/" %}
-#     {{ [prefix, url] | join("") }}
 
 #Calendars
 - platform: template
@@ -1553,6 +1595,14 @@
       friendly_name: Amazon Server CPU Temp
       entity_id: sensor.amazonsysinfo_template_cpu_temperature
 
+    notify_box_line1_split:
+      value_template: '{{ states.input_text.notify_box_full_message.state.split(" ")[:3]|join(" ") }}'
+    notify_box_line2_split:
+      value_template: '{{ states.input_text.notify_box_full_message.state.split(" ")[3:6]|join(" ") }}'
+    notify_box_line3_split:
+      value_template: '{{ states.input_text.notify_box_full_message.state.split(" ")[6:9]|join(" ") }}'
+    notify_box_line4_split:
+      value_template: '{{ states.input_text.notify_box_full_message.state.split(" ")[9:12]|join(" ") }}'
 #Bustime Sensors
 #- platform: gtfs_realtime
 #  name: Next Bus
@@ -1856,70 +1906,73 @@
 #    arrival_time: "{{ states('sensor.nextcal_start_time') }}"
 #    mode: transit
 
-#- platform: template
-#  scan_interval: 240
-#  sensors:
-#    battery_gabes_mate:
-#      friendly_name: "Battery Status"
-#      value_template: '{{ states.device_tracker.5re0217120001465.attributes.battery | default(0) |int() }}'
-#      entity_id: sensor.battery_gabes_mate
-#      unit_of_measurement: "%"
-#      icon_template: >
-#        {% set battery_level = states.device_tracker.5re0217120001465.attributes.battery|default(0)|int %}
-#        {% set battery_round = (battery_level / 10) |int * 10 %}
-#        {% if battery_round >= 100 %}
-#          mdi:battery
-#        {% elif battery_round > 0 %}
-#          mdi:battery-{{ battery_round }}
-#        {% else %}
-#          mdi:battery-alert
-#        {% endif %}
-#    altitude_gabes_mate:
-#      friendly_name: "Altitude"
-#      value_template: '{{ states.device_tracker.5re0217120001465.attributes.altitude | round(1) }}'
-#      entity_id: sensor.gps_altitude_gabes_mate
-#      unit_of_measurement: "m"
-#    activity_gabes_mate:
-#      friendly_name: "Activity"
-#      value_template: '{{ states.device_tracker.5re0217120001465.attributes.activity }}'
-#      entity_id: sensor.activity_gabes_mate
-#    direction_gabes_mate:
-#      friendly_name: "Direction"
-#      value_template: '{{ states.device_tracker.5re0217120001465.attributes.direction }}'
-#      entity_id: sensor.direction_gabes_mate
-#    speed_gabes_mate:
-#      friendly_name: "Speed"
-#      value_template: '{{ states.device_tracker.5re0217120001465.attributes.speed | round(1) }}'
-#      entity_id: sensor.speed_gabes_mate
-#      unit_of_measurement: "mph"
-#    accuracy_gabes_mate:
-#      friendly_name: "Accuracy"
-#      value_template: '{{ states.device_tracker.5re0217120001465.attributes.gps_accuracy | round(1) }}'
-#      entity_id: sensor.gps_accuracy_gabes_mate
-#      unit_of_measurement: "m"
-#    provider_gabes_mate:
-#      friendly_name: "Provider"
-#      value_template: {{ states("device_tracker.5re0217120001465.attributes.provider") }}
-#      entity_id: sensor.net_provider_gabes_mate
-#    source_type_gabes_mate:
-#      friendly_name: "Source Type"
-#      value_template: '{{ states.device_tracker.5re0217120001465.attributes.source_type }}'
-#      entity_id: sensor.source_type_gabes_mate
-#    last_seen_gabes_mate:
-#      friendly_name: "Last Seen"
-#      value_template: '{{ relative_time (states.device_tracker.5re0217120001465.last_updated) + " ago"}}'
-#      entity_id: sensor.last_seen_gabes_mate
+- platform: template
+  scan_interval: 240
+  sensors:
+   battery_gabes_mate:
+     friendly_name: "Battery Status"
+     value_template: '{{ states.device_tracker.gabesnotegps.attributes.battery_level | default(0) |int() }}'
+     entity_id: sensor.battery_gabes_mate
+     unit_of_measurement: "%"
+     icon_template: >
+       {% set battery_level = states.device_tracker.gabesnotegps.attributes.battery_level | default(0) |int %}
+       {% set battery_round = (battery_level / 10) |int * 10 %}
+       {% if battery_round >= 100 %}
+         mdi:battery
+       {% elif battery_round > 0 %}
+         mdi:battery-{{ battery_round }}
+       {% else %}
+         mdi:battery-alert
+       {% endif %}
+   altitude_gabes_mate:
+     friendly_name: "Altitude"
+     value_template: '{{ states.device_tracker.gabesnotegps.attributes.altitude | round(1) }}'
+     entity_id: sensor.gps_altitude_gabes_mate
+     unit_of_measurement: "m"
+   activity_gabes_mate:
+     friendly_name: "Activity"
+     value_template: '{{ states.device_tracker.gabesnotegps.attributes.activity }}'
+     entity_id: sensor.activity_gabes_mate
+   direction_gabes_mate:
+     friendly_name: "Direction"
+     value_template: '{{ states.device_tracker.gabesnotegps.attributes.direction }}'
+     entity_id: sensor.direction_gabes_mate
+   speed_gabes_mate:
+     friendly_name: "Speed"
+     value_template: '{{ states.device_tracker.gabesnotegps.attributes.speed | round(1) }}'
+     entity_id: sensor.speed_gabes_mate
+     unit_of_measurement: "mph"
+   accuracy_gabes_mate:
+     friendly_name: "Accuracy"
+     value_template: '{{ states.device_tracker.gabesnotegps.attributes.gps_accuracy | round(1) }}'
+     entity_id: sensor.gps_accuracy_gabes_mate
+     unit_of_measurement: "m"
+   # provider_gabes_mate:
+   #   friendly_name: "Provider"
+   #   value_template: {{ states("device_tracker.gabesnotegps.attributes.provider") }}
+   #   entity_id: sensor.net_provider_gabes_mate
+   source_type_gabes_mate:
+     friendly_name: "Source Type"
+     value_template: '{{ states.device_tracker.gabesnotegps.attributes.source_type }}'
+     entity_id: sensor.source_type_gabes_mate
+   last_seen_gabes_mate:
+     friendly_name: "Last Seen"
+     value_template: '{{ relative_time (states.device_tracker.gabesnotegps.last_updated) + " ago"}}'
+     entity_id: sensor.last_seen_gabes_mate
 
 - platform: template
   sensors:
     gabe_status:
       value_template: '{{ states.input_select.gabe_status_dropdown.state }}'
       friendly_name: 'Gabe'
-
-#System Monitor
-- platform: version
-  name: HA Installed Version
-  scan_interval: 86400
+    aj_status:
+      value_template: '{{ states.input_select.aj_status_dropdown.state }}'
+      friendly_name: 'AJ'
+#
+# #System Monitor
+# - platform: version
+#   name: HA Installed Version
+#   scan_interval: 86400
 
 # cpu speed raspberry device
 - platform: cpuspeed
@@ -2335,23 +2388,53 @@
       friendly_name: Reef Server IP
       entity_id: sensor.reefsysinfo_template_ip
     reefsysinfo_template_cpu_temperature:
-      value_template: '{{ states.sensor.reefcontrolpisysuptime.attributes.cpu_temperature }}'
+      value_template: >
+            {%- set cputemp = (states.sensor.reefcontrolpisysuptime.attributes.cpu_temperature) -%}
+            {{ (cputemp.split("'")[0] | float | round(1)) }}
       friendly_name: Reef Server CPU Temp
+      unit_of_measurement: '°C'
       entity_id: sensor.reefsysinfo_template_cpu_temperature
+    redfield_ratio:
+      value_template: "{{ ((float(states('input_number.reef_nitrate'))) / (float(states('input_number.reef_phosphate')))) | round(1) }}"
+      unit_of_measurement: 'ratio'
+      friendly_name: 'NO3(n):PO4(1)'
+
+- platform: mqtt
+  state_topic: "reef_water_temperature_reading"
+  name: OnlyReefControlPiTemp
+  value_template: '{{ value | round(2) }}'
+  unit_of_measurement: '°F'
+
+# - platform: rest
+#   name: OnlyReefControlPiTemp
+#   username: !secret reefcontrolpi_username
+#   password: !secret reefcontrolpi_password
+#   authentication: basic
+#   resource: http://192.168.50.250/api/tcs/2/usage
+#   headers:
+#       Connection: keep-alive
+#       content-type: application/json
+#       Referer: http://192.168.50.250/
+#       Cookie: !secret reefcontrolpi_cookie
+#   value_template: '{{ value_json.current[-1].value | round(2) }}'
+#   unit_of_measurement: '°F'
 
 - platform: rest
-  name: OnlyReefControlPiTemp
+  name: ReefControlPiError
   username: !secret reefcontrolpi_username
   password: !secret reefcontrolpi_password
   authentication: basic
-  resource: http://192.168.50.250/api/tcs/2/usage
+  resource: http://192.168.50.250/api/errors
+  json_attributes:
+    - message
+    - time
+    - count
+    - id
   headers:
       Connection: keep-alive
       content-type: application/json
       Referer: http://192.168.50.250/
       Cookie: !secret reefcontrolpi_cookie
-  value_template: '{{ value_json.current[-1].value | round(2) }}'
-  unit_of_measurement: '°F'
 
 - platform: rest
   name: OnlyReefControlPiTempTime
@@ -2367,44 +2450,122 @@
   value_template: '{{ value_json.current[-1].time }}'
 
 - platform: rest
-  name: ReefControlPiLightName
+  name: ReefControlPiLightBrightnessInfo
   username: !secret reefcontrolpi_username
   password: !secret reefcontrolpi_password
   authentication: basic
-  resource: http://192.168.50.250/api/lights/3
+  resource: http://192.168.50.250/api/lights/9
   json_attributes:
   headers:
       Connection: keep-alive
       content-type: application/json
       Referer: http://192.168.50.250/
       Cookie: !secret reefcontrolpi_cookie
-  value_template: '{{ value_json.name }}'
+  value_template: '{{ value_json.split("value")[0].split(",")[0] }}'
 
 - platform: rest
+  name: ReefControlPiLightColorInfo
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  authentication: basic
+  resource: http://192.168.50.250/api/lights/10
+  json_attributes:
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+  value_template: '{{ value_json }}'
+
+
+# - platform: rest
+#   name: ReefControlPiLightBrightness
+#   username: !secret reefcontrolpi_username
+#   password: !secret reefcontrolpi_password
+#   authentication: basic
+#   resource: http://192.168.50.250/api/lights/4
+#   value_template: '{{ value_json }}'
+#   headers:
+#       Connection: keep-alive
+#       content-type: application/json
+#       Referer: http://192.168.50.250/
+#       Cookie: !secret reefcontrolpi_cookie
+#
+- platform: mqtt
+  state_topic: "kessil_brightness_kessil_brightness"
   name: ReefControlPiLightBrightness
-  username: !secret reefcontrolpi_username
-  password: !secret reefcontrolpi_password
-  authentication: basic
-  resource: http://192.168.50.250/api/lights/3
-  value_template: '{{ value_json }}'
-  headers:
-      Connection: keep-alive
-      content-type: application/json
-      Referer: http://192.168.50.250/
-      Cookie: !secret reefcontrolpi_cookie
+  value_template: '{{ value | round(2) }}'
 
-- platform: rest
+- platform: mqtt
+  state_topic: "kessil_color_kessil_color"
   name: ReefControlPiLightColor
-  username: !secret reefcontrolpi_username
-  password: !secret reefcontrolpi_password
-  authentication: basic
-  resource: http://192.168.50.250/api/lights/3
-  value_template: '{{ value_json }}'
-  headers:
-      Connection: keep-alive
-      content-type: application/json
-      Referer: http://192.168.50.250/
-      Cookie: !secret reefcontrolpi_cookie
+  value_template: '{{ value | round(2) }}'
+
+- platform: mqtt
+  state_topic: "refugium_refugium"
+  name: ReefControlPiRefugiumLightBrightness
+  value_template: '{{ value | round(2) }}'
+  unit_of_measurement: '%'
+
+- platform: mqtt
+  state_topic: "ato_float_sensor_state"
+  name: ReefControlPiAtoFloatSensorState
+  # value_template: >-
+  #   {% if value == '1' %}OK
+  #   {% elif value == '0' %}Low
+  #   {% else %}n/a
+  #   {% endif %}
+
+- platform: mqtt
+  state_topic: "ato_float_sensor_usage"
+  name: ReefControlPiAtoFloatSensorUsage
+
+- platform: mqtt
+  state_topic: "ato_ato_float_sensor_state"
+  name: ReefControlPiAto2FloatSensorState
+  # value_template: >-
+  #   {% if value == '1' %}OK
+  #   {% elif value == '0' %}Low
+  #   {% else %}n/a
+  #   {% endif %}
+
+- platform: mqtt
+  state_topic: "ph_ph_sensor"
+  name: ReefControlPipH
+  value_template: '{{ value | float | round(2) }}'
+
+- platform: mqtt
+  state_topic: "ato_ato_float_sensor_usage"
+  name: ReefControlPiAto2FloatSensorUsage
+
+- platform: mqtt
+  state_topic: "system_load5"
+  name: ReefControlPiSystemLoad
+  value_template: '{{ value | float | round(2) }}'
+
+- platform: mqtt
+  state_topic: "system_mem_used"
+  name: ReefControlPiSystemMemUsed
+  value_template: '{{ value | float | round(2) }}'
+  unit_of_measurement: '%'
+
+- platform: mqtt
+  state_topic: "system_under_voltage"
+  name: ReefControlPiSystemUnderVoltage
+  value_template: '{{ value | float | round(0) }}'
+
+# - platform: rest
+#   name: ReefControlPiLightColor
+#   username: !secret reefcontrolpi_username
+#   password: !secret reefcontrolpi_password
+#   authentication: basic
+#   resource: http://192.168.50.250/api/lights/3
+#   value_template: '{{ value_json }}'
+#   headers:
+#       Connection: keep-alive
+#       content-type: application/json
+#       Referer: http://192.168.50.250/
+#       Cookie: !secret reefcontrolpi_cookie
 
 - platform: rest
   name: ReefControlPiPump1Name
@@ -2431,90 +2592,23 @@
       Referer: http://192.168.50.250/
       Cookie: !secret reefcontrolpi_cookie
   value_template: >-
-    {% set pump_1_status = value_json.id["2"].enable %}
+    {% set pump_1_status = value_json.id["1"].enable %}
     {% if pump_1_status == "true" %}Scheduled
     {% elif pump_1_status == "false" %}Off
     {% else %}n/a
     {% endif %}
 
 - platform: rest
-  name: ReefControlPiPump2Forward
-  username: !secret reefcontrolpi_username
-  password: !secret reefcontrolpi_password
-  authentication: basic
-  resource: http://192.168.50.250/api/equipment/5
-  json_attributes:
-    - name
-    - on
-  headers:
-      Connection: keep-alive
-      content-type: application/json
-      Referer: http://192.168.50.250/
-      Cookie: !secret reefcontrolpi_cookie
-
-- platform: rest
-  name: ReefControlPiPump1Forward
-  username: !secret reefcontrolpi_username
-  password: !secret reefcontrolpi_password
-  authentication: basic
-  resource: http://192.168.50.250/api/equipment/4
-  headers:
-      Connection: keep-alive
-      content-type: application/json
-      Referer: http://192.168.50.250/
-      Cookie: !secret reefcontrolpi_cookie
-  value_template: '{{ value_json.on }}'
-
-- platform: rest
-  name: ReefControlPiPump1StatusReverse
-  username: !secret reefcontrolpi_username
-  password: !secret reefcontrolpi_password
-  authentication: basic
-  resource: http://192.168.50.250/api/equipment/3
-  headers:
-      Connection: keep-alive
-      content-type: application/json
-      Referer: http://192.168.50.250/
-      Cookie: !secret reefcontrolpi_cookie
-  value_template: '{{ value_json.on }}'
-
-- platform: rest
-  name: ReefControlPiLatestDoser
-  username: !secret reefcontrolpi_username
-  password: !secret reefcontrolpi_password
-  authentication: basic
-  resource: http://192.168.50.250/api/doser/pumps/1/usage
-  headers:
-      Connection: keep-alive
-      content-type: application/json
-      Referer: http://192.168.50.250/
-      Cookie: !secret reefcontrolpi_cookie
-  value_template: '{{ value_json.current[-1].time }}'
-
-- platform: rest
-  name: ReefControlPiLatestTopOff
-  username: !secret reefcontrolpi_username
-  password: !secret reefcontrolpi_password
-  authentication: basic
-  json_attributes:
-    - current
-  resource: http://192.168.50.250/api/doser/pumps/4/usage
-  headers:
-      Connection: keep-alive
-      content-type: application/json
-      Referer: http://192.168.50.250/
-      Cookie: !secret reefcontrolpi_cookie
-  value_template: '{{ value_json.current[-1].time }}'
-
-- platform: rest
-  name: ReefControlPiRefugiumLight
+  name: ReefControlPiDoserB
   username: !secret reefcontrolpi_username
   password: !secret reefcontrolpi_password
   authentication: basic
   resource: http://192.168.50.250/api/equipment/2
   json_attributes:
     - name
-    - on
+    - regiment
+    - duration
+    - speed
   headers:
       Connection: keep-alive
       content-type: application/json
@@ -2522,7 +2616,51 @@
       Cookie: !secret reefcontrolpi_cookie
 
 - platform: rest
-  name: ReefControlPiRelay2
+  name: ReefControlPiDoserBUsage
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  authentication: basic
+  resource: http://192.168.50.250/api/doser/pumps/2/usage
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+  value_template: '{{ value_json.current[-1].time }}'
+
+
+- platform: rest
+  name: ReefControlPiDoserA
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  authentication: basic
+  resource: http://192.168.50.250/api/equipment/3
+  json_attributes:
+    - name
+    - regiment
+    - duration
+    - speed
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+
+- platform: rest
+  name: ReefControlPiDoserAUsage
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  authentication: basic
+  resource: http://192.168.50.250/api/doser/pumps/3/usage
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+  value_template: '{{ value_json.current[-1].time }}'
+
+- platform: rest
+  name: ReefControlPiRelay1
   username: !secret reefcontrolpi_username
   password: !secret reefcontrolpi_password
   authentication: basic
@@ -2537,55 +2675,205 @@
       Cookie: !secret reefcontrolpi_cookie
 
 - platform: rest
-  name: ReefControlPiPump2Name
+  name: ReefControlPiRelay2
   username: !secret reefcontrolpi_username
   password: !secret reefcontrolpi_password
   authentication: basic
-  resource: http://192.168.50.250/api/doser/pumps/4
+  resource: http://192.168.50.250/api/equipment/2
+  json_attributes:
+    - name
+    - on
   headers:
       Connection: keep-alive
       content-type: application/json
       Referer: http://192.168.50.250/
       Cookie: !secret reefcontrolpi_cookie
-  value_template: '{{ value_json.name }}'
 
 - platform: rest
-  name: ReefControlPiPump2Power
+  name: ReefControlPiRefugiumLight
   username: !secret reefcontrolpi_username
   password: !secret reefcontrolpi_password
   authentication: basic
-  resource: http://192.168.50.250/api/doser/pumps/4
+  resource: http://192.168.50.250/api/equipment/6
+  json_attributes:
+    - name
+    - on
   headers:
       Connection: keep-alive
       content-type: application/json
       Referer: http://192.168.50.250/
       Cookie: !secret reefcontrolpi_cookie
-  value_template: '{{ value_json.on }}'
 
 - platform: rest
-  name: ReefControlPiFloat
+  name: ReefControlPiGreenLED
   username: !secret reefcontrolpi_username
   password: !secret reefcontrolpi_password
   authentication: basic
-  resource: http://192.168.50.250/api/equipment/7
+  resource: http://192.168.50.250/api/equipment/15
+  json_attributes:
+    - name
+    - on
   headers:
       Connection: keep-alive
       content-type: application/json
       Referer: http://192.168.50.250/
       Cookie: !secret reefcontrolpi_cookie
-  value_template: >-
-    {% set float_status = value_json.on %}
-    {% if float_status == false %}OK
-    {% elif float_status == False %}OK
-    {% elif float_status == true %}Low
-    {% elif float_status == True %}Low
-    {% else %}n/a
-    {% endif %}
+
+- platform: rest
+  name: ReefControlPiRedLED
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  authentication: basic
+  resource: http://192.168.50.250/api/equipment/16
+  json_attributes:
+    - name
+    - on
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+
+- platform: rest
+  name: ReefControlPiTopOffSwitch
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  authentication: basic
+  resource: http://192.168.50.250/api/equipment/20
+  json_attributes:
+    - name
+    - on
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+
+- platform: rest
+  name: ReefControlPiDoser1Switch
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  authentication: basic
+  resource: http://192.168.50.250/api/equipment/23
+  json_attributes:
+    - name
+    - on
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+
+- platform: rest
+  name: ReefControlPiDoser2Switch
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  authentication: basic
+  resource: http://192.168.50.250/api/equipment/28
+  json_attributes:
+    - name
+    - on
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+
+# - platform: rest
+#   name: ReefControlPiLatestDoser
+#   username: !secret reefcontrolpi_username
+#   password: !secret reefcontrolpi_password
+#   authentication: basic
+#   resource: http://192.168.50.250/api/doser/pumps/1/usage
+#   headers:
+#       Connection: keep-alive
+#       content-type: application/json
+#       Referer: http://192.168.50.250/
+#       Cookie: !secret reefcontrolpi_cookie
+#   value_template: '{{ value_json.current[-1].time }}'
+
+- platform: rest
+  name: ReefControlPiLatestTopOff
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  authentication: basic
+  json_attributes:
+    - current
+  resource: http://192.168.50.250/api/doser/pumps/1/usage
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+  value_template: '{{ value_json.current[-1].time }}'
+
+- platform: rest
+  name: ReefControlPiEnclosureFan
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  authentication: basic
+  resource: http://192.168.50.250/api/equipment/30
+  json_attributes:
+    - name
+    - on
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+
+- platform: rest
+  name: ReefControlPiRelay2
+  username: !secret reefcontrolpi_username
+  password: !secret reefcontrolpi_password
+  authentication: basic
+  resource: http://192.168.50.250/api/equipment/31
+  json_attributes:
+    - name
+    - on
+  headers:
+      Connection: keep-alive
+      content-type: application/json
+      Referer: http://192.168.50.250/
+      Cookie: !secret reefcontrolpi_cookie
+#
+# - platform: rest
+#   name: ReefControlPiPump2Name
+#   username: !secret reefcontrolpi_username
+#   password: !secret reefcontrolpi_password
+#   authentication: basic
+#   resource: http://192.168.50.250/api/doser/pumps/4
+#   headers:
+#       Connection: keep-alive
+#       content-type: application/json
+#       Referer: http://192.168.50.250/
+#       Cookie: !secret reefcontrolpi_cookie
+#   value_template: '{{ value_json.name }}'
+#
+# - platform: rest
+#   name: ReefControlPiPump2Power
+#   username: !secret reefcontrolpi_username
+#   password: !secret reefcontrolpi_password
+#   authentication: basic
+#   resource: http://192.168.50.250/api/doser/pumps/4
+#   headers:
+#       Connection: keep-alive
+#       content-type: application/json
+#       Referer: http://192.168.50.250/
+#       Cookie: !secret reefcontrolpi_cookie
+#   value_template: '{{ value_json.on }}'
 
 - platform: template
   sensors:
+    reefcontrolpifloat:
+      friendly_name: 'ReefControlPiFloat'
+      value_template: >
+        {% set float_status = (states('sensor.reefcontrolpiatofloatsensorstate')) %}
+        {% if float_status >= '1' %}OK
+        {% elif float_status < '1' %}Low
+        {% else %}n/a
+        {% endif %}
     reef_moonphases:
-      entity_id: sensor.reef_weather_moon_icon
       friendly_name: 'Reef Moon'
       value_template: '{{ states.sensor.reef_weather_moon_phase_0d.state }}'
       entity_picture_template: >
@@ -2618,9 +2906,6 @@
     alarm_time_off_day:
       friendly_name: Alarm Time Off Day
       value_template: '{{ "%0.02d:%0.02d" | format(states("input_number.alarm_hour") | int, states("input_number.alarm_minutes") | int) }}'
-
-- platform: template
-  sensors:
     alarm_time_work_day:
       friendly_name: Alarm Time Work Day
       value_template: '{{ "%0.02d:%0.02d" | format(states("input_number.alarm_hour") | int, states("input_number.alarm_minutes") | int) }}'
@@ -2640,16 +2925,10 @@
         {% else %}
           Good Night, Gabe
         {% endif %}
-
-- platform: template
-  sensors:
     greeter_card_info:
       value_template: >
         Next Event:{{ as_timestamp(states.calendar.gabethisisgabescom.attributes.start_time) | timestamp_custom('%Y/%m/%d at %H:%M') }}
         {{ states.calendar.gabethisisgabescom.attributes.message }}
-
-- platform: template
-  sensors:
     weather_alert_active_nyc:
       value_template: >-
         {% if states.sensor.new_york_2.state == "unknown" %}Off
@@ -2691,10 +2970,6 @@
   zone: 57
   state: PA
   county: 43
-
-#- platform: cert_expiry
-#  host: !secret cert_expiry_host
-#  port: !secret cert_expiry_port
 
 #- platform: pilight
 #  name: 'Some Inside Temperature Sensor'
@@ -2827,6 +3102,12 @@
   name: NumPad All
   value_template: "{{ value }}"
 
+#Bathroom speaker
+- platform: mqtt
+  state_topic: "snapcast_bathroom_control/state"
+  name: Bathroom Speaker
+  value_template: "{{ value }}"
+
 #Bed Sensor
 - platform: mqtt
   state_topic: "bed_occupancy/reading/load"
@@ -2843,30 +3124,34 @@
 - platform: template
   sensors:
     bed_occupancy_load_percent:
-      value_template: '{{ states("sensor.bed_occupancy_load") | float / 10 | round(0) }}'
+      value_template: '{{ states("sensor.bed_occupancy_load") | float / 12 | round(0) }}'
       unit_of_measurement: "%"
     bed_occupancy_count:
       icon_template: >-
         {% set bed_load = states.sensor.bed_occupancy_load.state | int %}
-        {% if bed_load < 300 %}
-          icon: mdi:white-balance-sunny
-        {% elif 301 <= bed_load < 1700 %}
-          icon: mdi:bed-king
-        {% elif 1701 <= bed_load < 3000 %}
-          icon: mdi:account-supervisor
-        {% elif 3001 <= bed_load < 10000 %}
-          icon: mdi:party-popper
+        {% if bed_load < 150 %}
+          mdi:white-balance-sunny
+        {% elif 151 <= bed_load < 600 %}
+          mdi:bed-king
+        {% elif 601 <= bed_load < 1300 %}
+          mdi:account-supervisor
+        {% elif 1301 <= bed_load < 2000 %}
+          mdi:party-popper
+        {% elif 2001 <= bed_load < 10000 %}
+          mdi:party-popper
         {% else %}
-          icon: fas:question-circle
+          fas:question-circle
         {% endif %}
       value_template: >
         {% set bed_load = states.sensor.bed_occupancy_load.state | int %}
-        {% if bed_load < 300 %}
+        {% if bed_load < 150 %}
           Empty
-        {% elif 301 <= bed_load < 1100 %}
+        {% elif 151 <= bed_load < 600 %}
           Single
-        {% elif 1101 <= bed_load < 2000 %}
+        {% elif 601 <= bed_load < 1300 %}
           Double
+        {% elif 1301 <= bed_load < 2000 %}
+          Triple
         {% elif 2001 <= bed_load < 10000 %}
           Party Time!
         {% else %}
@@ -2906,19 +3191,19 @@
 
     kiosk_screen:
       friendly_name: 'Kiosk Screen'
-      value_template: '{{ states.light.dashboard_screen.state }}'
+      value_template: '{{ states.light.browser_ec9832e0_7bf68e41.state }}'
       entity_id: sensor.kiosk_screen
     kiosk_charging:
       friendly_name: 'Kiosk Charging'
-      value_template: '{{ states.light.dashboard_screen.attributes.charging }}'
+      value_template: '{{ states.sensor.browser_ec9832e0_7bf68e41.attributes.charging }}'
       entity_id: sensor.kiosk_charging
     kiosk_battery:
       friendly_name: 'Kiosk Battery'
-      value_template: '{{ states.light.dashboard_screen.attributes.battery_level }}'
+      value_template: '{{ states.sensor.browser_ec9832e0_7bf68e41.attributes.battery_level }}'
       entity_id: sensor.kiosk_battery
     kiosk_brightness:
       friendly_name: 'Kiosk Brightness'
-      value_template: '{{ states.light.dashboard_screen.attributes.brightness }}'
+      value_template: '{{ states.sensor.browser_ec9832e0_7bf68e41.attributes.brightness }}'
       entity_id: sensor.kiosk_brightness
 
     roomba_batt:
@@ -3058,6 +3343,52 @@
 #  ssl: true
 #  ssl_cert: true
 
+- platform: rest
+  name: Kiosk Info
+  json_attributes:
+    - isScreenOn
+    - batteryLevel
+    - kioskMode
+    - screenBrightness
+    - motionDetectorState
+    - maintenanceMode
+    - appFreeMemory
+    - appUsedMemory
+    - totalFreeMemory
+    - totalUsedMemory
+    - hostname4
+    - ip4
+    - mac
+    - locationLatitude
+    - locationLongitude
+    - locationAltitude
+    - startUrl
+    - currentPage
+  resource: !secret kiosk_resource
+  value_template: '{{ value_json.isScreenOn }}'
+  scan_interval: 10
+
+- platform: rest
+  name: Kiosk Settings
+  json_attributes:
+    - timeToScreenOffV2
+    - screenBrightness
+    - motionSensitivity
+    - motionDection
+    - motionDetectionAcoustic
+    - motionSensitivityAcoustic
+    - screenOffInDarkness
+    - darknessLevel
+  resource: !secret kiosk_settings
+  value_template: '{{ value_json.motionSensitivity }}'
+  scan_interval: 10
+
+#mqtt kiosk Sensors
+- platform: mqtt
+  state_topic: "kiosk_sensors/+/ec9832e0-7bf68e41"
+  name: Kiosk Sensors
+  value_template: '{{value_json.event}}'
+
 # Presence Monitor
 - platform: mqtt
   state_topic: 'monitor/home-assistant/ionic'
@@ -3128,6 +3459,14 @@
     - sensor.gabes_macbook_bt_hass
     - sensor.ionic_bt_hass
     - sensor.gabes_mate_hotspot_bt_hass
+
+#twitch
+- platform: twitch
+  client_id: !secret twitch_id
+  token: !secret twitch_token
+  channels:
+    - magickal_guy
+    - sfgabe
 
 #Car tracker - https://childof69.co.uk/ha-car-telemetry/#comment-59
 - platform: mqtt
@@ -3446,3 +3785,61 @@
       value_template: "{{ state_attr('sensor.mini_torque', 'Voltage (OBD Adapter)(V)') }}"
       friendly_name: Mini Cooper Voltage (OBD Adapter)
       unit_of_measurement: 'V'
+
+#baby stuff
+- platform: template
+  sensors:
+    pregnancy_days:
+      friendly_name: "Days until due"
+      unit_of_measurement: 'days'
+      value_template: "{{ (strptime(states.input_datetime.due_date.state, '%Y-%m-%d') - now().replace(tzinfo=None)).days }}"
+    pregnancy_weeks:
+      friendly_name: "Pregnancy Week"
+      unit_of_measurement: 'weeks'
+      value_template: "{{ ((40 - ((states.sensor.pregnancy_days.state | int) / 7)) | round(0, 'floor')) }}"
+    pregnancy_percent:
+      friendly_name: "Pregnancy Percent"
+      unit_of_measurement: '%'
+      value_template: "{{ ((280 - (states.sensor.pregnancy_days.state | int)) / 2.8) | round(0, 'floor')}}"
+    pregnancy_month:
+      friendly_name: "Pregnancy Month"
+      unit_of_measurement: 'months'
+      value_template: "{{ ((9 - ((states.sensor.pregnancy_weeks.state | int) / 4)) | round(0, 'floor')) }}"
+    pregnancy:
+      friendly_name: "Pregnancy"
+      unit_of_measurement: 'Trimester'
+      value_template: |
+        {% set x = ((280 - (states.sensor.pregnancy_days.state | int)) / 93.3) | round(0, 'ceil') %}
+        {{ 'First' if x == 1 else 'Second' if x == 2 else 'Third' }}
+      attribute_templates:
+        days: "{{ states.sensor.pregnancy_days.state }}"
+        weeks: "{{ states.sensor.pregnancy_weeks.state }}"
+        trimester: "{{ ((280 - (states.sensor.pregnancy_days.state | int)) / 93.3) | round(0, 'ceil') }}"
+        months: "{{ ((280 - (states.sensor.pregnancy_days.state | int)) / 30.5) | round(1, 'half') }}"
+        percent: "{{ ((280 - (states.sensor.pregnancy_days.state | int)) / 2.8) | round(0, 'floor')}}"
+        what_to_expect_url: "https://www.whattoexpect.com/pregnancy/week-by-week/week-{{ states.sensor.pregnancy_weeks.state }}.aspx"
+        fetus_size_image: "https://images.agoramedia.com/wte3.0/gcms/wbw_squares_baby_wk_{{ states.sensor.pregnancy_weeks.state }}.jpg"
+        fetus_size_fruit_image: "https://images.agoramedia.com/wte3.0/gcms/wbw-{{ states.sensor.pregnancy_weeks.state }}-fruit.png"
+        fetus_size_fruit: |
+          {% set sizes = { 4: 'Strawberry Seed', 5: 'Orange Seed', 6: 'Sweet Pea', 7: 'Blueberry', 8: 'Raspberry',
+                           9: 'Green Olive', 10: 'Prune', 11: 'Large Strawberry', 12: 'Lime', 13: 'Lemon',
+                          14: 'Navel Orange', 15: 'Pear', 16: 'Avocado', 17: 'Large Onion', 18: 'Cucumber',
+                          19: 'Mango', 20: 'Sweet Potato', 21: 'Large Banana', 22: 'Red Bell Pepper',
+                          23: 'Grapefruit', 24: 'Pomegranate', 25: 'Eggplant', 26: 'Acorn Squash', 27: 'Cabbage',
+                          28: 'Head of Lettuce', 29: 'Head of Cauliflower', 30: 'Bunch of Broccoli', 31: 'Coconut',
+                          32: 'Cantaloupe', 33: 'Butternut Squash', 34: 'Pineapple', 35: 'Spaghetti Squash',
+                          36: 'Bunch of Kale', 37: 'Canary Melon', 38: 'Mini Watermelon', 39: 'Honeydew Melon',
+                          40: 'Small Pumpkin', 41: 'Pumpkin', 42: 'Watermelon' } %}
+          {{ sizes[([4, states('sensor.pregnancy_weeks')|int, 42]|sort)[1]] }}
+        verywellfamily_link: |
+          {% set pages =  { 1: '4158813', 2: '4158819', 3: '4158839', 4: '4158847', 5: '4158868',
+                            6: '4158911', 7: '4158916', 8: '4158920', 9: '4158922', 10: '4158926',
+                           11: '4158930', 12: '4158934', 13: '4158941', 14: '4158944', 15: '4158988',
+                           16: '4158998', 17: '4159005', 14: '4158944', 15: '4158988', 16: '4158998',
+                           17: '4159005', 18: '4159009', 19: '4159012', 20: '4159017', 21: '4159022',
+                           22: '4159032', 23: '4159036', 24: '4159040', 25: '4159047', 26: '4159097',
+                           27: '4159102', 28: '4159110', 29: '4159140', 30: '4159146', 31: '4159202',
+                           32: '4159205', 33: '4159211', 34: '4159227', 35: '4159237', 36: '4159243',
+                           37: '4159250', 38: '4159251', 39: '4159263', 40: '4159264' } %}
+          {% set x = ([1, states('sensor.pregnancy_weeks')|int, 40]|sort)[1] %}
+          https://www.verywellfamily.com/{{x|string}}-weeks-pregnant-{{pages[x]}}

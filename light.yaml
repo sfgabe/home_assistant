@@ -33,7 +33,7 @@
 #entry light
 - platform: switch
   name: "Entry Light"
-  entity_id: switch.entry_light
+  entity_id: switch.10048470bcddc2e0cf71
 
 #kitchen light
 - platform: switch
@@ -119,6 +119,62 @@
   command_topic: "desklight/set"
   state_topic: "desklight/current"
   name: "Desk Overhead"
+  optimistic: true
+  retain: true
+  brightness: true
+  effect: true
+  rgb: true
+  effect_list:
+    - "solid"
+    - "rainbow"
+    - "rainbow with glitter"
+    - "candy cane"
+    - "bpm"
+    - "confetti"
+    - "noise"
+    - "ripple"
+    - "fire"
+    - "twinkle"
+    - "lightning"
+    - "dots"
+    - "glitter"
+    - "juggle"
+    - "police all"
+
+#onairlight
+- platform: mqtt
+  schema: json
+  command_topic: "onair_light/set"
+  state_topic: "onair_light/current"
+  name: "On Air"
+  optimistic: true
+  retain: true
+  brightness: true
+  effect: true
+  rgb: true
+  effect_list:
+    - "solid"
+    - "rainbow"
+    - "rainbow with glitter"
+    - "candy cane"
+    - "bpm"
+    - "confetti"
+    - "noise"
+    - "ripple"
+    - "fire"
+    - "twinkle"
+    - "lightning"
+    - "dots"
+    - "glitter"
+    - "juggle"
+    - "police all"
+
+#notifybox
+- platform: mqtt
+  schema: json
+  command_topic: "notify_box/errorlight"
+  state_topic: "notify_box/errorlight/current"
+  name: "Notify Box"
   optimistic: true
   retain: true
   brightness: true

@@ -3,3 +3,9 @@ bedroom_alarm_clock_time:
   has_date: false
   has_time: true
   initial: '07:30'
+
+#baby stuff
+due_date:
+  name: Baby Due Date
+  has_date: true
+  has_time: false

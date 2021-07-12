@@ -5,3 +5,28 @@ notification_text:
   name: Notification Text
   pattern: '[a-fA-F0-9]*'
   initial: No Message
+
+notify_box_full_message:
+  name: Notify Box Full Message
+  pattern: '[a-fA-F0-9]*'
+  initial: No Message
+
+notify_box_line1:
+  name: Notify Box Line 1
+  pattern: '[a-fA-F0-9]*'
+  initial: No Message
+
+notify_box_line2:
+  name: Notify Box Line 2
+  pattern: '[a-fA-F0-9]*'
+  initial: No Message
+
+notify_box_line3:
+  name: Notify Box Line 3
+  pattern: '[a-fA-F0-9]*'
+  initial: No Message
+
+notify_box_line4:
+  name: Notify Box Line 4
+  pattern: '[a-fA-F0-9]*'
+  initial: No Message

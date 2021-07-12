@@ -78,6 +78,7 @@ include:
     - sensor.reefsunsettides
     - sensor.reefcontrolpilightbrightness
     - sensor.reefcontrolpilightcolor
+    - sensor.reefcontrolpirefugiumlightbrightness
     - sensor.reefcontrolpipump1status
     - sensor.reefcontrolpipump1statusreverse
     - sensor.reefcontrolpipump2power
@@ -197,6 +198,7 @@ include:
     - binary_sensor.entry_motion
     - binary_sensor.bedroom_motion
     - binary_sensor.bathroom_motion
+    - binary_sensor.reef_notify_motion
     - sensor.synology_dsm_network_up
     - sensor.cpu_speed
     - sensor.network_in_enp1s0
@@ -242,3 +244,31 @@ include:
     - sensor.macbook_ssid
     - sensor.macbook_battery
     - sensor.macbook_brightness
+    - sensor.aj_status
+    - sensor.reefcontrolpiph
+    - sensor.amazonsysinfo_template_cpu_temperature
+    - sensor.reefsysinfo_template_cpu_temperature
+    - sensor.reefcontrolpisystemload
+    - sensor.reefcontrolpisystemmemused
+    - sensor.reefcontrolpisystemundervoltage
+    - input_number.reef_alkalinity
+    - input_number.reef_calcium
+    - input_number.reef_iron
+    - input_number.reef_magnesium
+    - input_number.reef_nitrate
+    - input_number.reef_relative_density
+    - input_number.reef_redfield_ratio_maximum
+    - input_number.reef_redfield_ratio_target
+    - input_number.reef_redfield_ratio_minimum
+    - sensor.redfield_ratio
+    - input_number.reef_ammonia
+    - input_number.reef_nitrite
+    - input_number.reef_phosphate
+    - sensor.gabes_note_10_total_rx_gb
+    - sensor.gabes_note_10_total_tx_gb
+    - sensor.gabes_note_10_mobile_rx_gb
+    - sensor.gabes_note_10_mobile_tx_gb
+    - sensor.gabes_note_10_wifi_link_speed
+    - sensor.gabes_wallet_room_presence
+    - sensor.ajs_keys_room_presence
+    - sensor.gabes_keys_room_presence

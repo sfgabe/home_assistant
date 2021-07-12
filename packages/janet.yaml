@@ -95,7 +95,7 @@ script:
       - service: script.janet_notification_hub
         data_template:
           media_content_type: music
-          media_player: media_player.192_168_50_111
+          media_player: media_player.mpd
 # TODO
 #          media_player: >-
 #            {%- for device in states.media_player -%}
@@ -404,7 +404,7 @@ script:
             {% endif %}
 
              {%- macro greeting_aaron() -%}
-              {% set person = "Aye Jay" %}
+              {% set person = "A. J." %}
               {% set greeting_aaron = [
             " Welcome back home " ~ person,
             " Guess who is home " ~ person + " is!",
@@ -573,7 +573,7 @@ script:
       - service: script.janet_speech_processing
         data_template:
           media_content_type: music
-          media_player: media_player.192_168_50_111
+          media_player: media_player.mpd
 #          media_player: >-
 #            {{ media_player }}
           speech_message: >-
@@ -595,7 +595,7 @@ script:
             conditions:
               - condition: time
                 after: '08:00:00'
-                before: '23:00:00'
+                before: '22:00:00'
               - condition: state
                 entity_id: input_boolean.janet_alert_mode
                 state: 'on'
@@ -610,7 +610,7 @@ script:
               - condition: state
                 entity_id: input_boolean.janet_guest_mode
                 state: 'on'
-        #TODO
+# TODO
 #      - wait_template: "{{ not is_state( media_player, 'playing') }}"
 #        timeout: 00:00:30
 
@@ -629,21 +629,21 @@ script:
 
       - service: media_player.play_media
         data:
-          entity_id: media_player.192_168_50_111
+          entity_id: media_player.mpd
           # media_content_id: >-
           #   {% set url = states('input_text.base_url') %}
           #   {% set path = '/local/sounds/'%}
           #   {% set file = 'janet_boop' %}
           #   {% set ext = '.mp3' %}
           #   {{[url,path,file,ext]|join}}
-          media_content_id: "localhost-fill/local/sounds/janet_boop.mp3"
+          media_content_id: "https://thisisgabes.asuscomm.com/local/sounds/janet_boop.mp3"
           media_content_type: music
       - delay:
           seconds: 2
 
       - service: tts.google_translate_say
         data_template:
-          entity_id: media_player.192_168_50_111
+          entity_id: media_player.mpd
           message: >-
               {{ speech_message | replace("\n","") | replace("   ","") | replace("  "," ") }}
 
@@ -652,7 +652,7 @@ script:
 #      - service: media_player.media_pause
 #        entity_id: media_player.gabes_music_server
       - service: media_player.turn_off
-        entity_id: media_player.192_168_50_111
+        entity_id: media_player.mpd
 
 #      - service: notify.alexa_media
 #        data_template:
@@ -673,7 +673,7 @@ script:
         state: 'on'
       - service: tts.google_translate_say
         data_template:
-          entity_id: media_player.192_168_50_111
+          entity_id: media_player.mpd
           message: >-
             {{ speech_message | replace("\n","") | replace("   ","") |
                replace("eight hundred and sixty one thousand","861.000") }}
@@ -683,6 +683,3 @@ script:
             {{ speech_message | replace("\n","") | replace("   ","") |
                replace("eight hundred and sixty one thousand","861.000") }}
           title: "Hi there!"
-
-#      - service: ifttt.trigger
-#        data_template: {"event":"janet_notify", "value1":"{{ speech_message | replace('\n','') | replace('   ','') |replace('eight hundred and sixty one thousand','861.000') }}"}

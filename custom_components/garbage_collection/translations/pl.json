@@ -15,6 +15,8 @@
                     "expire_after": "Wygasają po (HH:MM) - opcjonalnie",
                     "verbose_state": "Tryb gadatliwy (tekst, zamiast liczb)",
                     "verbose_format": "Format trybu gadatliwego (używa zmiennych `date` oraz `days` (w nawiasach klamerkowych))",
+                    "include_dates": "Dołącz daty (yyyy-mm-dd, yyyy-mm-dd, ...) - opcjonalnie",
+                    "exclude_dates": "Wyłącz daty (yyyy-mm-dd, yyyy-mm-dd, ...) - opcjonalnie",
                     "date_format": "Format daty (patrz http://strftime.org/)"
                 }
             },
@@ -46,7 +48,7 @@
                 "data": {
                     "first_month": "Miesiąc pierwszego wywozu",
                     "last_month": "Miesiąc ostatniego wywozu",
-                    "period": "Wywóz co n dni/tygodni: (1-52)",
+                    "period": "Wywóz co n dni/tygodni: (1-365)",
                     "first_week": "Tydzień pierwszego wywozu: (1-52)",
                     "first_date": "Pierwsza data",
                     "weekday_order_number_1": "Pierwszy dzień tygodnia",
@@ -59,8 +61,6 @@
                     "week_order_number_3": "Trzeci tydzień miesiąca",
                     "week_order_number_4": "Czwarty tydzień miesiąca",
                     "week_order_number_5": "Piąty tydzień miesiąca",
-                    "include_dates": "Dołącz daty (yyyy-mm-dd, yyyy-mm-dd, ...) - opcjonalnie",
-                    "exclude_dates": "Wyłącz daty (yyyy-mm-dd, yyyy-mm-dd, ...) - opcjonalnie",
                     "move_country_holidays": "Przesuń świąteczne dni na kolejny dzień (opcjonalnie)",
                     "holiday_move_offset": "Move holidays by # of days(-7..7)",
                     "holiday_pop_named": "Ignore holidays (list) - optional",
@@ -80,7 +80,7 @@
             "time": "Nieprawidłowy format czasu!",
             "weekday_order_number": "Wybierz 1 lub więcej dni!",
             "week_order_number": "Wybierz 1 lub więcej tydzieńi!",
-            "period": "Okres musi być liczbą od 1 do 52.",
+            "period": "Okres musi być liczbą od 1 do 365.",
             "first_week": "Pierwszy tydzień musi być liczbą między 1 a 52.",
             "date": "Nieprawidłowy format daty!"
         },
@@ -103,6 +103,8 @@
                     "expire_after": "Wygasają po (HH:MM) - opcjonalnie",
                     "verbose_state": "Tryb gadatliwy (tekst, zamiast liczb)",
                     "verbose_format": "Format trybu gadatliwego (używa zmiennych `date` oraz `days` (w nawiasach klamerkowych))",
+                    "include_dates": "Dołącz daty (yyyy-mm-dd, yyyy-mm-dd, ...) - opcjonalnie",
+                    "exclude_dates": "Wyłącz daty (yyyy-mm-dd, yyyy-mm-dd, ...) - opcjonalnie",
                     "date_format": "Format daty (patrz http://strftime.org/)"
                 }
             },
@@ -134,7 +136,7 @@
                 "data": {
                     "first_month": "Miesiąc pierwszego wywozu",
                     "last_month": "Miesiąc ostatniego wywozu",
-                    "period": "Wywóz co n dni/tygodni: (1-52)",
+                    "period": "Wywóz co n dni/tygodni: (1-365)",
                     "first_week": "Tydzień pierwszego wywozu: (1-52)",
                     "first_date": "Pierwsza data",
                     "weekday_order_number_1": "Pierwszy dzień tygodnia",
@@ -147,8 +149,6 @@
                     "week_order_number_3": "Trzeci tydzień miesiąca",
                     "week_order_number_4": "Czwarty tydzień miesiąca",
                     "week_order_number_5": "Piąty tydzień miesiąca",
-                    "include_dates": "Dołącz daty (yyyy-mm-dd, yyyy-mm-dd, ...) - opcjonalnie",
-                    "exclude_dates": "Wyłącz daty (yyyy-mm-dd, yyyy-mm-dd, ...) - opcjonalnie",
                     "move_country_holidays": "Przesuń państwowe święta na kolejny dzień (opcjonalnie)",
                     "holiday_move_offset": "Move holidays by # of days(-7..7)",
                     "holiday_pop_named": "Ignore holidays (list) - optional",
@@ -168,7 +168,7 @@
             "time": "Nieprawidłowy format czasu!",
             "weekday_order_number": "Wybierz 1 lub więcej dni!",
             "week_order_number": "Wybierz 1 lub więcej tydzieńi!",
-            "period": "Okres musi być liczbą od 1 do 52.",
+            "period": "Okres musi być liczbą od 1 do 365.",
             "first_week": "Pierwszy tydzień musi być liczbą między 1 a 52.",
             "date": "Nieprawidłowy format daty!"
         }

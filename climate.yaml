@@ -17,6 +17,24 @@
   precision: 0.1
 
 - platform: generic_thermostat
+  name: Reef Tank Fan
+  heater: switch.reef_enclosure_fan_switch
+  target_sensor: sensor.reefsysinfo_template_cpu_temperature
+  min_temp: 60
+  max_temp: 300
+  ac_mode: True
+  target_temp: 125
+  cold_tolerance: 2
+  hot_tolerance: 2
+  min_cycle_duration:
+    seconds: 120
+  keep_alive:
+    minutes: 3
+  initial_hvac_mode: cool
+  away_temp: 125
+  precision: 0.5
+
+- platform: generic_thermostat
   name: Octo Tank Therm
   heater: switch.06200940dc4f22cbb432_2
   target_sensor: sensor.onlyamazonpitemp

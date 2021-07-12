@@ -1,26 +1,171 @@
 listen_port: 80
-host_ip: 71.167.113.166
-expose_by_default: true
+host_ip: 192.168.50.159
+# advertise_ip: 192.168.50.159
+# host_ip: 71.167.113.166
+expose_by_default: false
+lights_all_dimmable: true
 exposed_domains:
   - light
-  - media_player
   - switch
+  - media_player
+  - script
 entities:
-  media_player.gabes_music_server:
-    name: "Gabes Music"
-  media_player.snapcast_client_12_42_bf_4f_88_4f:
-    name: "Bedroom Speaker"
-  media_player.snapcast_client_b8_27_eb_84_9d_15:
-    name: "Bathroom Speaker"
-  media_player.snapcast_client_b8_27_eb_79_e8_44:
-    name: "Living Room Speaker"
   light.desk:
     name: "Desk Light"
+    hidden: false
   light.kitchen:
     name: "Kitchen Light"
+    hidden: false
   light.big_o:
     name: "Big O"
+    hidden: false
   light.kitchen_overhead_light:
     name: "Kitchen Overhead"
+    hidden: false
+  light.desk_overhead:
+    name: "Desk Overhead"
+    hidden: false
+  light.flux_capacitor:
+    name: "Flux Capacitor"
+    hidden: false
+  light.on_air:
+    name: "On Air Light"
+    hidden: false
+  light.thundercloud:
+    name: "Cloud Light"
+    hidden: false
+  light.bed_light:
+    name: "Bed Light"
+    hidden: false
+  light.bedroom_desk:
+    name: "Bedroom Desk"
+    hidden: false
+  light.entry_light:
+    name: "Entry Light"
+    hidden: false
+  script.et_lightshow:
+    name: "E.T."
+    hidden: false
+  light.table:
+    name: "Table Light"
+    hidden: false
+  media_player.mpd:
+    name: "Gabes Music"
+    hidden: false
+  media_player.snapcast_client_12_42_bf_4f_88_4f:
+    name: "Bedroom Speaker"
+    hidden: false
+  media_player.snapcast_client_b8_27_eb_e1_e2_66:
+    name: "Bathroom Speaker"
+    hidden: false
+  media_player.snapcast_client_b8_27_eb_79_e8_44:
+    name: "Living Room Speaker"
+    hidden: false
   switch.06200928600194a7ffbc_1:
-    name: "PS4"
+    name: "Monitor Top"
+    hidden: false
+  switch.06200928600194a7ffbc_2:
+    name: "Desk Power Strip"
+    hidden: false
+  switch.06200928600194a7ffbc_3:
+    name: "Monitor Bottom"
+    hidden: false
+  switch.06200928600194a7ffbc_4:
+    name: "Laptop Dock"
+    hidden: false
+  switch.06200928600194a7ffbc_7:
+    name: "Desk USB"
+    hidden: false
+  switch.06200940dc4f22cbb432_1:
+    name: "Freshwater Waves"
+    hidden: false
+  switch.06200940dc4f22cbb432_2:
+    name: "Freshwater Heater"
+    hidden: false
+  switch.06200940dc4f22cbb432_3:
+    name: "Freshwater CO2"
+    hidden: false
+  switch.06200940dc4f22cbb432_4:
+    name: "Freshwater Light"
+    hidden: false
+  switch.06200940dc4f22cbb432_7:
+    name: "Freshwater Robot"
+    hidden: false
+  switch.06200940dc4f22cbb94b_7:
+    name: "Reef Camera"
+    hidden: false
+  switch.06200940dc4f22cbb94b_2:
+    name: "Reef Waves"
+    hidden: false
+  switch.06200940dc4f22cbb94b_3:
+    name: "Reef Heater"
+    hidden: false
+  switch.06200940dc4f22cbb94b_4:
+    name: "Reef Light"
+    hidden: false
+  switch.06200940dc4f22cbb94b_1:
+    name: "Reef Robot"
+    hidden: false
+  switch.2437254184f3eb695276:
+    name: "Reef Sump"
+    hidden: false
+  switch.2437254184f3eb695715:
+    name: "Home Assistant Outlet"
+    hidden: false
+  switch.2437254184f3eb69e784:
+    name: "Kiosk Charger"
+    hidden: false
+  switch.51045562ecfabc7204e3:
+    name: "Printer Outlet"
+    hidden: false
+  switch.birdfeed_flappy:
+    name: "Flapping"
+    hidden: false
+  switch.call_the_hounds:
+    name: "Call the Hounds"
+    hidden: false
+  switch.harmony_hub_play_ps4:
+    name: "Play PS4"
+    hidden: false
+  switch.harmony_hub_watch_a_movie:
+    name: "A Movie"
+    hidden: false
+  switch.harmony_hub_watch_roku:
+    name: "Roku"
+    hidden: false
+  switch.numpad_light:
+    name: "Numpad Light"
+    hidden: false
+  switch.octofishfeeder:
+    name: "Fish Feeder"
+    hidden: false
+  switch.ringaling_led:
+    name: "Phone Light"
+    hidden: false
+  switch.ringaling_ring2:
+    name: "Phone Ringer"
+    hidden: false
+  switch.samsung_soundbar_power:
+    name: "Soundbar"
+    hidden: false
+  switch.samsung_soundbar_mute:
+    name: "Soundbar Mute"
+    hidden: false
+  switch.samsung_soundbar_input:
+    name: "Soundbar Source"
+    hidden: false
+  switch.reef_screen_on:
+    name: "Reef Stats"
+    hidden: false
+  script.fart_machine:
+    name: "Fart Machine"
+    hidden: false
+  script.rickroll:
+    name: "Rickroll"
+    hidden: false
+  script.soundbar_volume_up:
+    name: "Soundbar Volume Up"
+    hidden: false
+  script.soundbar_volume_down:
+    name: "Soundbar Volume Down"
+    hidden: false

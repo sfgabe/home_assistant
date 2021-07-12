@@ -75,6 +75,18 @@ gabe_status_dropdown:
     - Driving
   initial: Home
 
+aj_status_dropdown:
+  name: AJ
+  options:
+    - Home
+    - Away
+    - Unknown
+    - Extended Away
+    - In Bed
+    - Gaming
+    - Watching TV
+  initial: Away
+
 mini_cooper_status_dropdown:
   name: Mini Cooper
   options:
@@ -83,7 +95,30 @@ mini_cooper_status_dropdown:
     - Just Left
     - Driving
     - Parked
-  initial: Parked
+
+macbook_keyboard_dropdown:
+  name: Macbook Keyboard
+  options:
+    - Unreported
+    - ErgoDox
+    - Macbook Keyboard
+  initial: Unreported
+
+macbook_mouse_dropdown:
+  name: Macbook Mouse
+  options:
+    - Unreported
+    - Macbook Trackpad
+    - Red Microsoft Mouse
+  initial: Unreported
+
+macbook_screen_dropdown:
+  name: Macbook Screen
+  options:
+    - Unreported
+    - Macbook Screen
+    - Dell Desk Screen
+  initial: Unreported
 
 alexa_livingroom_ac:
   name: Living Room AC

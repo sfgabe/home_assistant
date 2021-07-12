@@ -1,12 +1,13 @@
-- platform: volumio
-  host: gabesmusic.rollinsnest
-  port: 3000
-  name: Gabes Music Server
-
 #for tts service
 - platform: mpd
-  name: Volumio MPD
-  host: gabesmusic.rollinsnest
+  host: 192.168.50.111
+  port: 6600
+  name: mpd
+
+- platform: mpd
+  host: 192.168.50.69
+  port: 6600
+  name: mpd_birdfeed
 
 - platform: snapcast
   host: 192.168.50.111
@@ -14,11 +15,11 @@
 
 #- platform: tts_bluetooth_speaker
 #  address: CC:B1:1A:2D:66:18.a2dp_sink
-#  volume: 0.45                   
+#  volume: 0.45
 # Optional - default is 0.5
-#  pre_silence_duration: 1       
+#  pre_silence_duration: 1
 # Optional - No. of seconds silence before the TTS (default is 0)
-#  post_silence_duration: 0.5    
+#  post_silence_duration: 0.5
 # Optional - No. of seconds silence after the TTS (default is 0)
-#  cache_dir: /tmp/tts           
+#  cache_dir: /tmp/tts
 # Optional - make sure it matches the same setting in TTS config

@@ -79,6 +79,14 @@ swipe_nav:
  prevent_default: true
  swipe_amount: 30
 
+
+kiosk_mode:
+  user_settings:
+    - users:
+        - "note_kiosk"
+        - "SamsungTab"
+      kiosk: true
+      ignore_mobile_settings: true
 # custom_header:
 #   header_text: '{{ time }}'
 #   compact_mode: true
@@ -151,7 +159,7 @@ views:
   title: Welcome
   visible:
     - user: d67d3576bc7748e199a827dd23d2588b #gabe
-    - user: cec9f1abdcba40e5936a56714abdb8fe #gabes note 10
+#    - user: cec9f1abdcba40e5936a56714abdb8fe #gabes note 10
   icon: mdi:home
   id: welcome
   path: welcome
@@ -253,16 +261,31 @@ views:
         - type: state-label
           entity: sensor.greeter_card_info
           style:
-            top: 62%
-            left: 0%
+            top: 57%
+            left: 10%
             color: rgb(255, 255, 255)
             transform: none
-            font-family: Trebuchet MS
-            text-shadow: 2px 2px black
             font-size: 24px
             pointer-events: none
             font-weight: bold
             border-left-style: solid
+            border-right-style: solid
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)
+            border-color: rgb(34, 154, 210)
+            background-color: rgb(54, 65, 78)
+            opacity: 0.8
+        - type: state-label
+          entity: sensor.mail_deliveries_message
+          style:
+            top: 63%
+            left: 10%
+            color: rgb(255, 255, 255)
+            transform: none
+            font-size: 24px
+            pointer-events: none
+            font-weight: bold
+            border-left-style: solid
+            border-right-style: solid
             box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)
             border-color: rgb(34, 154, 210)
             background-color: rgb(54, 65, 78)
@@ -368,24 +391,297 @@ views:
 - name: Quick Info
   title: Quick Info
   visible:
-    - user: d67d3576bc7748e199a827dd23d2588b #gabe
+#    - user: d67d3576bc7748e199a827dd23d2588b #gabe
     - user: cec9f1abdcba40e5936a56714abdb8fe #gabes note 10
   id: mobile_info
   path: mobile_info
   icon: mdi:cellphone
   cards:
+  - type: picture-elements
+    image: /local/floorplan/10r/layers/floorplan_bg_off_bed0.png
+    elements:
+      - type: image
+        entity: input_select.aj_status_dropdown
+        tap_action: none
+        hold_action: none
+        state_image:
+          "Home": /local/floorplan/10r/layers/icon_aj_home.png
+          "Away": /local/floorplan/10r/layers/icon_aj_away.png
+          "In Bed": /local/floorplan/10r/layers/icon_aj_inbed.png
+          "Gaming": /local/floorplan/10r/layers/icon_aj_gaming.png
+          "Extended Away": /local/floorplan/10r/layers/icon_aj_away.png
+          "Unknown": /local/floorplan/10r/layers/transparent_square.png
+          "unknown": /local/floorplan/10r/layers/transparent_square.png
+        style:
+          top: 50%
+          left: 25%
+          width: 50%
+          opacity: 95%
+      - type: image
+        entity: input_select.gabe_status_dropdown
+        tap_action: none
+        hold_action: none
+        state_image:
+          "Home": /local/floorplan/10r/layers/icon_gabe_home.png
+          "Just Left": /local/floorplan/10r/layers/icon_gabe_left.png
+          "Just Arrived": /local/floorplan/10r/layers/icon_gabe_arrived.png
+          "Work": /local/floorplan/10r/layers/icon_gabe_work.png
+          "Away": /local/floorplan/10r/layers/icon_gabe_away.png
+          "In Bed": /local/floorplan/10r/layers/icon_gabe_bed.png
+          "In the Lobby": /local/floorplan/10r/layers/transparent_square.png
+          "Extended Away": /local/floorplan/10r/layers/icon_gabe_away.png
+          "At Moms House": /local/floorplan/10r/layers/icon_gabe_moms.png
+          "Driving": /local/floorplan/10r/layers/icon_gabe_driving.png
+          "M15 Bus Uptown": /local/floorplan/10r/layers/transparent_square.png
+          "unknown": /local/floorplan/10r/layers/transparent_square.png
+        style:
+          top: 50%
+          left: 75%
+          width: 50%
+          opacity: 95%
+      - type: image
+        entity: input_select.aj_status_dropdown
+        tap_action:
+          action: more-info
+        image: /local/floorplan/10r/layers/transparent_square.png
+        style:
+          top: 50%
+          left: 25%
+      - type: image
+        entity: input_select.gabe_status_dropdown
+        tap_action:
+          action: more-info
+        image: /local/floorplan/10r/layers/transparent_square.png
+        style:
+          top: 50%
+          left: 75%
+  - type: custom:mod-card
+    card:
+      type: glance
+      column_width: 33%
+      show_name: false
+      entities:
+        - entity: sensor.bed_occupancy_count
+        - entity: binary_sensor.people_home
+        - entity: sensor.garden_monitor_temp_f
+
+  - type: conditional
+    conditions:
+      - entity: sensor.motion_detected_count
+        state_not: "0"
+    card:
+      type: custom:auto-entities
+      card:
+        type: glance
+        title: Motion Activated
+        show_state: false
+        columns: 3
+        style: |
+          ha-card {
+            animation: blink 3s linear infinite;
+            -webkit-animation: blink 3s linear infinite;
+          }
+          @keyframes blink {
+            50% {
+              --ha-card-background: rgba(145, 35, 35, .87);
+            }
+          @-webkit-keyframes fade {
+            50% {
+              --ha-card-background: rgba(145, 35, 35, .87);
+            }
+          }
+      filter:
+        include:
+          - domain: binary_sensor
+            attributes:
+              device_class: motion
+        exclude:
+          - state: "Unavailable"
+          - state: "unavailable"
+          - state: "Clear"
+          - state: "clear"
+          - state: "off"
+      sort:
+        method: last_changed
+
   - type: vertical-stack
     cards:
-      - type: custom:mod-card
-        card:
-          type: glance
-          column_width: 33%
-          show_name: false
-          entities:
-            - entity: sensor.gabe_status
-            - entity: binary_sensor.people_home
-            - entity: input_boolean.bed_occupancy
-            - entity: sensor.garden_monitor_temp_f
+      - type: horizontal-stack
+        cards:
+
+          - type: "custom:button-card"
+            entity: switch.10048470bcddc2e0d678
+            color: auto
+            color_type: card
+            icon: mdi:lightbulb-on
+            name: Kitchen
+            show_name: false
+            aspect_ratio: 1/1
+            size: 80%
+            show_entity_picture: true
+            entity_picture: "/local/icons/icon_stove.png"
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+
+          - type: "custom:button-card"
+            entity: light.kitchen
+            color: auto
+            color_type: card
+            icon: mdi:lightbulb-on
+            name: Counter
+            show_name: false
+            aspect_ratio: 1/1
+            size: 80%
+            show_entity_picture: true
+            entity_picture: "/local/icons/icon_veggies.png"
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+
+          - type: "custom:button-card"
+            entity: light.table
+            color: auto
+            color_type: card
+            icon: mdi:ceiling-light
+            name: Table
+            show_name: false
+            aspect_ratio: 1/1
+            size: 80%
+            show_entity_picture: true
+            entity_picture: "/local/icons/icon_dining.png"
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+
+          - type: "custom:button-card"
+            entity: light.desk
+            color: auto
+            color_type: card
+            icon: mdi:desk-lamp
+            name: Desk
+            show_name: false
+            aspect_ratio: 1/1
+            size: 80%
+            show_entity_picture: true
+            entity_picture: "/local/icons/icon_brushes.png"
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+          - type: "custom:button-card"
+            entity: light.desk_overhead
+            color: auto
+            color_type: card
+            icon: mdi:desk-lamp
+            name: Desk Overhead
+            show_name: false
+            aspect_ratio: 1/1
+            size: 80%
+            show_entity_picture: true
+            entity_picture: "/local/icons/icon_tools.png"
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+
+      - type: horizontal-stack
+        cards:
+
+          - type: "custom:button-card"
+            entity: switch.10048470bcddc2e0cf71
+            color_type: card
+            icon: mdi:ceiling-light
+            name: Entry
+            show_name: false
+            aspect_ratio: 1/1
+            size: 80%
+            show_entity_picture: true
+            entity_picture: "/local/icons/icon_key.png"
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+
+          - type: "custom:button-card"
+            entity: light.flux_capacitor
+            icon: mdi:alpha-y-box-outline
+            color: auto
+            color_type: card
+            name: Flux
+            show_name: false
+            aspect_ratio: 1/1
+            size: 80%
+            show_entity_picture: true
+            entity_picture: "/local/icons/icon_flux.png"
+            tap_action:
+              action: call-service
+              service: light.turn_on
+              service_data:
+                entity_id: light.flux_capacitor
+                brightness: 78
+                effect: flux
+            double_tap_action:
+              action: call-service
+              service: light.turn_off
+              service_data:
+                entity_id: light.flux_capacitor
+            hold_action:
+              action: more-info
+
+          - type: "custom:button-card"
+            entity: light.bedroom_desk
+            color: auto
+            color_type: card
+            icon: mdi:desk-lamp
+            name: Bedroom
+            show_name: false
+            aspect_ratio: 1/1
+            size: 80%
+            show_entity_picture: true
+            entity_picture: "/local/icons/icon_homework.png"
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+
+          - type: "custom:button-card"
+            entity: light.big_o
+            color: auto
+            color_type: card
+            icon: mdi:numeric-0-box-multiple
+            name: Big O
+            show_name: false
+            aspect_ratio: 1/1
+            size: 80%
+            show_entity_picture: true
+            entity_picture: "/local/icons/icon_bigo.png"
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+
+          - type: "custom:button-card"
+            entity: light.bed_light
+            color: auto
+            color_type: card
+            icon: mdi:bed-empty
+            name: Bed
+            show_name: false
+            aspect_ratio: 1/1
+            size: 80%
+            show_entity_picture: true
+            entity_picture: "/local/icons/icon_double.png"
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
+
+  - type: vertical-stack
+    cards:
       - type: picture-elements
         image: "/local/images/bg/ph-homecam.png"
         elements:
@@ -398,7 +694,7 @@ views:
             width: 100%
             height: 100%
         - type: state-icon
-          entity: switch.entry_light
+          entity: switch.10048470bcddc2e0cf71
           title: null
           tap_action:
             action: toggle
@@ -436,16 +732,6 @@ views:
             font-size: 16px
             font-weight: bold
             color: rgba(255, 255, 255, 1)
-        - type: state-icon
-          entity: input_boolean.livingroom_ac_toggle
-          title: null
-          style:
-            left: 90%
-            top: 80%
-          tap_action:
-            action: toggle
-          hold_action:
-            action: more-info
         - type: state-label
           entity: sensor.garden_monitor_temp_f
           title: null
@@ -470,12 +756,6 @@ views:
             width: 100%
             height: 100%
         - type: state-icon
-          entity: binary_sensor.entry_motion
-          title: null
-          style:
-            left: 60%
-            top: 10%
-        - type: state-icon
           entity: switch.call_the_hounds
           title: null
           tap_action:
@@ -486,7 +766,7 @@ views:
             left: 80%
             top: 10%
         - type: state-icon
-          entity: binary_sensor.dashboard_motion
+          entity: binary_sensor.kiosk_motion
           title: null
           style:
             left: 70%
@@ -501,16 +781,6 @@ views:
           style:
             left: 90%
             top: 10%
-        - type: state-icon
-          entity: input_boolean.bedroom_ac_toggle
-          title: null
-          style:
-            left: 90%
-            top: 80%
-          tap_action:
-            action: toggle
-          hold_action:
-            action: more-info
         - type: state-label
           entity: sensor.plant_monitor_temp_f
           title: null
@@ -560,207 +830,6 @@ views:
       sort:
         method: last_changed
 
-
-  - type: vertical-stack
-    cards:
-      - type: horizontal-stack
-        cards:
-
-          - type: "custom:button-card"
-            entity: group.all_lightbulbs
-            styles:
-              card:
-                - background-color: >
-                    [[[
-                      if (states['group.all_lightbulbs'].state == "on")
-                        return "rgba(219, 219, 219, .7)";
-                      return "rgba(141, 142, 143, .65)";
-                    ]]]
-            color_type: card
-            layout: icon_label
-            label: >
-              [[[
-                return 'Lights on: ' + states['sensor.lights_on_count'].state;
-              ]]]
-            show_label: true
-            icon: mdi:lightbulb-on
-            name: All
-            show_name: false
-            size: 50%
-            show_entity_picture: true
-            entity_picture: >
-              [[[
-                if (states['group.all_lightbulbs'].state == "on")
-                  return "/local/icons/icon_light_on.png";
-                return "/local/icons/icon_light_off.png";
-              ]]]
-            tap_action:
-              action: toggle
-            hold_action:
-              action: more-info
-
-
-      - type: horizontal-stack
-        cards:
-
-          - type: "custom:button-card"
-            entity: light.entry_light
-            color_type: card
-            icon: mdi:ceiling-light
-            name: Entry
-            show_name: false
-            aspect_ratio: 1/1
-            size: 80%
-            show_entity_picture: true
-            entity_picture: "/local/icons/icon_key.png"
-            tap_action:
-              action: toggle
-            hold_action:
-              action: more-info
-
-          - type: "custom:button-card"
-            entity: switch.10048470bcddc2e0d678
-            color: auto
-            color_type: card
-            icon: mdi:lightbulb-on
-            name: Kitchen
-            show_name: false
-            aspect_ratio: 1/1
-            size: 80%
-            show_entity_picture: true
-            entity_picture: "/local/icons/icon_stove.png"
-            tap_action:
-              action: toggle
-            hold_action:
-              action: more-info
-
-          - type: "custom:button-card"
-            entity: light.kitchen
-            color: auto
-            color_type: card
-            icon: mdi:lightbulb-on
-            name: Counter
-            show_name: false
-            aspect_ratio: 1/1
-            size: 80%
-            show_entity_picture: true
-            entity_picture: "/local/icons/icon_veggies.png"
-            tap_action:
-              action: toggle
-            hold_action:
-              action: more-info
-
-      - type: horizontal-stack
-        cards:
-          - type: "custom:button-card"
-            entity: light.table
-            color: auto
-            color_type: card
-            icon: mdi:ceiling-light
-            name: Table
-            show_name: false
-            aspect_ratio: 1/1
-            size: 80%
-            show_entity_picture: true
-            entity_picture: "/local/icons/icon_dining.png"
-            tap_action:
-              action: toggle
-            hold_action:
-              action: more-info
-
-
-          - type: "custom:button-card"
-            entity: light.desk
-            color: auto
-            color_type: card
-            icon: mdi:desk-lamp
-            name: Desk
-            show_name: false
-            aspect_ratio: 1/1
-            size: 80%
-            show_entity_picture: true
-            entity_picture: "/local/icons/icon_brushes.png"
-            tap_action:
-              action: toggle
-            hold_action:
-              action: more-info
-
-
-          - type: "custom:button-card"
-            entity: light.flux_capacitor
-            icon: mdi:alpha-y-box-outline
-            color: auto
-            color_type: card
-            name: Flux
-            show_name: false
-            aspect_ratio: 1/1
-            size: 80%
-            show_entity_picture: true
-            entity_picture: "/local/icons/icon_flux.png"
-            tap_action:
-              action: call-service
-              service: light.turn_on
-              service_data:
-                entity_id: light.flux_capacitor
-                brightness: 78
-                effect: flux
-            double_tap_action:
-              action: call-service
-              service: light.turn_off
-              service_data:
-                entity_id: light.flux_capacitor
-            hold_action:
-              action: more-info
-
-      - type: horizontal-stack
-        cards:
-          - type: "custom:button-card"
-            entity: light.bedroom_desk
-            color: auto
-            color_type: card
-            icon: mdi:desk-lamp
-            name: Bedroom
-            show_name: false
-            aspect_ratio: 1/1
-            size: 80%
-            show_entity_picture: true
-            entity_picture: "/local/icons/icon_homework.png"
-            tap_action:
-              action: toggle
-            hold_action:
-              action: more-info
-
-          - type: "custom:button-card"
-            entity: light.big_o
-            color: auto
-            color_type: card
-            icon: mdi:numeric-0-box-multiple
-            name: Big O
-            show_name: false
-            aspect_ratio: 1/1
-            size: 80%
-            show_entity_picture: true
-            entity_picture: "/local/icons/icon_bigo.png"
-            tap_action:
-              action: toggle
-            hold_action:
-              action: more-info
-
-          - type: "custom:button-card"
-            entity: light.bed_light
-            color: auto
-            color_type: card
-            icon: mdi:bed-empty
-            name: Bed
-            show_name: false
-            aspect_ratio: 1/1
-            size: 80%
-            show_entity_picture: true
-            entity_picture: "/local/icons/icon_double.png"
-            tap_action:
-              action: toggle
-            hold_action:
-              action: more-info
 
 - name: Temp
   title: Temp
@@ -879,7 +948,7 @@ views:
           - type: horizontal-stack
             cards:
               - type: "custom:button-card"
-                entity: switch.06200940dc4f22cbb432_3
+                entity: switch.06200940dc4f22cbb432_7
                 color_type: card
                 color: auto
                 icon: mdi:chart-bubble
@@ -937,7 +1006,7 @@ views:
                 hold_action:
                   action: more-info
               - type: "custom:button-card"
-                entity: switch.06200940dc4f22cbb432_7
+                entity: switch.06200940dc4f22cbb432_3
                 color_type: card
                 color: auto
                 icon: mdi:raspberry-pi
@@ -1216,6 +1285,7 @@ views:
         dark_mode: true
         entities:
           - person.gabe
+          - person.aj
 
 - name: People
   title: People
@@ -1228,87 +1298,229 @@ views:
   cards:
   - type: vertical-stack
     cards:
-    - type: custom:mod-card
-      card:
-        type: weather-forecast
-        entity: weather.dark_sky
+    - type: custom:stack-in-card
+      show_name: false
+      show_state: false
+      cards:
+      - type: picture-elements
+        image: /local/floorplan/10r/layers/floorplan_bg_off_bed0.png
+        elements:
+          - type: image
+            entity: input_select.aj_status_dropdown
+            tap_action: none
+            hold_action: none
+            state_image:
+              "Home": /local/floorplan/10r/layers/icon_aj_home.png
+              "Away": /local/floorplan/10r/layers/icon_aj_away.png
+              "In Bed": /local/floorplan/10r/layers/icon_aj_inbed.png
+              "Gaming": /local/floorplan/10r/layers/icon_aj_gaming.png
+              "Extended Away": /local/floorplan/10r/layers/icon_aj_away.png
+              "Unknown": /local/floorplan/10r/layers/transparent_square.png
+              "unknown": /local/floorplan/10r/layers/transparent_square.png
+            style:
+              top: 50%
+              left: 25%
+              width: 50%
+              opacity: 95%
+          - type: image
+            entity: input_select.gabe_status_dropdown
+            tap_action: none
+            hold_action: none
+            state_image:
+              "Home": /local/floorplan/10r/layers/icon_gabe_home.png
+              "Just Left": /local/floorplan/10r/layers/icon_gabe_left.png
+              "Just Arrived": /local/floorplan/10r/layers/icon_gabe_arrived.png
+              "Work": /local/floorplan/10r/layers/icon_gabe_work.png
+              "Away": /local/floorplan/10r/layers/icon_gabe_away.png
+              "In Bed": /local/floorplan/10r/layers/icon_gabe_bed.png
+              "In the Lobby": /local/floorplan/10r/layers/transparent_square.png
+              "Extended Away": /local/floorplan/10r/layers/icon_gabe_away.png
+              "At Moms House": /local/floorplan/10r/layers/icon_gabe_moms.png
+              "Driving": /local/floorplan/10r/layers/icon_gabe_driving.png
+              "M15 Bus Uptown": /local/floorplan/10r/layers/transparent_square.png
+              "unknown": /local/floorplan/10r/layers/transparent_square.png
+            style:
+              top: 50%
+              left: 75%
+              width: 50%
+              opacity: 95%
+          - type: image
+            entity: input_select.aj_status_dropdown
+            tap_action:
+              action: more-info
+            image: /local/floorplan/10r/layers/transparent_square.png
+            style:
+              top: 50%
+              left: 25%
+          - type: image
+            entity: input_select.gabe_status_dropdown
+            tap_action:
+              action: more-info
+            image: /local/floorplan/10r/layers/transparent_square.png
+            style:
+              top: 50%
+              left: 75%
+      - type: conditional
+        conditions:
+          - entity: binary_sensor.people_home
+            state: "on"
+        card:
+          type: glance
+          column_width: 25%
+          show_name: true
+          entities:
+            - entity: binary_sensor.people_home
+              name: People Home
+            - entity: sensor.ajs_keys_room_presence
+              name: AJs Keys
+            - entity: sensor.gabes_keys_room_presence
+              name: Gabes Keys
+            - entity: sensor.gabes_wallet_room_presence
+              name: Gabes Wallet
+    # - type: custom:mod-card
+    #   card:
+    #     type: weather-forecast
+    #     entity: weather.dark_sky
 
-    - type: custom:mini-graph-card
-      hours_to_show: 48
-      name: Sleep Activity
-      points_per_hour: 20
-      line_width: 1
-      decimals: 2
-      animate: true
-      align_state: center
-      icon: mdi:bed-empty
-      show:
-        name: false
-        icon: false
-        extrema: true
-        legend: false
-        fill: fade
-        points: true
-        labels: true
-      color_thresholds:
-        - value: 120
-          color: "#1618aa"
-        - value: 100
-          color: "#3f92c1"
-        - value: 90
-          color: "#3fc172"
-        - value: 80
-          color: "#ba8918"
-        - value: 70
-          color: "#d8610d"
-        - value: 30
-          color: "#cc2c2c"
-      entities:
-      - entity: sensor.bed_occupancy_load_percent
-        name: Actual
-        show_state: true
-      - entity: sensor.plant_monitor_temp_f
-        name: Room Temperature
-        show_state: true
-      - entity: sensor.plant_monitor_temp_h
-        name: Room Humidity
-        show_state: true
+    - type: custom:stack-in-card
+      show_name: true
+      show_state: false
+      title: Sleep Stats
+      cards:
+      - type: custom:mod-card
+        card:
+          type: glance
+          column_width: 50%
+          show_name: true
+          entities:
+            - entity: sensor.bed_occupancy_count
+              name: Bed is
+            - entity: sensor.stats_bed
+              name: This Week
+
+      - type: custom:mini-graph-card
+        hours_to_show: 48
+        points_per_hour: 20
+        line_width: 1
+        decimals: 2
+        animate: true
+        align_state: center
+        icon: mdi:bed-empty
+        show:
+          name: true
+          icon: false
+          extrema: true
+          legend: false
+          fill: fade
+          points: true
+          labels: true
+        color_thresholds:
+          - value: 120
+            color: "#1618aa"
+          - value: 100
+            color: "#3f92c1"
+          - value: 90
+            color: "#3fc172"
+          - value: 80
+            color: "#ba8918"
+          - value: 70
+            color: "#d8610d"
+          - value: 30
+            color: "#cc2c2c"
+        entities:
+        - entity: sensor.bed_occupancy_load_percent
+          name: Actual
+          show_state: true
+        - entity: sensor.plant_monitor_temp_f
+          name: Room Temperature
+          show_state: true
+        - entity: sensor.plant_monitor_temp_h
+          name: Room Humidity
+          show_state: true
 
   - type: vertical-stack
     cards:
-    - type: custom:mod-card
-      style:
-        background-color: rgba(50,50,50,0)
-        box-shadow: 1px 1px rgba(0,0,0,0)
-        background-image: url("/local/images/bg/bg-work-loop.gif")
-        background-position: center
-        font-size: 18px
-        font-weight: bold
-        padding-bottom: 15px
-        color: rgba(255, 255, 255, 1)
-      card:
-        type: glance
+    #baby stuff
+
+    - type: custom:stack-in-card
+      show_name: true
+      show_state: false
+      title: Baby
+      cards:
+
+      - type: custom:bar-card
+        padding: 2px
+        align: left
+        title_style:
+          font-size: 16px
+        value_style:
+          font-size: 8px
+        show_icon: true
+        icon: mdi:baby-face-outline
+        title_position: inside
+        severity:
+          - green: 33
+          - yellow: 67
+          - red: 100
         entities:
-          - entity: sensor.stats_bed
-            name: null
-          - entity: sensor.stats_home
-            name: null
-          - entity: sensor.stats_work
-            name: null
-    - type: custom:mod-card
-      card:
-        type: glance
-        column_width: 33%
-        show_name: false
+        - entity: sensor.pregnancy_percent
+          max: 100
+          name: Baking Completed
+          unit: "%"
+      - type: 'custom:card-templater'
+        card:
+          type: picture-elements
+          image_template: '{{ states.sensor.pregnancy.attributes.fetus_size_fruit_image }}'
+          elements:
+            - type: state-label
+              entity: sensor.pregnancy
+              style:
+                font-size: 20px
+                top: 5%
+                left: 50%
+            - type: state-label
+              entity: sensor.pregnancy
+              prefix: 'It''s Week '
+              attribute: weeks
+              suffix: '!'
+              style:
+                font-size: 30px
+                top: 15%
+                left: 50%
+            - type: state-label
+              entity: sensor.pregnancy
+              prefix: '(That''s '
+              suffix: ' Months)'
+              attribute: months
+              style:
+                font-size: 15px
+                top: 22%
+                left: 50%
+            - type: 'custom:text-element'
+              text: Baby Pikachu is about
+              style:
+                font-size: 20px
+                top: 70%
+                left: 50%
+            - type: state-label
+              entity: sensor.pregnancy
+              prefix: 'the size of a '
+              attribute: fetus_size_fruit
+              suffix: '!'
+              style:
+                font-size: 20px
+                top: 75%
+                left: 50%
         entities:
-          - entity: sensor.gabe_status
-#          - entity: input_boolean.humidifier_toggle
-#            tap_action:
-#              action: toggle
-#            hold_action:
-#              action: more-info
-          - entity: sensor.bed_occupancy_count
-          - entity: binary_sensor.people_home
+          - sensor.pregnancy
+      # - type: markdown
+      #   content: >-
+      #     Read more about this week at <a href='{{ (state_attr("sensor.pregnancy", "verywellfamily_link"))}}'>Verywell Family</a> or
+      #     <a href='{{ (state_attr("sensor.pregnancy", "what_to_expect_url"))}}'>What to Expect</a>.
+
+  - type: vertical-stack
+    cards:
+
     - type: map
       aspect_ratio: 100%
       default_zoom: 15
@@ -1316,8 +1528,6 @@ views:
       entities:
         - person.mini_cooper
         - person.gabe
-  - type: vertical-stack
-    cards:
     - type: picture-elements
       title: null
       image: "/local/images/bg_earthmap.jpg"
@@ -1445,7 +1655,7 @@ views:
             width: 100%
             height: 100%
         - type: state-icon
-          entity: switch.entry_light
+          entity: switch.10048470bcddc2e0cf71
           title: null
           tap_action:
             action: toggle
@@ -1489,16 +1699,16 @@ views:
             font-size: 16px
             font-weight: bold
             color: rgba(255, 255, 255, 1)
-        - type: state-icon
-          entity: input_boolean.livingroom_ac_toggle
-          title: null
-          tap_action:
-            action: toggle
-          hold_action:
-            action: more-info
-          style:
-            left: 90%
-            top: 80%
+        # - type: state-icon
+        #   entity: input_boolean.livingroom_ac_toggle
+        #   title: null
+        #   tap_action:
+        #     action: toggle
+        #   hold_action:
+        #     action: more-info
+        #   style:
+        #     left: 90%
+        #     top: 80%
         - type: state-label
           entity: sensor.garden_monitor_temp_f
           title: null
@@ -1581,7 +1791,7 @@ views:
             left: 80%
             top: 10%
         - type: state-icon
-          entity: binary_sensor.dashboard_motion
+          entity: binary_sensor.kiosk_motion
           title: null
           style:
             left: 70%
@@ -1596,16 +1806,16 @@ views:
           style:
             left: 90%
             top: 10%
-        - type: state-icon
-          entity: input_boolean.bedroom_ac_toggle
-          title: null
-          tap_action:
-            action: toggle
-          hold_action:
-            action: more-info
-          style:
-            left: 90%
-            top: 80%
+        # - type: state-icon
+        #   entity: input_boolean.bedroom_ac_toggle
+        #   title: null
+        #   tap_action:
+        #     action: toggle
+        #   hold_action:
+        #     action: more-info
+        #   style:
+        #     left: 90%
+        #     top: 80%
         - type: state-icon
           entity: sensor.bed_occupancy_count
           title: null
@@ -1757,23 +1967,11 @@ views:
               action: more-info
 
 
+
+  - type: vertical-stack
+    cards:
       - type: horizontal-stack
         cards:
-
-          - type: "custom:button-card"
-            entity: light.entry_light
-            color_type: card
-            icon: mdi:ceiling-light
-            name: Entry
-            show_name: false
-            aspect_ratio: 1/1
-            size: 80%
-            show_entity_picture: true
-            entity_picture: "/local/icons/icon_key.png"
-            tap_action:
-              action: toggle
-            hold_action:
-              action: more-info
 
           - type: "custom:button-card"
             entity: switch.10048470bcddc2e0d678
@@ -1807,8 +2005,6 @@ views:
             hold_action:
               action: more-info
 
-      - type: horizontal-stack
-        cards:
           - type: "custom:button-card"
             entity: light.table
             color: auto
@@ -1825,7 +2021,6 @@ views:
             hold_action:
               action: more-info
 
-
           - type: "custom:button-card"
             entity: light.desk
             color: auto
@@ -1841,7 +2036,39 @@ views:
               action: toggle
             hold_action:
               action: more-info
+          - type: "custom:button-card"
+            entity: light.desk_overhead
+            color: auto
+            color_type: card
+            icon: mdi:desk-lamp
+            name: Desk Overhead
+            show_name: false
+            aspect_ratio: 1/1
+            size: 80%
+            show_entity_picture: true
+            entity_picture: "/local/icons/icon_tools.png"
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
 
+      - type: horizontal-stack
+        cards:
+
+          - type: "custom:button-card"
+            entity: switch.10048470bcddc2e0cf71
+            color_type: card
+            icon: mdi:ceiling-light
+            name: Entry
+            show_name: false
+            aspect_ratio: 1/1
+            size: 80%
+            show_entity_picture: true
+            entity_picture: "/local/icons/icon_key.png"
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
 
           - type: "custom:button-card"
             entity: light.flux_capacitor
@@ -1869,8 +2096,6 @@ views:
             hold_action:
               action: more-info
 
-      - type: horizontal-stack
-        cards:
           - type: "custom:button-card"
             entity: light.bedroom_desk
             color: auto
@@ -2071,45 +2296,70 @@ views:
           top: 82%
           left: 50%
 
-  - type: conditional
-    conditions:
-      - entity: sensor.usps_mail
-        state_not: "0"
-    card:
-        type: picture-elements
-        image: /local/mail_images/todays_mails.gif
-        elements:
-          - type: icon
-            entity: sensor.usps_mail
-            title: Mail
-            icon: mdi:email-check
-            style:
-              top: 50%
-              left: 84%
-          - type: state-label
-            entity: sensor.usps_mail
-            style:
-              top: 50%
-              left: 92%
-              font-size: 24px
-              font-weight: bold
-              color: rgba(31, 152, 6, 1)
-          - type: icon
-            entity: sensor.usps_packages
-            title: Package
-            icon: mdi:package
-            style:
-              top: 69%
-              left: 84%
-              color: rgba(31, 152, 6, 1)
-          - type: state-label
-            entity: sensor.usps_packages
-            style:
-              top: 69%
-              left: 92%
-              font-size: 24px
-              font-weight: bold
-              color: rgba(31, 152, 6, 1)
+  - type: custom:stack-in-card
+    show_name: false
+    show_state: false
+    cards:
+      - aspect_ratio: 50%
+        camera_view: live
+        entity: camera.mail_usps
+        name: Mail
+        type: picture-entity
+      - type: entity-filter
+        state_filter:
+          - operator: ">"
+            value: '0'
+        entities:
+         - entity: sensor.mail_usps_mail
+           name: "Today's Mail"
+         - entity: sensor.mail_packages_in_transit
+           name: "Today's Package Delivery"
+         - entity: sensor.mail_usps_delivering
+           icon: 'mdi:package-variant-closed'
+           name: USPS
+         - entity: sensor.mail_amazon_packages
+           icon: 'mdi:amazon'
+           name: Amazon
+         - entity: sensor.mail_updated
+           state_filter:
+             - operator: "regex"
+               value: 20
+    #
+    #
+    # type: picture-elements
+    # image: /local/mail_images/todays_mails.gif
+    # elements:
+    #   - type: icon
+    #     entity: sensor.mail_usps_mail
+    #     title: Mail
+    #     icon: mdi:email-check
+    #     style:
+    #       top: 50%
+    #       left: 84%
+    #   - type: state-label
+    #     entity: sensor.mail_usps_mail
+    #     style:
+    #       top: 50%
+    #       left: 92%
+    #       font-size: 24px
+    #       font-weight: bold
+    #       color: rgba(31, 152, 6, 1)
+    #   - type: icon
+    #     entity: sensor.mail_usps_packages
+    #     title: Package
+    #     icon: mdi:package
+    #     style:
+    #       top: 69%
+    #       left: 84%
+    #       color: rgba(31, 152, 6, 1)
+    #   - type: state-label
+    #     entity: sensor.mail_usps_packages
+    #     style:
+    #       top: 69%
+    #       left: 92%
+    #       font-size: 24px
+    #       font-weight: bold
+    #       color: rgba(31, 152, 6, 1)
 
 ## 3D PRINTER
 - name: 3D Printer
@@ -2124,35 +2374,6 @@ views:
   cards:
   - type: horizontal-stack
     cards:
-      - type: "custom:button-card"
-        entity: switch.51045562ecfabc7204e3
-        color: auto
-        color_type: card
-        icon: mdi:lightbulb-on
-        name: 3d Printer
-        show_name: false
-        aspect_ratio: 1/1
-        size: 80%
-        show_entity_picture: true
-        entity_picture: "/local/icons/icon_3dprinter.png"
-        tap_action:
-          action: more-info
-      - type: "custom:button-card"
-        entity: switch.06200928600194a7ffbc_4
-        color: auto
-        color_type: card
-        icon: mdi:lightbulb-on
-        name: Monitor
-        show_name: false
-        aspect_ratio: 1/1
-        size: 80%
-        show_entity_picture: true
-        entity_picture: "/local/icons/icon_pc.png"
-        tap_action:
-          action: toggle
-        hold_action:
-          action: more-info
-
       - type: "custom:button-card"
         entity: light.desk
         color: auto
@@ -2186,16 +2407,48 @@ views:
           action: more-info
 
       - type: "custom:button-card"
-        entity: switch.06200928600194a7ffbc_3
+        entity: switch.06200928600194a7ffbc_4
         color: auto
         color_type: card
-        icon: mdi:harddisk
-        name: Drive
+        icon: mdi:lightbulb-on
+        name: Laptop Dock
         show_name: false
         aspect_ratio: 1/1
         size: 80%
         show_entity_picture: true
-        entity_picture: "/local/icons/icon_hard-drive.png"
+        entity_picture: "/local/icons/icon_laptop2.png"
+        tap_action:
+          action: toggle
+        hold_action:
+          action: more-info
+
+      - type: "custom:button-card"
+        entity: switch.06200928600194a7ffbc_3
+        color: auto
+        color_type: card
+        icon: mdi:harddisk
+        name: Monitor Bottom
+        show_name: false
+        aspect_ratio: 1/1
+        size: 80%
+        show_entity_picture: true
+        entity_picture: "/local/icons/icon_pc.png"
+        tap_action:
+          action: toggle
+        hold_action:
+          action: more-info
+
+      - type: "custom:button-card"
+        entity: switch.06200928600194a7ffbc_1
+        color: auto
+        color_type: card
+        icon: mdi:lightbulb-on
+        name: Monitor Top
+        show_name: false
+        aspect_ratio: 1/1
+        size: 80%
+        show_entity_picture: true
+        entity_picture: "/local/icons/icon_monitor2.png"
         tap_action:
           action: toggle
         hold_action:
@@ -2203,6 +2456,20 @@ views:
 
   - type: horizontal-stack
     cards:
+      - type: "custom:button-card"
+        entity: switch.51045562ecfabc7204e3
+        color: auto
+        color_type: card
+        icon: mdi:lightbulb-on
+        name: 3d Printer
+        show_name: false
+        aspect_ratio: 1/1
+        size: 80%
+        show_entity_picture: true
+        entity_picture: "/local/icons/icon_3dprinter.png"
+        tap_action:
+          action: more-info
+
       - type: "custom:button-card"
         entity: switch.06200928600194a7ffbc_2
         color: auto
@@ -2233,20 +2500,6 @@ views:
         tap_action:
           action: toggle
         hold_action:
-          action: more-info
-
-      - type: "custom:button-card"
-        entity: switch.06200928600194a7ffbc_1
-        color: auto
-        color_type: card
-        icon: mdi:lightbulb-on
-        name: Laptop Charger
-        show_name: false
-        aspect_ratio: 1/1
-        size: 80%
-        show_entity_picture: true
-        entity_picture: "/local/icons/icon_laptop2.png"
-        tap_action:
           action: more-info
 
       - type: "custom:button-card"
@@ -2291,228 +2544,280 @@ views:
         hold_action:
           action: more-info
 
-  - type: custom:stack-in-card
-    cards:
-      - type: "custom:button-card"
-        entity: device_tracker.3d_printer
-        show_icon: false
-        color: '#ffffff'
-        name: "3D Printer"
-        show_name: true
-        show_entity_picture: true
-        tap_action:
-          action: none
-        styles:
-          card:
-            - color: '#ffffff'
-            - filter: opacity(90%)
-          icon:
-            - width: 90%
-          name:
+  - type: conditional
+    conditions:
+      - entity: sensor.octoprint_current_state
+        state: "unknown"
+    card:
+      type: "custom:button-card"
+      entity: device_tracker.3d_printer
+      show_icon: false
+      color: '#ffffff'
+      name: "3D Printer"
+      show_name: true
+      show_entity_picture: true
+      tap_action:
+        action: none
+      styles:
+        card:
+          - color: '#ffffff'
+          - filter: opacity(90%)
+        icon:
+          - width: 70%
+        name:
+          - align-self: start
+          - justify-self: start
+          - font-weight: bold
+          - font-size: 24px
+        grid:
+          - grid-template-areas: '"i n n" "i 3dprinter_state 3dprinter_state"'
+          - grid-template-columns: 1fr 1fr 1fr
+          - grid-template-rows:  min-content min-content min-content min-content
+        custom_fields:
+          3dprinter_state:
             - align-self: start
             - justify-self: start
             - font-weight: bold
-            - font-size: 24px
-          grid:
-            - grid-template-areas: '"i n n" "i atomicpi_uptime atomicpi_uptime" "i atomicpi_last_boot atomicpi_last_boot" "i server_temperature server_temperature"'
-            - grid-template-columns: 1fr 1fr 1fr
-            - grid-template-rows:  min-content min-content min-content min-content min-content min-content
-          custom_fields:
-            atomicpi_uptime:
-              - align-self: start
-              - justify-self: start
-              - font-size: 15px
-            atomicpi_last_boot:
-              - align-self: start
-              - justify-self: start
-              - font-size: 15px
-            server_temperature:
-              - align-self: start
-              - justify-self: start
-              - font-size: 15px
-              - --text-color-sensor: '[[[ if (states["sensor.synology_temperature_sdb"].state < 80) return "#fa9393"; ]]]'
-        custom_fields:
-          atomicpi_last_boot: >
-            [[[ return 'Since ' + (states['sensor.atomicpi_last_boot'].state) ]]]
-          atomicpi_uptime: >
-            [[[ return 'Online for ' + (states['sensor.atomicpi_uptime'].state) ]]]
-          server_temperature: >
-            [[[ return '<span style="color: var(--text-color-sensor)">' +(states['sensor.server_temperature'].state) + ' F</span>' ]]]
-      - type: vertical-stack
-        cards:
-          - type: conditional
-            conditions:
-              - entity: switch.06200928600194a7ffbc_3
-                state: "on"
-            card:
-              type: custom:bar-card
-              padding: 2px
-              align: left
-              title_style:
-                font-size: 16px
-              value_style:
-                font-size: 8px
-              show_icon: true
-              icon: mdi:server
-              title_position: inside
-              severity:
-                - value: 0
-                  color: "#d80d0d"
-                - value: 20
-                  color: "#f4a23d"
-                - value: 40
-                  color: "#f4e43d"
-                - value: 60
-                  color: "#4bc916"
-                - value: 80
-                  color: "#06ace8"
-                - value: 100
-                  color: "#3b83ef"
-              entities:
-              - entity: sensor.octoprint_job_percentage
-                max: 100
-                name: Percent Done
-                unit: "%"
-          - type: picture-elements
-            image: /local/images/bg/bg-3dprinter.jpg
-            elements:
-              - type: icon
-                entity: sensor.octoprint_time_elapsed_format
-                title: Elapsed
-                icon: mdi:history
-                style:
-                  top: 17%
-                  left: 83%
-                  color: rgba(184, 206, 85, 0.85)
-              - type: icon
-                entity: sensor.octoprint_time_remaining_format
-                title: Remaining
-                icon: mdi:update
-                style:
-                  top: 17%
-                  left: 17%
-                  color: rgba(184, 206, 85, 0.85)
-              - type: state-label
-                entity: sensor.octoprint_time_elapsed_format
-                title: Elapsed
-                icon: mdi:history
-                default_color: rgba(184, 206, 85, 0.85)
-                color-off: rgba(184, 206, 85, 0.85)
-                style:
-                  top: 27%
-                  left: 83%
-                  font-size: 16px
-                  font-weight: bold
-                  color: rgba(184, 206, 85, 0.85)
-              - type: state-label
-                entity: sensor.octoprint_time_remaining_format
-                title: Remaining
-                icon: mdi:update
-                default_color: rgba(184, 206, 85, 0.85)
-                color-off: rgba(184, 206, 85, 0.85)
-                style:
-                  top: 27%
-                  left: 17%
-                  font-size: 16px
-                  font-weight: bold
-                  color: rgba(184, 206, 85, 0.85)
-      - type: vertical-stack
-        cards:
-          - type: conditional
-            conditions:
-              - entity: switch.06200928600194a7ffbc_3
-                state: "on"
-            card:
-              type: custom:dual-gauge-card
-              title: Extruder
-              min: 0
-              max: 500
-              outer:
-                entity: sensor.octoprint_actual_tool0_temp
-                label: "Actual"
-                unit_of_measurement: "°F"
-              inner:
-                entity: sensor.octoprint_target_tool0_temp
-                label: "Target"
-                unit_of_measurement: "°F"
-              colors:
-                - color: "var(--label-badge-red)"
-                  value: 500
-                - color: "var(--label-badge-red)"
-                  value: 400
-                - color: "var(--label-badge-orange)"
-                  value: 300
-                - color: "var(--label-badge-yellow)"
-                  value: 200
-                - color: "var(--label-badge-blue)"
-                  value: 100
-                - color: "var(--paper-blue-400)"
-                  value: 0
-          - type: conditional
-            conditions:
-              - entity: switch.06200928600194a7ffbc_3
-                state: "on"
-            card:
-              type: custom:dual-gauge-card
-              title: Bed
-              min: 0
-              max: 200
-              outer:
-                entity: sensor.octoprint_actual_bed_temp
-                label: "Actual"
-                unit_of_measurement: "°F"
-              inner:
-                entity: sensor.octoprint_target_bed_temp
-                label: "Target"
-                unit_of_measurement: "°F"
-              colors:
-                - color: "var(--label-badge-red)"
-                  value: 200
-                - color: "var(--label-badge-orange)"
-                  value: 150
-                - color: "var(--label-badge-yellow)"
-                  value: 100
-                - color: "var(--label-badge-blue)"
-                  value: 50
-                - color: "var(--paper-blue-400)"
-                  value: 0
-      - type: custom:bar-card
-        padding: 2px
-        align: left
-        title_style:
-          font-size: 16px
-        value_style:
-          font-size: 8px
-        show_icon: true
-        icon: mdi:server
-        title_position: inside
-        severity:
-          - value: 0
-            color: "#3b83ef"
-          - value: 20
-            color: "#06ace8"
-          - value: 40
-            color: "#4bc916"
-          - value: 60
-            color: "#f4e43d"
-          - value: 80
-            color: "#f4a23d"
-          - value: 100
-            color: "#d80d0d"
-        entities:
-        - entity: sensor.disk_use_percent
-          name: Disk Use
-        - entity: sensor.memory_use_percent
-          name: Memory
-        - entity: sensor.swap_use_percent
-          name: Swap Use
-        - entity: sensor.processor_use
-          name: Processor Use
+            - font-size: 15px
+            - --text-color-sensor: '[[[ if (states["sensor.octoprint_current_state"].state == "unknown") return "#cccccc"; ]]]'
+      custom_fields:
+        3dprinter_state: >
+          [[[ return '<span style="color: var(--text-color-sensor)">Curently Offline</span>' ]]]
 
   - type: conditional
     conditions:
-      - entity: switch.51045562ecfabc7204e3
-        state: "on"
+      - entity: sensor.octoprint_current_state
+        state_not: "unknown"
+    card:
+      type: "custom:button-card"
+      entity: device_tracker.3d_printer
+      show_icon: false
+      color: '#ffffff'
+      name: "3D Printer"
+      show_name: true
+      show_entity_picture: true
+      tap_action:
+        action: none
+      styles:
+        card:
+          - color: '#ffffff'
+          - filter: opacity(90%)
+        icon:
+          - width: 70%
+        name:
+          - align-self: start
+          - justify-self: start
+          - font-weight: bold
+          - font-size: 24px
+        grid:
+          - grid-template-areas: '"i n n" "i 3dprinter_state 3dprinter_state" "i 3dprinter_temperature 3dprinter_temperature" "i 3dprinter_humidity 3dprinter_humidity"'
+          - grid-template-columns: 1fr 1fr 1fr
+          - grid-template-rows:  min-content min-content min-content min-content
+        custom_fields:
+          3dprinter_state:
+            - align-self: start
+            - justify-self: start
+            - font-weight: bold
+            - font-size: 15px
+            - --text-color-sensor: '[[[ if (states["sensor.octoprint_current_state"].state == "Printing") return "#fa9393"; ]]]'
+          3dprinter_temperature:
+            - align-self: start
+            - justify-self: start
+            - font-size: 15px
+          3dprinter_humidity:
+            - align-self: start
+            - justify-self: start
+            - font-size: 15px
+      custom_fields:
+        3dprinter_state: >
+          [[[ return '<span style="color: var(--text-color-sensor)">' + (states['sensor.octoprint_current_state'].state) + '</span>' ]]]
+        3dprinter_humidity: >
+          [[[ return (states['sensor.mqtt_topic_octoprint_humidity_template'].state) + '% Humidity' ]]]
+        3dprinter_temperature: >
+          [[[ return (states['sensor.mqtt_topic_octoprint_temperature_template'].state) + 'F' ]]]
+
+  - type: conditional
+    conditions:
+      - entity: sensor.octoprint_current_state
+        state_not: "unknown"
+    card:
+      type: custom:bar-card
+      padding: 2px
+      align: left
+      title_style:
+        font-size: 16px
+      value_style:
+        font-size: 8px
+      show_icon: true
+      icon: mdi:server
+      title_position: inside
+      severity:
+        - value: 0
+          color: "#d80d0d"
+        - value: 20
+          color: "#f4a23d"
+        - value: 40
+          color: "#f4e43d"
+        - value: 60
+          color: "#4bc916"
+        - value: 80
+          color: "#06ace8"
+        - value: 100
+          color: "#3b83ef"
+      entities:
+      - entity: sensor.octoprint_job_percentage
+        max: 100
+        name: Percent Done
+        unit: "%"
+  - type: conditional
+    conditions:
+      - entity: sensor.octoprint_current_state
+        state_not: "unknown"
+    card:
+      type: picture-elements
+      image: /local/images/bg/bg-3dprinter.jpg
+      elements:
+        - type: icon
+          entity: sensor.octoprint_time_elapsed_format
+          title: Elapsed
+          icon: mdi:history
+          style:
+            top: 17%
+            left: 83%
+            color: rgba(184, 206, 85, 0.85)
+        - type: icon
+          entity: sensor.octoprint_time_remaining_format
+          title: Remaining
+          icon: mdi:update
+          style:
+            top: 17%
+            left: 17%
+            color: rgba(184, 206, 85, 0.85)
+        - type: state-label
+          entity: sensor.octoprint_time_elapsed_format
+          title: Elapsed
+          icon: mdi:history
+          default_color: rgba(184, 206, 85, 0.85)
+          color-off: rgba(184, 206, 85, 0.85)
+          style:
+            top: 27%
+            left: 83%
+            font-size: 16px
+            font-weight: bold
+            color: rgba(184, 206, 85, 0.85)
+        - type: state-label
+          entity: sensor.octoprint_time_remaining_format
+          title: Remaining
+          icon: mdi:update
+          default_color: rgba(184, 206, 85, 0.85)
+          color-off: rgba(184, 206, 85, 0.85)
+          style:
+            top: 27%
+            left: 17%
+            font-size: 16px
+            font-weight: bold
+            color: rgba(184, 206, 85, 0.85)
+  - type: conditional
+    conditions:
+      - entity: sensor.octoprint_current_state
+        state_not: "unknown"
+    card:
+      type: custom:dual-gauge-card
+      title: Extruder
+      min: 0
+      max: 500
+      outer:
+        entity: sensor.octoprint_actual_tool0_temp
+        label: "Actual"
+        unit_of_measurement: "°F"
+      inner:
+        entity: sensor.octoprint_target_tool0_temp
+        label: "Target"
+        unit_of_measurement: "°F"
+      colors:
+        - color: "var(--label-badge-red)"
+          value: 500
+        - color: "var(--label-badge-red)"
+          value: 400
+        - color: "var(--label-badge-orange)"
+          value: 300
+        - color: "var(--label-badge-yellow)"
+          value: 200
+        - color: "var(--label-badge-blue)"
+          value: 100
+        - color: "var(--paper-blue-400)"
+          value: 0
+  - type: conditional
+    conditions:
+      - entity: sensor.octoprint_current_state
+        state_not: "unknown"
+    card:
+      type: custom:dual-gauge-card
+      title: Bed
+      min: 0
+      max: 200
+      outer:
+        entity: sensor.octoprint_actual_bed_temp
+        label: "Actual"
+        unit_of_measurement: "°F"
+      inner:
+        entity: sensor.octoprint_target_bed_temp
+        label: "Target"
+        unit_of_measurement: "°F"
+      colors:
+        - color: "var(--label-badge-red)"
+          value: 200
+        - color: "var(--label-badge-orange)"
+          value: 150
+        - color: "var(--label-badge-yellow)"
+          value: 100
+        - color: "var(--label-badge-blue)"
+          value: 50
+        - color: "var(--paper-blue-400)"
+          value: 0
+
+  - type: conditional
+    conditions:
+      - entity: sensor.octoprint_current_state
+        state_not: "unknown"
+    card:
+      type: custom:bar-card
+      padding: 2px
+      align: left
+      title_style:
+        font-size: 16px
+      value_style:
+        font-size: 8px
+      show_icon: true
+      icon: mdi:server
+      title_position: inside
+      severity:
+        - value: 0
+          color: "#3b83ef"
+        - value: 20
+          color: "#06ace8"
+        - value: 40
+          color: "#4bc916"
+        - value: 60
+          color: "#f4e43d"
+        - value: 80
+          color: "#f4a23d"
+        - value: 100
+          color: "#d80d0d"
+      entities:
+      - entity: sensor.disk_use_percent
+        name: Disk Use
+      - entity: sensor.memory_use_percent
+        name: Memory
+      - entity: sensor.swap_use_percent
+        name: Swap Use
+      - entity: sensor.processor_use
+        name: Processor Use
+
+  - type: conditional
+    conditions:
+      - entity: sensor.octoprint_current_state
+        state_not: "unknown"
     card:
       type: picture-elements
       image: "/local/images/bg/ph-octoprintcam.png"
@@ -2821,6 +3126,16 @@ views:
                   action: toggle
                 hold_action:
                   action: more-info
+              - type: "custom:button-card"
+                entity: switch.reef_enclosure_fan_switch
+                color_type: card
+                color: auto
+                icon: mdi:fan
+                name: Fan
+                tap_action:
+                  action: toggle
+                hold_action:
+                  action: more-info
           - type: horizontal-stack
             cards:
               - type: "custom:button-card"
@@ -2863,7 +3178,231 @@ views:
                   action: toggle
                 hold_action:
                   action: more-info
+              - type: "custom:button-card"
+                entity: switch.reef_screen_on
+                color_type: card
+                color: auto
+                icon: mdi:ballot
+                name: Notify
+                tap_action:
+                  action: toggle
+                hold_action:
+                  action: more-info
 
+#Reef Pi Stats
+      - type: custom:stack-in-card
+        cards:
+          - type: "custom:button-card"
+            entity: device_tracker.reef_tank_3
+            show_icon: false
+            color: '#ffffff'
+            name: "Reef Pi"
+            show_name: true
+            show_entity_picture: true
+            tap_action:
+              action: none
+            styles:
+              card:
+                - color: '#ffffff'
+                - filter: opacity(90%)
+              icon:
+                - width: 90%
+              name:
+                - align-self: start
+                - justify-self: start
+                - font-weight: bold
+                - font-size: 24px
+              grid:
+                - grid-template-areas: '"i n n" "i reefpi_ip reefpi_ip" "i reefpi_version reefpi_version" "i reefpi_last_boot reefpi_last_boot" "i reefpi_voltage reefpi_voltage"'
+                - grid-template-columns: 1fr 1fr 1fr
+                - grid-template-rows:  min-content min-content min-content min-content min-content min-content min-content
+              custom_fields:
+                reefpi_ip:
+                  - align-self: start
+                  - justify-self: start
+                  - font-size: 15px
+                reefpi_last_boot:
+                  - align-self: start
+                  - justify-self: start
+                  - font-size: 15px
+                reefpi_version:
+                  - align-self: start
+                  - justify-self: start
+                  - font-size: 15px
+                reefpi_voltage:
+                  - align-self: start
+                  - justify-self: start
+                  - font-size: 15px
+            custom_fields:
+              reefpi_last_boot: >
+                [[[ return 'Since ' + (states['sensor.reefsysinfo_template_uptime'].state) ]]]
+              reefpi_ip: >
+                [[[ return 'IP: ' + (states['sensor.reefsysinfo_template_ip'].state) ]]]
+              reefpi_version: >
+                [[[ return 'Version: ' + (states['sensor.reefsysinfo_template_version'].state) ]]]
+              reefpi_voltage: >
+                [[[ return 'Under Voltage: ' + (states['sensor.reefcontrolpisystemundervoltage'].state) ]]]
+
+          - type: custom:mini-graph-card
+            hours_to_show: 48
+            unit: °F
+            name: CPU Temp
+            points_per_hour: 6
+            line_width: 3
+            decimals: 2
+            animate: true
+            icon: mdi:speedometer
+            show:
+              name: true
+              icon: true
+              legend: false
+              fill: fade
+              points: false
+            color_thresholds:
+              - value: 10
+                color: "#d80d0d"
+              - value: 20
+                color: "#f4a23d"
+              - value: 40
+                color: "#f4e43d"
+              - value: 60
+                color: "#4bc916"
+              - value: 80
+                color: "#06ace8"
+              - value: 100
+                color: "#3b83ef"
+            entities:
+            - entity: sensor.reefsysinfo_template_cpu_temperature
+              name: CPU Temp
+          - type: custom:simple-thermostat
+            entity: climate.reef_tank_fan
+            step_layout: row
+            unit: '°F'
+            show_header: false
+            control: false
+          - type: custom:bar-card
+            padding: 2px
+            align: left
+            title_style:
+              font-size: 16px
+            value_style:
+              font-size: 8px
+            show_icon: true
+            icon: mdi:server
+            title_position: inside
+            severity:
+              - value: 0
+                color: "#3b83ef"
+              - value: 20
+                color: "#06ace8"
+              - value: 40
+                color: "#4bc916"
+              - value: 60
+                color: "#f4e43d"
+              - value: 80
+                color: "#f4a23d"
+              - value: 100
+                color: "#d80d0d"
+            entities:
+            - entity: sensor.reefcontrolpisystemload
+              name: CPU Load
+            - entity: sensor.reefcontrolpisystemmemused
+              name: Memory Used
+
+  - type: vertical-stack
+    cards:
+      - type: custom:mini-graph-card
+        hours_to_show: 48
+        name: pH
+        points_per_hour: 6
+        line_width: 3
+        decimals: 2
+        animate: true
+        icon: mdi:test-tube
+        show:
+          name: true
+          icon: true
+          legend: false
+          fill: fade
+          points: false
+          extrema: true
+        color_thresholds:
+          - value: 6
+            color: "#3b83ef"
+          - value: 7
+            color: "#06ace8"
+          - value: 8
+            color: "#4bc916"
+          - value: 9
+            color: "#f4e43d"
+          - value: 10
+            color: "#f4a23d"
+        entities:
+        - entity: sensor.reefcontrolpiph
+          name: pH
+
+      - type: custom:stack-in-card
+        cards:
+          - type: custom:mini-graph-card
+            hours_to_show: 48
+            unit: °F
+            name: Temperature
+            points_per_hour: 20
+            line_width: 1
+            decimals: 2
+            animate: true
+            align_state: center
+            icon: mdi:thermometer
+            show:
+              name: true
+              icon: true
+              extrema: true
+              legend: false
+              fill: fade
+              points: true
+              labels: true
+            color_thresholds:
+              - value: 75
+                color: "#1618aa"
+              - value: 76
+                color: "#3f92c1"
+              - value: 78
+                color: "#3fc172"
+              - value: 80
+                color: "#ba8918"
+              - value: 82
+                color: "#d8610d"
+              - value: 84
+                color: "#cc2c2c"
+            entities:
+            - entity: sensor.onlyreefcontrolpitemp
+              name: Aquarium
+              show_state: true
+            - entity: sensor.noaa_daily_max_reef_temp
+              name: High
+              color: rgba(243, 138, 53, 0.85)
+            - entity: sensor.reef_high_avg_daily_temp
+              name: Mid High
+              color: rgba(243, 237, 53, 0.85)
+            - entity: sensor.reef_avg_daily_temp
+              name: Average
+              color: rgba(65, 243, 53, 0.85)
+            - entity: sensor.reef_low_avg_daily_temp
+              name: Mid Low
+              color: rgba(53, 243, 208, 0.85)
+            - entity: sensor.noaa_daily_min_reef_temp
+              name: Low
+              color: rgba(53, 183, 243, 0.85)
+          - type: custom:simple-thermostat
+            entity: climate.reef_tank_therm
+            name: Water Temperature
+            step_layout: row
+            unit: '°F'
+            show_header: false
+            control:
+              - hvac: false
+              - preset: false
+              - _names: false
       - type: custom:dark-sky-weather-card
         entity_daily_summary: sensor.reef_weather_daily_summary
         entity_current_conditions: sensor.reef_weather_icon
@@ -2897,474 +3436,290 @@ views:
         entity_apparent_temp: sensor.reef_weather_apparent_temperature
         entity_pop: sensor.reef_weather_precip_probability
         entity_pop_intensity: sensor.reef_weather_precip_intensity
+
+      # - type: picture-elements
+      #   image: /local/images/lab.jpg
+      #   elements:
+      #     - type: icon
+      #       entity: sensor.latest_reef_stats_date
+      #       title: Test Date
+      #       icon: mdi:calendar
+      #       style:
+      #         top: 13%
+      #         left: 12%
+      #         size: 40%
+      #         align: right
+      #         color: rgba(0, 0, 0, 1)
+      #     - type: state-label
+      #       entity: sensor.latest_reef_stats_date
+      #       icon: mdi:calendar
+      #       style:
+      #         top: 13%
+      #         left: 26%
+      #         font-size: 16px
+      #         font-weight: bold
+      #         align: right
+      #         color: rgba(0, 0, 0, 1)
+      #     - type: state-icon
+      #       tap_action:
+      #         action: more-info
+      #       entity: automation.download_reef_stats_file
+      #       icon: mdi:toggle-switch
+      #       size: 50%
+      #       color: rgba(0, 0, 0, 1)
+      #       style:
+      #         top: 85%
+      #         left: 12%
+      #     - type: state-label
+      #       entity: sensor.latest_reef_stats_salinity
+      #       prefix: "Salinity: "
+      #       style:
+      #         top: 12%
+      #         left: 66%
+      #         font-weight: bold
+      #         font-size: 14px
+      #         color: rgba(255, 255, 255, 1)
+      #     - type: state-label
+      #       entity: sensor.latest_reef_stats_ph
+      #       prefix: "pH: "
+      #       style:
+      #         top: 22%
+      #         left: 66%
+      #         font-weight: bold
+      #         font-size: 14px
+      #         color: rgba(255, 255, 255, 1)
+      #     - type: state-label
+      #       entity: sensor.latest_reef_stats_nitrate
+      #       prefix: "Nitrate: "
+      #       style:
+      #         top: 32%
+      #         left: 66%
+      #         font-weight: bold
+      #         font-size: 14px
+      #         color: rgba(255, 255, 255, 1)
+      #     - type: state-label
+      #       entity: sensor.latest_reef_stats_nitrite
+      #       prefix: "Nitrite: "
+      #       style:
+      #         top: 42%
+      #         left: 66%
+      #         font-weight: bold
+      #         font-size: 14px
+      #         color: rgba(255, 255, 255, 1)
+      #     - type: state-label
+      #       entity: sensor.latest_reef_stats_ammonia
+      #       prefix: "Ammonia: "
+      #       style:
+      #         top: 52%
+      #         left: 66%
+      #         font-weight: bold
+      #         font-size: 14px
+      #         color: rgba(255, 255, 255, 1)
+      #     - type: state-label
+      #       entity: sensor.latest_reef_stats_calcium
+      #       prefix: "Calcium: "
+      #       style:
+      #         top: 62%
+      #         left: 66%
+      #         font-weight: bold
+      #         font-size: 14px
+      #         color: rgba(255, 255, 255, 1)
+      #     - type: state-label
+      #       entity: sensor.latest_reef_stats_kh
+      #       prefix: "kH: "
+      #       style:
+      #         top: 72%
+      #         left: 66%
+      #         font-weight: bold
+      #         font-size: 14px
+      #         color: rgba(255, 255, 255, 1)
+      #     - type: state-label
+      #       entity: sensor.latest_reef_stats_phos
+      #       prefix: "Phosphates: "
+      #       style:
+      #         top: 82%
+      #         left: 66%
+      #         font-weight: bold
+      #         font-size: 14px
+      #         color: rgba(255, 255, 255, 1)
+      #     - type: state-label
+      #       entity: sensor.latest_reef_stats_water_change
+      #       prefix: "Changed: "
+      #       style:
+      #         top: 92%
+      #         left: 66%
+      #         font-weight: bold
+      #         font-size: 14px
+      #         color: rgba(255, 255, 255, 1)
+
+#Kessil Stats
   - type: vertical-stack
     cards:
-      - type: picture-elements
-        image: /local/images/amazon-sun.jpg
-        elements:
-          - type: icon
-            entity: sensor.reefsunsettides
-            title: Sunset
-            icon: mdi:weather-sunset-down
-            style:
-              top: 30%
-              left: 90%
-              color: rgba(252, 186, 146, 1)
-          - type: icon
-            entity: sensor.reefsunrisetides
-            title: Sunrise
-            icon: mdi:weather-sunset-up
-            style:
-              top: 30%
-              left: 8%
-              color: rgba(250, 242, 127, 1)
-          - type: state-label
-            entity: sensor.reefsunsettides
-            style:
-              top: 14%
-              left: 90%
-              font-size: 16px
-              font-weight: bold
-              color: rgba(252, 186, 146, 1)
-          - type: state-label
-            entity: sensor.reefsunrisetides
-            style:
-              top: 14%
-              left: 8%
-              font-size: 16px
-              font-weight: bold
-              color: rgba(250, 242, 127, 1)
-          - type: state-label
-            entity: sensor.bali_reef_tides
-            style:
-              top: 88%
-              left: 50%
-              font-size: 16px
-              font-weight: bold
-              color: rgba(255, 255, 255, 1)
+      - type: custom:stack-in-card
+        cards:
+          - type: picture-elements
+            image: /local/images/amazon-sun.jpg
+            elements:
+              - type: icon
+                entity: sensor.reefsunsettides
+                title: Sunset
+                icon: mdi:weather-sunset-down
+                style:
+                  top: 30%
+                  left: 90%
+                  color: rgba(252, 186, 146, 1)
+              - type: icon
+                entity: sensor.reefsunrisetides
+                title: Sunrise
+                icon: mdi:weather-sunset-up
+                style:
+                  top: 30%
+                  left: 8%
+                  color: rgba(250, 242, 127, 1)
+              - type: state-label
+                entity: sensor.reefsunsettides
+                style:
+                  top: 14%
+                  left: 90%
+                  font-size: 16px
+                  font-weight: bold
+                  color: rgba(252, 186, 146, 1)
+              - type: state-label
+                entity: sensor.reefsunrisetides
+                style:
+                  top: 14%
+                  left: 8%
+                  font-size: 16px
+                  font-weight: bold
+                  color: rgba(250, 242, 127, 1)
+              - type: state-label
+                entity: sensor.bali_reef_tides
+                style:
+                  top: 88%
+                  left: 50%
+                  font-size: 16px
+                  font-weight: bold
+                  color: rgba(255, 255, 255, 1)
 
-      - type: custom:mod-card
-        style: |
-          :host {
-            background-color: rgba(50,50,50,0)
-            box-shadow: 1px 1px rgba(0,0,0,0)
-            background-image: url("/local/images/bg/bg-lake-peak-loop.gif")
-            background-position: center
-            }
-        card:
-          type: custom:mini-graph-card
-          hours_to_show: 48
-          unit: °F
-          name: Temperature
-          points_per_hour: 20
-          line_width: 1
-          decimals: 2
-          animate: true
-          align_state: center
-          icon: mdi:thermometer
-          show:
-            name: false
-            icon: false
-            extrema: true
-            legend: false
-            fill: fade
-            points: true
-            labels: true
-          color_thresholds:
-            - value: 75
-              color: "#1618aa"
-            - value: 76
-              color: "#3f92c1"
-            - value: 78
-              color: "#3fc172"
-            - value: 80
-              color: "#ba8918"
-            - value: 82
-              color: "#d8610d"
-            - value: 84
-              color: "#cc2c2c"
-          entities:
-          - entity: sensor.onlyreefcontrolpitemp
-            name: Aquarium
-            show_state: true
-          - entity: sensor.noaa_daily_max_reef_temp
-            name: High
-            color: rgba(243, 138, 53, 0.85)
-          - entity: sensor.reef_high_avg_daily_temp
-            name: Mid High
-            color: rgba(243, 237, 53, 0.85)
-          - entity: sensor.reef_avg_daily_temp
-            name: Average
-            color: rgba(65, 243, 53, 0.85)
-          - entity: sensor.reef_low_avg_daily_temp
-            name: Mid Low
-            color: rgba(53, 243, 208, 0.85)
-          - entity: sensor.noaa_daily_min_reef_temp
-            name: Low
-            color: rgba(53, 183, 243, 0.85)
-      - type: custom:thermostat-card
-        entity: climate.reef_tank_therm
-        name: Water Temperature
-        small_i: true
-      - type: picture-elements
-        image: /local/images/lab.jpg
-        elements:
-          - type: icon
-            entity: sensor.latest_reef_stats_date
-            title: Test Date
-            icon: mdi:calendar
-            style:
-              top: 13%
-              left: 12%
-              size: 40%
-              align: right
-              color: rgba(0, 0, 0, 1)
-          - type: state-label
-            entity: sensor.latest_reef_stats_date
-            icon: mdi:calendar
-            style:
-              top: 13%
-              left: 26%
-              font-size: 16px
-              font-weight: bold
-              align: right
-              color: rgba(0, 0, 0, 1)
-          - type: state-icon
+          - type: "custom:button-card"
+            entity: sensor.reefcontrolpilightcolor
+            show_icon: false
+            color: '#ffffff'
+            name: "Kessil H80"
+            show_name: true
+            show_entity_picture: true
             tap_action:
-              action: more-info
-            entity: automation.download_reef_stats_file
-            icon: mdi:toggle-switch
-            size: 50%
-            color: rgba(0, 0, 0, 1)
-            style:
-              top: 85%
-              left: 12%
-          - type: state-label
-            entity: sensor.latest_reef_stats_salinity
-            prefix: "Salinity: "
-            style:
-              top: 12%
-              left: 66%
-              font-weight: bold
-              font-size: 14px
-              color: rgba(255, 255, 255, 1)
-          - type: state-label
-            entity: sensor.latest_reef_stats_ph
-            prefix: "pH: "
-            style:
-              top: 22%
-              left: 66%
-              font-weight: bold
-              font-size: 14px
-              color: rgba(255, 255, 255, 1)
-          - type: state-label
-            entity: sensor.latest_reef_stats_nitrate
-            prefix: "Nitrate: "
-            style:
-              top: 32%
-              left: 66%
-              font-weight: bold
-              font-size: 14px
-              color: rgba(255, 255, 255, 1)
-          - type: state-label
-            entity: sensor.latest_reef_stats_nitrite
-            prefix: "Nitrite: "
-            style:
-              top: 42%
-              left: 66%
-              font-weight: bold
-              font-size: 14px
-              color: rgba(255, 255, 255, 1)
-          - type: state-label
-            entity: sensor.latest_reef_stats_ammonia
-            prefix: "Ammonia: "
-            style:
-              top: 52%
-              left: 66%
-              font-weight: bold
-              font-size: 14px
-              color: rgba(255, 255, 255, 1)
-          - type: state-label
-            entity: sensor.latest_reef_stats_calcium
-            prefix: "Calcium: "
-            style:
-              top: 62%
-              left: 66%
-              font-weight: bold
-              font-size: 14px
-              color: rgba(255, 255, 255, 1)
-          - type: state-label
-            entity: sensor.latest_reef_stats_kh
-            prefix: "kH: "
-            style:
-              top: 72%
-              left: 66%
-              font-weight: bold
-              font-size: 14px
-              color: rgba(255, 255, 255, 1)
-          - type: state-label
-            entity: sensor.latest_reef_stats_phos
-            prefix: "Phosphates: "
-            style:
-              top: 82%
-              left: 66%
-              font-weight: bold
-              font-size: 14px
-              color: rgba(255, 255, 255, 1)
-          - type: state-label
-            entity: sensor.latest_reef_stats_water_change
-            prefix: "Changed: "
-            style:
-              top: 92%
-              left: 66%
-              font-weight: bold
-              font-size: 14px
-              color: rgba(255, 255, 255, 1)
+              action: none
+            styles:
+              card:
+                - color: '#ffffff'
+                - filter: opacity(90%)
+              icon:
+                - width: 90%
+              name:
+                - align-self: start
+                - justify-self: start
+                - font-weight: bold
+                - font-size: 24px
+              grid:
+                - grid-template-areas: '"i n n" "i reef_sunrise reef_sunrise" "i reef_sunset reef_sunset" "i reef_moon reef_moon"'
+                - grid-template-columns: 1fr 1fr 1fr
+                - grid-template-rows:  min-content min-content min-content min-content min-content min-content
+              custom_fields:
+                reef_moon:
+                  - align-self: start
+                  - justify-self: start
+                  - font-size: 15px
+                reef_sunrise:
+                  - align-self: start
+                  - justify-self: start
+                  - font-size: 15px
+                reef_sunset:
+                  - align-self: start
+                  - justify-self: start
+                  - font-size: 15px
+            custom_fields:
+              reef_moon: >
+                [[[ return 'Moon: ' + (states['sensor.reef_moonphases'].state) ]]]
+              reef_sunrise: >
+                [[[ return 'Rise: ' + (states['sensor.reeftime_sunrise_adjustment'].state) ]]]
+              reef_sunset: >
+                [[[ return 'Set: ' + (states['sensor.reeftime_sunset_adjustment'].state) ]]]
 
-  - type: vertical-stack
-    cards:
-      - type: conditional
-        conditions:
-          - entity: switch.06200940dc4f22cbb94b_4
-            state: "off"
-        card:
-          type: picture-elements
-          image: /local/images/reef_off.jpg
-          elements:
-            - type: state-icon
-              entity: sensor.reef_moonphases
-              title: Moon
-              style:
-                top: 30%
-                left: 30%
-                color: rgba(255, 255, 255, 1)
-            - type: state-label
-              entity: sensor.reefcontrolpilatestdoser
-              title: Latest Doser
-              icon: mdi:eyedropper
-              prefix: "Last: "
-              style:
-                top: 50%
-                left: 72%
-                color: rgba(255, 255, 255, 1)
-            - type: state-label
-              entity: sensor.reefcontrolpilatesttopoff
-              title: Last Top Off
-              icon: mdi:pipe
-              prefix: "Last: "
-              style:
-                top: 75%
-                left: 72%
-                color: rgba(255, 255, 255, 1)
-            - type: state-icon
-              entity: switch.reef_ato_scheduled
-              title: ATO Scheduled
-              tap_action:
-                action: more-info
-              hold_action:
-                action: more-info
-              icon: mdi:clock
-              style:
-                top: 70%
-                left: 72%
-                color: rgba(255, 255, 255, 1)
-            - type: state-icon
-              entity: switch.reef_doser_scheduled
-              title: Doser Scheduled
-              tap_action:
-                action: more-info
-              hold_action:
-                action: more-info
-              icon: mdi:clock
-              style:
-                top: 45%
-                left: 72%
-                color: rgba(255, 255, 255, 1)
-            - type: state-label
-              entity: sensor.reefcontrolpipump1name
-              title: Doser
-              icon: mdi:eyedropper
-              style:
-                top: 40%
-                left: 72%
-                color: rgba(255, 255, 255, 1)
-            - type: state-label
-              entity: sensor.reefcontrolpipump2name
-              title: ATO
-              icon: mdi:pipe
-              style:
-                top: 65%
-                left: 72%
-                color: rgba(255, 255, 255, 1)
+          - type: custom:mini-graph-card
+            hours_to_show: 48
+            name: Kessil
+            points_per_hour: 6
+            line_width: 3
+            decimals: 2
+            animate: true
+            icon: mdi:lightbulb
+            unit: "%"
+            show:
+              name: true
+              icon: true
+              legend: false
+              fill: fade
+              points: false
+            color_thresholds:
+              - value: 10
+                color: "#3b83ef"
+              - value: 20
+                color: "#06ace8"
+              - value: 40
+                color: "#4bc916"
+              - value: 60
+                color: "#f4e43d"
+              - value: 80
+                color: "#f4a23d"
+            entities:
+            - entity: sensor.reefcontrolpilightcolor
+              name: Color
+            - entity: sensor.reefcontrolpilightbrightness
+              name: Brightness
+            - entity: sensor.reefcontrolpirefugiumlightbrightness
+              name: Refugium
 
-      - type: conditional
-        conditions:
-          - entity: switch.06200940dc4f22cbb94b_4
-            state: "on"
-        card:
-          type: picture-elements
-          image: /local/images/reef_on.jpg
-          elements:
-            - type: state-icon
-              entity: sensor.reef_moonphases
-              title: Moon
-              style:
-                top: 30%
-                left: 30%
-                color: rgba(255, 255, 255, 1)
-            - type: state-label
-              entity: sensor.reefcontrolpilatestdoser
-              title: Latest Doser
-              icon: mdi:eyedropper
-              prefix: "Last: "
-              style:
-                top: 50%
-                left: 72%
-                color: rgba(255, 255, 255, 1)
-            - type: state-label
-              entity: sensor.reefcontrolpilatesttopoff
-              title: Last Top Off
-              icon: mdi:pipe
-              prefix: "Last: "
-              style:
-                top: 75%
-                left: 72%
-                color: rgba(255, 255, 255, 1)
-            - type: state-icon
-              entity: switch.reef_ato_scheduled
-              title: ATO Scheduled
-              tap_action:
-                action: more-info
-              hold_action:
-                action: more-info
-              icon: mdi:clock
-              style:
-                top: 70%
-                left: 72%
-                color: rgba(255, 255, 255, 1)
-            - type: state-icon
-              entity: switch.reef_doser_scheduled
-              title: Doser Scheduled
-              tap_action:
-                action: more-info
-              hold_action:
-                action: more-info
-              icon: mdi:clock
-              style:
-                top: 45%
-                left: 72%
-                color: rgba(255, 255, 255, 1)
-            - type: state-label
-              entity: sensor.reefcontrolpipump1name
-              title: Doser
-              icon: mdi:eyedropper
-              style:
-                top: 40%
-                left: 72%
-                color: rgba(255, 255, 255, 1)
-            - type: state-label
-              entity: sensor.reefcontrolpipump2name
-              title: ATO
-              icon: mdi:pipe
-              style:
-                top: 65%
-                left: 72%
-                color: rgba(255, 255, 255, 1)
+          - type: entities
+            entities:
+              - type: custom:fold-entity-row
+                head:
+                  type: section
+                  label: Manual Light Adjustment
+                items:
+                  - entity: input_number.kessil_color
+                    name: Color
+                  - entity: input_number.kessil_brightness
+                    name: Brightness
+                  - entity: input_number.refugium_brightness
+                    name: Refugium
+                  - entity: automation.set_sunrise_and_set_with_reef_pi
+                    name: Reset to Diurnal
 
       - type: entities
         entities:
           - type: custom:fold-entity-row
             head:
               type: section
-              label: Kessil
+              label: Test Results
             items:
-              - entity: input_number.kessil_color
-                name: Color
-              - entity: input_number.kessil_brightness
-                name: Brightness
-              - entity: automation.set_sunrise_and_set_with_reef_pi
-                name: Reset to Diurnal
+              - input_number.reef_relative_density
+              - input_number.reef_alkalinity
+              - input_number.reef_calcium
+#              - input_number.reef_iron
+#              - input_number.reef_magnesium
+              - input_number.reef_nitrate
+              - input_number.reef_ammonia
+              - input_number.reef_nitrite
+              - input_number.reef_phosphate
+              - sensor.redfield_ratio
+              # - input_number.reef_redfield_ratio_maximum
+              # - input_number.reef_redfield_ratio_target
+              # - input_number.reef_redfield_ratio_minimum
+#              - group.reef_water_levels_input
+#              - group.reef_water_levels
+#              - group.reef_water_levels_ranges
 
-      - type: conditional
-        conditions:
-          - entity: switch.06200940dc4f22cbb94b_7
-            state: "on"
-        card:
-          type: picture-elements
-          image: /local/images/reef_server_on.jpg
-          elements:
-            - type: icon
-              entity: sensor.reefsysinfo_template_cpu_temperature
-              title: Server Temperature
-              icon: mdi:thermometer
-              style:
-                top: 13%
-                left: 58%
-                size: 40%
-                align: right
-                color: rgba(255, 255, 255, 1)
-            - type: state-label
-              entity: sensor.reefsysinfo_template_cpu_temperature
-              icon: mdi:thermometer
-              style:
-                top: 13%
-                left: 76%
-                font-size: 30px
-                font-weight: bold
-                align: right
-                color: rgba(255, 255, 255, 1)
-            - type: state-icon
-              tap_action:
-                action: toggle
-              entity: switch.06200940dc4f22cbb94b_7
-              icon: mdi:toggle-switch
-              size: 50%
-              color: auto
-              style:
-                top: 23%
-                left: 25%
-            - type: icon
-              entity: sensor.reefsysinfo_template_name
-              title: Server Name
-              icon: mdi:raspberry-pi
-              style:
-                top: 28%
-                left: 67%
-                align: right
-                color: rgba(255, 255, 255, 1)
-            - type: state-label
-              entity: sensor.reefsysinfo_template_name
-              icon: mdi:raspberry-pi
-              style:
-                top: 28%
-                left: 81%
-                font-size: 16px
-                font-weight: bold
-                align: right
-                color: rgba(255, 255, 255, 1)
-            - type: state-label
-              entity: sensor.reefsysinfo_template_ip
-              style:
-                top: 42%
-                left: 80%
-                font-size: 13px
-                color: rgba(255, 255, 255, 1)
-            - type: state-label
-              entity: sensor.reefsysinfo_template_version
-              prefix: "Version: "
-              style:
-                top: 77%
-                left: 24%
-                font-size: 13px
-                color: rgba(255, 255, 255, 1)
-            - type: state-label
-              entity: sensor.reefsysinfo_template_uptime
-              prefix: "Restart: "
-              style:
-                top: 87%
-                left: 25%
-                font-size: 13px
-                color: rgba(255, 255, 255, 1)
       - type: entities
         entities:
           - type: custom:fold-entity-row
@@ -3466,7 +3821,7 @@ views:
           - type: horizontal-stack
             cards:
               - type: "custom:button-card"
-                entity: switch.06200940dc4f22cbb432_3
+                entity: switch.06200940dc4f22cbb432_7
                 color_type: card
                 color: auto
                 icon: mdi:chart-bubble
@@ -3524,7 +3879,7 @@ views:
                 hold_action:
                   action: more-info
               - type: "custom:button-card"
-                entity: switch.06200940dc4f22cbb432_7
+                entity: switch.06200940dc4f22cbb432_3
                 color_type: card
                 color: auto
                 icon: mdi:raspberry-pi
@@ -3591,96 +3946,68 @@ views:
               color: rgba(7, 126, 176, 1)
   - type: vertical-stack
     cards:
-      - type: picture-elements
-        image: /local/images/amazon-sun.jpg
-        elements:
-          - type: icon
-            entity: sensor.amazonsunsettides
-            title: Sunset
-            icon: mdi:weather-sunset-down
-            style:
-              top: 30%
-              left: 90%
-              color: rgba(252, 186, 146, 1)
-          - type: icon
-            entity: sensor.amazonsunrisetides
-            title: Sunrise
-            icon: mdi:weather-sunset-up
-            style:
-              top: 30%
-              left: 8%
-              color: rgba(250, 242, 127, 1)
-          - type: state-label
-            entity: sensor.amazonsunsettides
-            style:
-              top: 14%
-              left: 90%
-              font-size: 16px
-              font-weight: bold
-              color: rgba(252, 186, 146, 1)
-          - type: state-label
-            entity: sensor.amazonsunrisetides
-            style:
-              top: 14%
-              left: 8%
-              font-size: 16px
-              font-weight: bold
-              color: rgba(250, 242, 127, 1)
-      - type: custom:mini-graph-card
-        hours_to_show: 48
-        unit: °F
-        name: Temperature
-        points_per_hour: 20
-        line_width: 1
-        decimals: 2
-        animate: true
-        align_state: center
-        icon: mdi:thermometer
-        show:
-          name: false
-          icon: false
-          extrema: true
-          legend: false
-          fill: fade
-          points: true
-          labels: true
-        color_thresholds:
-          - value: 78
-            color: "#1618aa"
-          - value: 79
-            color: "#3f92c1"
-          - value: 80
-            color: "#3fc172"
-          - value: 82
-            color: "#ba8918"
-          - value: 84
-            color: "#d8610d"
-          - value: 86
-            color: "#cc2c2c"
-        entities:
-        - entity: sensor.onlyamazonpitemp
-          name: Actual
-          show_state: true
-        - entity: sensor.monthly_amazon_temp_min
-          name: Min
-          color: rgba(53, 183, 243, 0.85)
-        - entity: sensor.monthly_amazon_temp_lowmed
-          name: MedLow
-          color: rgba(53, 243, 208, 0.85)
-        - entity: sensor.monthly_amazon_temp_med
-          name: Med
-          color: rgba(65, 243, 53, 0.85)
-        - entity: sensor.monthly_amazon_temp_highmed
-          name: MedHigh
-          color: rgba(243, 237, 53, 0.85)
-        - entity: sensor.monthly_amazon_temp_max
-          name: Max
-          color: rgba(243, 138, 53, 0.85)
-      - type: custom:thermostat-card
-        entity: climate.octo_tank_therm
-        name: Water Temperature
-        small_i: true
-
+      - type: custom:stack-in-card
+        cards:
+          - type: custom:mini-graph-card
+            hours_to_show: 48
+            unit: °F
+            name: Temperature
+            points_per_hour: 20
+            line_width: 1
+            decimals: 2
+            animate: true
+            align_state: center
+            icon: mdi:thermometer
+            show:
+              name: false
+              icon: false
+              extrema: true
+              legend: false
+              fill: fade
+              points: true
+              labels: true
+            color_thresholds:
+              - value: 78
+                color: "#1618aa"
+              - value: 79
+                color: "#3f92c1"
+              - value: 80
+                color: "#3fc172"
+              - value: 82
+                color: "#ba8918"
+              - value: 84
+                color: "#d8610d"
+              - value: 86
+                color: "#cc2c2c"
+            entities:
+            - entity: sensor.onlyamazonpitemp
+              name: Actual
+              show_state: true
+            - entity: sensor.monthly_amazon_temp_min
+              name: Min
+              color: rgba(53, 183, 243, 0.85)
+            - entity: sensor.monthly_amazon_temp_lowmed
+              name: MedLow
+              color: rgba(53, 243, 208, 0.85)
+            - entity: sensor.monthly_amazon_temp_med
+              name: Med
+              color: rgba(65, 243, 53, 0.85)
+            - entity: sensor.monthly_amazon_temp_highmed
+              name: MedHigh
+              color: rgba(243, 237, 53, 0.85)
+            - entity: sensor.monthly_amazon_temp_max
+              name: Max
+              color: rgba(243, 138, 53, 0.85)
+          - type: custom:simple-thermostat
+            entity: climate.octo_tank_therm
+            name: Water Temperature
+            step_layout: row
+            unit: '°F'
+            show_header: false
+            control:
+              - hvac: false
+              - preset: false
+              - _names: false
 
   - type: vertical-stack
     cards:
@@ -4379,6 +4706,11 @@ views:
 
   - type: vertical-stack
     cards:
+      - type: glance
+        entities:
+          - entity: weather.10r
+          - entity: weather.kjrb_daynight
+          - entity: weather.kjrb_hourly
       - type: picture-entity
         entity: camera.weather_radar
         show_name: false
@@ -5021,7 +5353,7 @@ views:
             cards:
               - type: "custom:button-card"
                 color_type: card
-                icon: fas:music
+                icon: mdi:playlist-music
                 name: Music
                 show_name: false
                 aspect_ratio: 1/1
@@ -5041,7 +5373,7 @@ views:
                   service: remote.turn_on
                   service_data:
                     entity_id: remote.gabes_harmony_hub
-                    activity: 29883813
+                    activity: 46675326
                 double_tap_action:
                   action: call-service
                   service: remote.turn_on
@@ -5059,7 +5391,7 @@ views:
                             return "rgba(11, 131, 217, .85)";
                           return "rgba(141, 142, 143, 0)";
                         ]]]
-                icon: fas:tv
+                icon: mdi:television-classic
                 name: Roku
                 show_name: false
                 aspect_ratio: 1/1
@@ -5080,36 +5412,36 @@ views:
                     activity: "-1"
                 hold_action:
                   action: more-info
-              # - type: "custom:button-card"
-              #   styles:
-              #     card:
-              #       - background-color: >
-              #           [[[
-              #             if (states['sensor.harmony_activity'].state == "Watch A Movie")
-              #               return "rgba(11, 131, 217, .85)";
-              #             return "rgba(141, 142, 143, 0)";
-              #           ]]]
-              #   icon: fas:film
-              #   name: Movie
-              #   show_name: false
-              #   aspect_ratio: 1/1
-              #   size: 80%
-              #   show_entity_picture: true
-              #   entity_picture: "/local/icons/icon_3d.png"
-              #   tap_action:
-              #     action: call-service
-              #     service: remote.turn_on
-              #     service_data:
-              #       entity_id: remote.gabes_harmony_hub
-              #       activity: 26106724
-              #   double_tap_action:
-              #     action: call-service
-              #     service: remote.turn_on
-              #     service_data:
-              #       entity_id: remote.gabes_harmony_hub
-              #       activity: "-1"
-              #   hold_action:
-              #     action: more-info
+              - type: "custom:button-card"
+                styles:
+                  card:
+                    - background-color: >
+                        [[[
+                          if (states['sensor.harmony_activity'].state == "Play PS4")
+                            return "rgba(11, 131, 217, .85)";
+                          return "rgba(141, 142, 143, 0)";
+                        ]]]
+                icon: mdi:filmstrip
+                name: PS4
+                show_name: false
+                aspect_ratio: 1/1
+                size: 80%
+                show_entity_picture: true
+                entity_picture: "/local/icons/icon_ps4.png"
+                tap_action:
+                  action: call-service
+                  service: remote.turn_on
+                  service_data:
+                    entity_id: remote.gabes_harmony_hub
+                    activity: 46675206
+                double_tap_action:
+                  action: call-service
+                  service: remote.turn_on
+                  service_data:
+                    entity_id: remote.gabes_harmony_hub
+                    activity: "-1"
+                hold_action:
+                  action: more-info
               - type: "custom:button-card"
                 styles:
                   card:
@@ -5119,7 +5451,7 @@ views:
                             return "rgba(11, 131, 217, .85)";
                           return "rgba(141, 142, 143, 0)";
                         ]]]
-                icon: fas:music
+                icon: mdi:playlist-music
                 name: Radio Stations
                 show_name: false
                 aspect_ratio: 1/1
@@ -5140,7 +5472,7 @@ views:
                             return "rgba(11, 131, 217, .85)";
                           return "rgba(141, 142, 143, 0)";
                         ]]]
-                icon: fas:broadcast-tower
+                icon: mdi:radio
                 name: Radio
                 show_name: false
                 aspect_ratio: 1/1
@@ -5161,7 +5493,7 @@ views:
                             return "rgba(11, 131, 217, .85)";
                           return "rgba(141, 142, 143, 0)";
                         ]]]
-                icon: fas:waves
+                icon: mdi:waves
                 name: Ambient Sounds
                 show_name: false
                 aspect_ratio: 1/1
@@ -5189,7 +5521,7 @@ views:
                   - background-color: "rgba(141, 142, 143, 0)"
               activities:
               - name: Speaker
-                device: Speaker
+                device: Samsung Amp
               buttons:
                 volume_down:
                   command: 'VolumeDown'
@@ -5226,7 +5558,9 @@ views:
                 back:
                   hide: true
                 a:
-                  hide: true
+                  command: 'Source'
+                  icon: 'mdi:alpha-i-circle'
+                  hide: false
                 b:
                   hide: true
                 x:
@@ -5454,6 +5788,27 @@ views:
                     service_data:
                       entity_id: remote.gabes_harmony_hub
                       activity: 26106880
+
+#Play PS4 Only
+          - type: conditional
+            conditions:
+              - entity: sensor.harmony_activity
+                state: "Play PS4"
+            card:
+              type: media-control
+              entity: media_player.playstation_4
+          - type: conditional
+            conditions:
+              - entity: sensor.harmony_activity
+                state: "Play PS4"
+            card:
+              type: glance
+              column_width: 50%
+              show_name: false
+              entities:
+                - entity: light.on_air
+                - entity: sensor.magickal_guy
+                - entity: sensor.sfgabe
 
 #Watch Plex Only
           - type: conditional
@@ -5840,7 +6195,7 @@ views:
                 state: "on"
             card:
               type: 'custom:mini-media-player'
-              entity: media_player.192_168_50_111
+              entity: media_player.mpd
               name: Radio
               hide:
                 controls: false
@@ -5884,13 +6239,13 @@ views:
                     type: music
                 columns: 2
               source: icon
-
+#Snapcast Players
   - type: custom:stack-in-card
     keep:
       background: true
     cards:
       - type: 'custom:mini-media-player'
-        entity: media_player.192_168_50_111
+        entity: media_player.mpd
         artwork: cover
         source: icon
         progress: true
@@ -5904,7 +6259,7 @@ views:
           power_state: true
           source: true
           volume: false
-        icon: 'fas:music'
+        icon: 'mdi:playlist-music'
         name: Living Room Volume
       - type: 'custom:mini-media-player'
         entity: media_player.snapcast_client_12_42_bf_4f_88_4f
@@ -5915,38 +6270,38 @@ views:
           power_state: true
           source: true
           volume: false
-        icon: 'fas:bed'
+        icon: 'mdi:bed'
         name: Bedroom Volume
       - type: 'custom:mini-media-player'
-        entity: media_player.snapcast_client_b8_27_eb_84_9d_15
+        entity: media_player.snapcast_client_b8_27_eb_e1_e2_66
         hide:
           controls: true
           power: true
           power_state: true
           source: true
           volume: false
-        icon: 'fas:bath'
+        icon: 'mdi:bath'
         name: Bathroom Volume
-      # - type: 'custom:mini-media-player'
-      #   entity: media_player.snapcast_client_ffffffff_f480_0bd5_0000_00007bf68e41
-      #   hide:
-      #     controls: true
-      #     power: true
-      #     power_state: true
-      #     source: true
-      #     volume: false
-      #   icon: 'fas:mobile-alt'
-      #   name: Phone Volume
-      - type: 'custom:mini-media-player'
-        entity: media_player.snapcast_client_b8_27_eb_31_93_b7
-        hide:
-          controls: true
-          power: true
-          power_state: true
-          source: true
-          volume: false
-        icon: 'fas:dove'
-        name: Bird Volume
+#       # - type: 'custom:mini-media-player'
+#       #   entity: media_player.snapcast_client_ffffffff_f480_0bd5_0000_00007bf68e41
+#       #   hide:
+#       #     controls: true
+#       #     power: true
+#       #     power_state: true
+#       #     source: true
+#       #     volume: false
+#       #   icon: 'fas:mobile-alt'
+#       #   name: Phone Volume
+#       - type: 'custom:mini-media-player'
+#         entity: media_player.snapcast_client_b8_27_eb_31_93_b7
+#         hide:
+#           controls: true
+#           power: true
+#           power_state: true
+#           source: true
+#           volume: false
+#         icon: 'fas:dove'
+#         name: Bird Volume
 
 #  - type: 'custom:podcast-card'
 #    entity: sensor.gpodder
@@ -5999,7 +6354,7 @@ views:
             version:
               - align-self: start
               - justify-self: start
-              - font-size: 18px
+              - font-size: 15px
               - --text-color-sensor: '[[[ if (states["binary_sensor.updater"].state == "on") return "#fa9393"; ]]]'
               - --animation-sensor: '[[[ if (states["binary_sensor.updater"].state == "on") return "blink 2s ease infinite"; ]]]'
             ha_uptime:
@@ -6008,7 +6363,7 @@ views:
               - font-size: 15px
         custom_fields:
           version: >
-            [[[ return '<span style="color: var(--text-color-sensor); animation: var(--animation-sensor)">Verson ' + (states['sensor.ha_installed_version'].state) + '</span>' ]]]
+            [[[ return '<span style="color: var(--text-color-sensor); animation: var(--animation-sensor)">Breaking Changes: ' + (states['sensor.potential_breaking_changes'].state) + '</span>' ]]]
           ha_uptime: >
             [[[ return 'Online for ' + (states['sensor.ha_uptime'].state) ]]]
 
@@ -6020,7 +6375,7 @@ views:
         line_width: 3
         decimals: 2
         animate: true
-        icon: fas:home
+        icon: mdi:home
         show:
           name: true
           icon: true
@@ -6099,7 +6454,7 @@ views:
         line_width: 3
         decimals: 2
         animate: true
-        icon: fas:tachometer-alt
+        icon: mdi:speedometer
         show:
           name: true
           icon: true
@@ -6131,7 +6486,7 @@ views:
         decimals: 2
         animate: true
         align_state: center
-        icon: fas:upload
+        icon: mdi:upload-cloud
         show:
           name: true
           icon: true
@@ -6213,13 +6568,259 @@ views:
         - entity: sensor.swap_free
           name: Swap Free
 
-#new stuff
+#Note 10 Stats
+  - type: custom:stack-in-card
+    cards:
+      - type: "custom:button-card"
+        entity: device_tracker.gabe_s_galaxy_note10
+        show_icon: false
+        color: '#ffffff'
+        name: "Galaxy Note 10"
+        show_name: true
+        show_entity_picture: true
+        tap_action:
+          action: none
+        styles:
+          card:
+            - color: '#ffffff'
+            - filter: opacity(90%)
+          icon:
+            - width: 90%
+          name:
+            - align-self: start
+            - justify-self: start
+            - font-weight: bold
+            - font-size: 24px
+          grid:
+            - grid-template-areas: '"i n n" "i note10_carrier note10_state" "i note10_last_boot note10_last_boot" "i note10_battery note10_battery" "i note10_charging note10_charging" "i note10_charger_type note10_charger_type" "i note10_bluetooth_connection note10_bluetooth_connection"'
+            - grid-template-columns: 1fr 1fr 1fr
+            - grid-template-rows:  min-content min-content min-content min-content min-content min-content min-content min-content min-content min-content min-content min-content min-content min-content min-content min-content min-content min-content
+          custom_fields:
+            note10_carrier:
+              - align-self: start
+              - justify-self: start
+              - font-size: 15px
+            note10_state:
+              - align-self: start
+              - justify-self: start
+              - font-size: 15px
+            note10_last_boot:
+              - align-self: start
+              - justify-self: start
+              - font-size: 15px
+            note10_bluetooth_connection:
+              - align-self: start
+              - justify-self: start
+              - font-size: 15px
+            note10_charger_type:
+              - align-self: start
+              - justify-self: start
+              - font-size: 15px
+            note10_battery:
+              - align-self: start
+              - justify-self: start
+              - font-size: 15px
+            note10_charging:
+              - align-self: start
+              - justify-self: start
+              - font-size: 15px
+              - --text-color-sensor: '[[[ if (states["binary_sensor.gabes_note_10_is_charging"].state == "on") return "green"; ]]]'
+        custom_fields:
+          note10_state: >
+            [[[ return (states['sensor.gabes_note_10_phone_state'].state) ]]]
+          note10_bluetooth_connection: >
+            [[[ return 'Bluetooth Connections: ' + (states['sensor.gabes_note_10_bluetooth_connection'].state) ]]]
+          note10_charging: >
+            [[[ return '<span style="color: var(--text-color-sensor)">Charging: ' + (states['binary_sensor.gabes_note_10_is_charging'].state)  + '</span>']]]
+          note10_charger_type: >
+            [[[ return 'with ' + (states['sensor.gabes_note_10_charger_type'].state) ]]]
+          note10_battery: >
+            [[[ return 'Battery: ' + (states['device_tracker.gabesnotegps'].attributes.battery_level) ]]]
+          note10_last_boot: >
+            [[[ return 'Since ' + (states['sensor.gabes_note_10_last_reboot'].state) ]]]
+          note10_carrier: >
+            [[[ return (states['sensor.gabes_note_10_sim_1'].state) ]]]
+      - type: custom:mini-graph-card
+        hours_to_show: 48
+        unit: Mbps
+        name: Wifi Speed
+        points_per_hour: 6
+        line_width: 3
+        decimals: 2
+        animate: true
+        icon: mdi:speedometer
+        show:
+          name: true
+          icon: true
+          legend: false
+          fill: fade
+          points: false
+        color_thresholds:
+          - value: 0
+            color: "#d80d0d"
+          - value: 2
+            color: "#f4a23d"
+          - value: 4
+            color: "#f4e43d"
+          - value: 6
+            color: "#4bc916"
+          - value: 8
+            color: "#06ace8"
+          - value: 10
+            color: "#3b83ef"
+        entities:
+        - entity: sensor.gabes_note_10_wifi_link_speed
+          name: Wifi Speed
+      - type: custom:mini-graph-card
+        hours_to_show: 48
+        unit: MiB
+        name: Traffic MiB
+        points_per_hour: 6
+        line_width: 3
+        decimals: 2
+        animate: true
+        align_state: center
+        icon: mdi:upload-cloud
+        show:
+          name: true
+          icon: true
+          state: false
+          legend: true
+          fill: fade
+          points: false
+        entities:
+        - entity: sensor.gabes_note_10_total_rx_gb
+          name: Traffic In
+        - entity: sensor.gabes_note_10_total_tx_gb
+          name: Traffic Out
+        - entity: sensor.gabes_note_10_mobile_rx_gb
+          name: Mobile Traffic In
+        - entity: sensor.gabes_note_10_mobile_tx_gb
+          name: Mobile Out
+      - type: custom:bar-card
+        padding: 2px
+        align: left
+        title_style:
+          font-size: 16px
+        value_style:
+          font-size: 8px
+        show_icon: true
+        icon: mdi:server
+        title_position: inside
+        severity:
+          - value: 0
+            color: "#3b83ef"
+          - value: 20
+            color: "#06ace8"
+          - value: 40
+            color: "#4bc916"
+          - value: 60
+            color: "#f4e43d"
+          - value: 80
+            color: "#f4a23d"
+          - value: 100
+            color: "#d80d0d"
+        entities:
+        - entity: sensor.gabes_note_10_external_storage
+          name: External Storage
+        - entity: sensor.gabes_note_10_storage_sensor
+          name: Internal Storage
 
-  - type: glance
-    entities:
-      - entity: weather.10r
-      - entity: weather.kjrb_daynight
-      - entity: weather.kjrb_hourly
+# #Macbook Stats
+#   - type: custom:stack-in-card
+#     cards:
+#       - type: "custom:button-card"
+#         entity: device_tracker.macbook_pro
+#         show_icon: false
+#         color: '#ffffff'
+#         name: Macbook Pro
+#         show_name: true
+#         show_entity_picture: true
+#         tap_action:
+#           action: call-service
+#           service: switch.toggle
+#           service_data:
+#             entity_id: switch.06200928600194a7ffbc_1
+#         styles:
+#           card:
+#             - color: '#ffffff'
+#             - filter: opacity(90%)
+#           name:
+#             - align-self: start
+#             - justify-self: start
+#             - font-weight: bold
+#             - font-size: 24px
+#           icon:
+#             - width: 80%
+#             - margin-left: 10%
+#           grid:
+#             - grid-template-areas: '"i n n" "i ssid ssid" "i charger charger" "i line line" "i brightness brightness" "i keyboard keyboard" "i screen screen" "i mouse mouse"'
+#             - grid-template-columns: 1fr 1fr 1fr
+#             - grid-template-rows: min-content min-content min-content min-content min-content min-content min-content min-content
+#           custom_fields:
+#             brightness:
+#               - align-self: start
+#               - justify-self: start
+#               - font-size: 15px
+#             ssid:
+#               - align-self: start
+#               - justify-self: start
+#               - font-size: 15px
+#             keyboard:
+#               - align-self: start
+#               - justify-self: start
+#               - font-size: 15px
+#             screen:
+#               - align-self: start
+#               - justify-self: start
+#               - font-size: 15px
+#             mouse:
+#               - align-self: start
+#               - justify-self: start
+#               - font-size: 15px
+#             charger:
+#               - align-self: start
+#               - justify-self: start
+#               - font-size: 15px
+#               - --text-color-sensor: '[[[ if (states["switch.06200928600194a7ffbc_1"].state == "off") return "#fa9393"; if (states["switch.06200928600194a7ffbc_1"].state == "on") return "#11bf1a"; ]]]'
+#             line:
+#             - color: "#ffffff"
+#             - padding-bottom: 6px
+#         custom_fields:
+#           brightness: >
+#             [[[ return 'Brightness: ' +(states['sensor.macbook_brightness'].state) + '%' ]]]
+#           ssid: >
+#             [[[ return 'Network: '+(states['sensor.macbook_ssid'].state) ]]]
+#           charger: >
+#             [[[ return '<span style="color: var(--text-color-sensor)">Charger: ' +(states['switch.06200928600194a7ffbc_1'].state) + '</span>' ]]]
+#           keyboard: >
+#             [[[ return 'Keyboard: '+(states['input_select.macbook_keyboard_dropdown'].state) ]]]
+#           screen: >
+#             [[[ return 'Screen: '+(states['input_select.macbook_screen_dropdown'].state) ]]]
+#           mouse: >
+#             [[[ return 'Mouse: '+(states['input_select.macbook_mouse_dropdown'].state) ]]]
+#           line: >
+#             [[[ return '</hr>&nbsp' ]]]
+#
+#       - type: custom:mini-graph-card
+#         hours_to_show: 48
+#         unit: "%"
+#         name: "Battery"
+#         points_per_hour: 6
+#         line_width: 3
+#         decimals: 0
+#         animate: true
+#         icon: mdi:server
+#         show:
+#           name: true
+#           icon: true
+#           state: true
+#           legend: false
+#           fill: fade
+#           points: false
+#         entities:
+#         - entity: sensor.macbook_battery
+#           name: Battery
 
 #Synology Stats
   - type: custom:stack-in-card
@@ -6317,7 +6918,7 @@ views:
         line_width: 3
         decimals: 2
         animate: true
-        icon: fas:server
+        icon: mdi:server
         show:
           name: true
           icon: true
@@ -6406,7 +7007,7 @@ views:
         decimals: 2
         animate: true
         align_state: center
-        icon: fas:upload
+        icon: mdi:cloud-upload
         show:
           name: true
           icon: true
@@ -6428,7 +7029,7 @@ views:
         decimals: 2
         animate: true
         align_state: center
-        icon: fas:paper-plane
+        icon: mdi:send
         show:
           name: true
           icon: true
@@ -6450,7 +7051,7 @@ views:
         decimals: 2
         animate: true
         align_state: center
-        icon: fas:ethernet
+        icon: mdi:lan-connect
         show:
           name: true
           icon: true
@@ -6488,30 +7089,9 @@ views:
             - font-weight: bold
             - font-size: 24px
           grid:
-            - grid-template-areas: '"i n n" "i atomicpi_uptime atomicpi_uptime" "i atomicpi_last_boot atomicpi_last_boot" "i server_temperature server_temperature"'
+            - grid-template-areas: '"i n n"'
             - grid-template-columns: 1fr 1fr 1fr
-            - grid-template-rows:  min-content min-content min-content min-content min-content min-content
-          custom_fields:
-            atomicpi_uptime:
-              - align-self: start
-              - justify-self: start
-              - font-size: 15px
-            atomicpi_last_boot:
-              - align-self: start
-              - justify-self: start
-              - font-size: 15px
-            server_temperature:
-              - align-self: start
-              - justify-self: start
-              - font-size: 15px
-              - --text-color-sensor: '[[[ if (states["sensor.synology_temperature_sdb"].state < 80) return "#fa9393"; ]]]'
-        custom_fields:
-          atomicpi_last_boot: >
-            [[[ return 'Since ' + (states['sensor.atomicpi_last_boot'].state) ]]]
-          atomicpi_uptime: >
-            [[[ return 'Online for ' + (states['sensor.atomicpi_uptime'].state) ]]]
-          server_temperature: >
-            [[[ return '<span style="color: var(--text-color-sensor)">' +(states['sensor.server_temperature'].state) + ' F</span>' ]]]
+            - grid-template-rows:  min-content min-content min-content
       - type: horizontal-stack
         cards:
           - type: entity-button
@@ -6985,23 +7565,11 @@ views:
               action: more-info
 
 
+
+  - type: vertical-stack
+    cards:
       - type: horizontal-stack
         cards:
-
-          - type: "custom:button-card"
-            entity: light.entry_light
-            color_type: card
-            icon: mdi:ceiling-light
-            name: Entry
-            show_name: false
-            aspect_ratio: 1/1
-            size: 80%
-            show_entity_picture: true
-            entity_picture: "/local/icons/icon_key.png"
-            tap_action:
-              action: toggle
-            hold_action:
-              action: more-info
 
           - type: "custom:button-card"
             entity: switch.10048470bcddc2e0d678
@@ -7035,8 +7603,6 @@ views:
             hold_action:
               action: more-info
 
-      - type: horizontal-stack
-        cards:
           - type: "custom:button-card"
             entity: light.table
             color: auto
@@ -7053,7 +7619,6 @@ views:
             hold_action:
               action: more-info
 
-
           - type: "custom:button-card"
             entity: light.desk
             color: auto
@@ -7069,7 +7634,39 @@ views:
               action: toggle
             hold_action:
               action: more-info
+          - type: "custom:button-card"
+            entity: light.desk_overhead
+            color: auto
+            color_type: card
+            icon: mdi:desk-lamp
+            name: Desk Overhead
+            show_name: false
+            aspect_ratio: 1/1
+            size: 80%
+            show_entity_picture: true
+            entity_picture: "/local/icons/icon_tools.png"
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
 
+      - type: horizontal-stack
+        cards:
+
+          - type: "custom:button-card"
+            entity: switch.10048470bcddc2e0cf71
+            color_type: card
+            icon: mdi:ceiling-light
+            name: Entry
+            show_name: false
+            aspect_ratio: 1/1
+            size: 80%
+            show_entity_picture: true
+            entity_picture: "/local/icons/icon_key.png"
+            tap_action:
+              action: toggle
+            hold_action:
+              action: more-info
 
           - type: "custom:button-card"
             entity: light.flux_capacitor
@@ -7097,8 +7694,6 @@ views:
             hold_action:
               action: more-info
 
-      - type: horizontal-stack
-        cards:
           - type: "custom:button-card"
             entity: light.bedroom_desk
             color: auto
@@ -7169,9 +7764,9 @@ views:
         card:
           type: glance
           entities:
-            - entity: sensor.usps_mail
+            - entity: sensor.mail_usps_mail
               name: Mail
-            - entity: sensor.usps_packages
+            - entity: sensor.mail_usps_packages
               name: Packages
       - type: picture
         image: /local/mail_images/todays_mails.gif
@@ -7911,7 +8506,7 @@ views:
       elements:
         - type: conditional
           conditions:
-            - entity: media_player.192_168_50_111
+            - entity: media_player.mpd
               state_not: "unknown"
           elements:
             - type: image
@@ -7923,7 +8518,7 @@ views:
                 width: 100%
                 height: 100%
             - type: icon
-              entity: media_player.192_168_50_111
+              entity: media_player.mpd
               size: 30%
               icon: mdi:fast-forward
               color: auto
@@ -7932,7 +8527,7 @@ views:
                 action: call-service
                 service: media_player.media_next_track
                 service_data:
-                  entity_id: media_player.192_168_50_111
+                  entity_id: media_player.mpd
               hold_action:
                 action: more-info
               style:
@@ -7941,7 +8536,7 @@ views:
                 font-size: 12px
                 font-weight: bold
             - type: icon
-              entity: media_player.192_168_50_111
+              entity: media_player.mpd
               size: 30%
               icon: mdi:rewind
               color: auto
@@ -7950,7 +8545,7 @@ views:
                 action: call-service
                 service: media_player.media_previous_track
                 service_data:
-                  entity_id: media_player.192_168_50_111
+                  entity_id: media_player.mpd
               hold_action:
                 action: more-info
               style:
@@ -7959,7 +8554,7 @@ views:
                 font-size: 12px
                 font-weight: bold
             - type: icon
-              entity: media_player.192_168_50_111
+              entity: media_player.mpd
               size: 30%
               icon: mdi:shuffle
               color: auto
@@ -7968,7 +8563,7 @@ views:
                 action: call-service
                 service: media_player.shuffle_set
                 service_data:
-                  entity_id: media_player.192_168_50_111
+                  entity_id: media_player.mpd
               hold_action:
                 action: more-info
               style:
@@ -7977,7 +8572,7 @@ views:
                 font-size: 12px
                 font-weight: bold
             - type: icon
-              entity: media_player.192_168_50_111
+              entity: media_player.mpd
               size: 30%
               icon: mdi:pause
               color: auto
@@ -7986,7 +8581,7 @@ views:
                 action: call-service
                 service: media_player.media_pause
                 service_data:
-                  entity_id: media_player.192_168_50_111
+                  entity_id: media_player.mpd
               hold_action:
                 action: more-info
               style:
@@ -7995,7 +8590,7 @@ views:
                 font-size: 12px
                 font-weight: bold
             - type: icon
-              entity: media_player.192_168_50_111
+              entity: media_player.mpd
               size: 30%
               icon: mdi:play
               color: auto
@@ -8004,7 +8599,7 @@ views:
                 action: call-service
                 service: media_player.media_play
                 service_data:
-                  entity_id: media_player.192_168_50_111
+                  entity_id: media_player.mpd
               hold_action:
                 action: more-info
               style:
@@ -8044,7 +8639,7 @@ views:
 
     - type: markdown
       content: >
-       **[[ media_player.192_168_50_111.attributes.media_title ]]**
+       **[[ media_player.mpd.attributes.media_title ]]**
       style:
         left: 50%
         top: 30%
@@ -8064,7 +8659,7 @@ views:
         --ha-card-box-shadow: 'none'
     - type: markdown
       content: >
-       **[[ media_player.192_168_50_111.attributes.media_artist ]]**
+       **[[ media_player.mpd.attributes.media_artist ]]**
       style:
         left: 50%
         top: 50%
@@ -8084,7 +8679,7 @@ views:
         --ha-card-box-shadow: 'none'
     - type: markdown
       content: >
-       **[[ media_player.192_168_50_111.attributes.media_album_name ]]**
+       **[[ media_player.mpd.attributes.media_album_name ]]**
       style:
         left: 50%
         top: 60%
@@ -8189,6 +8784,7 @@ views:
         - sensor.mini_milespergallonlongtermaverage
         - sensor.mini_tripaveragempg
         - sensor.mini_tripaveragempg
+
 - title: Floorplan
   id: floorplan
   visible:
@@ -8303,7 +8899,7 @@ views:
             left: 50%
             width: 100%
         - type: image
-          entity: light.entry_light
+          entity: switch.10048470bcddc2e0cf71
           tap_action: none
           hold_action: none
           state_image:
@@ -8372,7 +8968,7 @@ views:
           state_image:
             "Watch Roku": /local/floorplan/10r/layers/on_tv.png
             "Watch A Movie": /local/floorplan/10r/layers/on_tv.png
-            "PS4": /local/floorplan/10r/layers/on_tv.png
+            "Play PS4": /local/floorplan/10r/layers/on_tv.png
             "PowerOff": /local/floorplan/10r/layers/transparent_square.png
             "Idle": /local/floorplan/10r/layers/transparent_square.png
             "Speaker": /local/floorplan/10r/layers/transparent_square.png
@@ -8419,7 +9015,20 @@ views:
             left: 21%
             width: 3%
         - type: image
-          entity: media_player.192_168_50_111
+          entity: light.on_air
+          tap_action: none
+          hold_action: none
+          state_image:
+            "on": /local/floorplan/10r/layers/icon_onair.gif
+            "off": /local/floorplan/10r/layers/transparent_square.png
+            "unavailable": /local/floorplan/10r/layers/transparent_square.png
+            "unknown": /local/floorplan/10r/layers/transparent_square.png
+          style:
+            top: 57%
+            left: 21%
+            width: 5%
+        - type: image
+          entity: media_player.mpd
           tap_action: none
           hold_action: none
           state_image:
@@ -8434,35 +9043,38 @@ views:
             left: 21%
             width: 4%
         - type: image
-          entity: person.aaron_2
+          entity: input_select.aj_status_dropdown
           tap_action: none
           hold_action: none
           state_image:
-            "home": /local/floorplan/10r/layers/icon_aaron.png
-            "not_home": /local/floorplan/10r/layers/transparent_square.png
+            "Home": /local/floorplan/10r/layers/icon_aj_home.png
+            "Away": /local/floorplan/10r/layers/icon_aj_away.png
+            "In Bed": /local/floorplan/10r/layers/icon_aj_inbed.png
+            "Gaming": /local/floorplan/10r/layers/icon_aj_gaming.png
+            "Extended Away": /local/floorplan/10r/layers/icon_aj_away.png
+            "Unknown": /local/floorplan/10r/layers/transparent_square.png
             "unknown": /local/floorplan/10r/layers/transparent_square.png
-            "unavailable": /local/floorplan/10r/layers/transparent_square.png
           style:
-            top: 78%
-            left: 80%
-            width: 10%
-            opacity: 60%
-        - type: custom:text-element
-          text: "AJ"
-          style:
-            top: 90%
-            left: 80%
-            opacity: 70%
-            color: rgb(252, 183, 20)
-            text-shadow: 2px 2px DarkSlateGrey
-            font-family: Trebuchet MS
-            font-weight: bold
-            font-size: 16px
-            pointer-events: none
-            text-rendering: optimizeLegibility
-            -moz-osx-font-smoothing: grayscale
-            font-smoothing: antialiased
-            -webkit-font-smoothing: antialiased
+            top: 79%
+            left: 77%
+            width: 13%
+            opacity: 65%
+        # - type: state-label
+        #   entity: sensor.aj_status
+        #   style:
+        #     top: 90%
+        #     left: 80%
+        #     opacity: 70%
+        #     color: rgb(252, 183, 20)
+        #     text-shadow: 2px 2px DarkSlateGrey
+        #     font-family: Trebuchet MS
+        #     font-weight: bold
+        #     font-size: 16px
+        #     pointer-events: none
+        #     text-rendering: optimizeLegibility
+        #     -moz-osx-font-smoothing: grayscale
+        #     font-smoothing: antialiased
+        #     -webkit-font-smoothing: antialiased
         - type: image
           entity: input_select.gabe_status_dropdown
           tap_action: none
@@ -8481,26 +9093,26 @@ views:
             "M15 Bus Uptown": /local/floorplan/10r/layers/transparent_square.png
             "unknown": /local/floorplan/10r/layers/transparent_square.png
           style:
-            top: 78%
+            top: 79%
             left: 90%
-            width: 10%
-            opacity: 60%
-        - type: custom:text-element
-          text: "GABE"
-          style:
-            top: 90%
-            left: 90%
-            opacity: 70%
-            color: rgb(252, 183, 20)
-            text-shadow: 2px 2px DarkSlateGrey
-            font-family: Trebuchet MS
-            font-weight: bold
-            font-size: 16px
-            pointer-events: none
-            text-rendering: optimizeLegibility
-            -moz-osx-font-smoothing: grayscale
-            font-smoothing: antialiased
-            -webkit-font-smoothing: antialiased
+            width: 13%
+            opacity: 65%
+        # - type: state-label
+        #   entity: sensor.gabe_status
+        #   style:
+        #     top: 90%
+        #     left: 90%
+        #     opacity: 70%
+        #     color: rgb(252, 183, 20)
+        #     text-shadow: 2px 2px DarkSlateGrey
+        #     font-family: Trebuchet MS
+        #     font-weight: bold
+        #     font-size: 16px
+        #     pointer-events: none
+        #     text-rendering: optimizeLegibility
+        #     -moz-osx-font-smoothing: grayscale
+        #     font-smoothing: antialiased
+        #     -webkit-font-smoothing: antialiased
         - type: image
           entity: binary_sensor.water_plant_alarm_ferns
           tap_action: none
@@ -8677,7 +9289,7 @@ views:
             top: 23.5%
             left: 60%
         - type: image
-          entity: light.entry_light
+          entity: switch.10048470bcddc2e0cf71
           tap_action:
             action: toggle
           image: /local/floorplan/10r/layers/transparent_square.png
@@ -8708,3 +9320,37 @@ views:
           style:
             top: 54%
             left: 63%
+        - type: image
+          entity: input_select.aj_status_dropdown
+          tap_action:
+            action: more-info
+          image: /local/floorplan/10r/layers/transparent_square.png
+          style:
+            top: 79%
+            left: 77%
+        - type: image
+          entity: input_select.gabe_status_dropdown
+          tap_action:
+            action: more-info
+          image: /local/floorplan/10r/layers/transparent_square.png
+          style:
+            top: 79%
+            left: 90%
+        - type: image
+          entity: light.on_air
+          tap_action:
+            action: toggle
+          hold_action:
+            action: more-info
+          image: /local/floorplan/10r/layers/transparent_square.png
+          style:
+            top: 57%
+            left: 20%
+        - type: image
+          entity: light.flux_capacitor
+          tap_action:
+            action: toggle
+          image: /local/floorplan/10r/layers/transparent_square.png
+          style:
+            top: 50%
+            left: 21%

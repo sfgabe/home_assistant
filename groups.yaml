@@ -29,6 +29,61 @@ reef:
     - group.reef_tides
     - group.reef_power
 
+reef_water_levels:
+  name: Reef Water Levels
+#  control: hidden
+  entities:
+    - history_graph.reef_ca_history
+    - history_graph.reef_alk_history
+    - history_graph.reef_iron_history
+    - history_graph.reef_mag_history
+    - history_graph.reef_no3_history
+    - history_graph.reef_phosphate_history
+    - history_graph.reef_redfield_ratio_history
+    - history_graph.reef_relative_density_history
+
+reef_water_levels_input:
+  name: Reef Water Levels Input
+#  control: hidden
+  entities:
+    - input_number.reef_calcium
+    - input_number.reef_alkalinity
+    - input_number.reef_iron
+    - input_number.reef_magnesium
+    - input_number.reef_nitrate
+    - input_number.reef_phosphorous
+    - input_number.reef_relative_density
+    - input_boolean.water_tests_levels_ranges
+
+reef_water_levels_ranges:
+  name: Reef Water Levels Ranges
+#  control: hidden
+  entities:
+    - input_number.reef_calcium_minimum
+    - input_number.reef_calcium_target
+    - input_number.reef_calcium_maximum
+    - input_number.reef_alkalinity_minimum
+    - input_number.reef_alkalinity_target
+    - input_number.reef_alkalinity_maximum
+    - input_number.reef_iron_minimum
+    - input_number.reef_iron_target
+    - input_number.reef_iron_maximum
+    - input_number.reef_magnesium_minimum
+    - input_number.reef_magnesium_target
+    - input_number.reef_magnesium_maximum
+    - input_number.reef_nitrate_minimum
+    - input_number.reef_nitrate_target
+    - input_number.reef_nitrate_maximum
+    - input_number.reef_phosphorous_minimum
+    - input_number.reef_phosphorous_target
+    - input_number.reef_phosphorous_maximum
+    - input_number.reef_redfield_ratio_minimum
+    - input_number.reef_redfield_ratio_target
+    - input_number.reef_redfield_ratio_maximum
+    - input_number.reef_relative_density_minimum
+    - input_number.reef_relative_density_target
+    - input_number.reef_relative_density_maximum
+
 amazon:
   name: Amazon Tank
   entities:
@@ -324,7 +379,7 @@ weather_summary:
     - sensor.dark_sky_minutely_summary
     - weather.dark_sky
     - history_graph.temperature
-    
+
 weather_card_forecast:
   name: Forecast
   icon: mdi:sun

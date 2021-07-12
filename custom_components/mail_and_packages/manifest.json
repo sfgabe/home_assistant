@@ -1,0 +1,17 @@
+{
+  "domain": "mail_and_packages",
+  "name": "Mail and Packages",
+  "documentation": "https://github.com/moralmunky/Home-Assistant-Mail-And-Packages",
+  "issue_tracker": "https://github.com/moralmunky/Home-Assistant-Mail-And-Packages/issues",
+  "dependencies": [],
+  "codeowners": [
+    "@moralmunky",
+    "@firstof9"
+  ],
+  "config_flow": true,
+  "requirements": [
+    "imageio>=2.9.0",
+    "python-resize-image>=1.1.19"
+  ],
+  "version": "0.3.2"
+}

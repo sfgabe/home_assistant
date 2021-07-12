@@ -15,6 +15,58 @@ reef_temp_graph:
     - sensor.noaa_daily_min_reef_temp
   refresh: 300
 
+reef_calcium_graphs:
+  name: Reef CA History
+  entities:
+    - input_number.reef_calcium
+  hours_to_show: 720
+  refresh: 300
+
+reef_magnesium_graphs:
+  name: Reef MAG History
+  entities:
+    - input_number.reef_magnesium
+  hours_to_show: 720
+  refresh: 300
+
+reef_alkalinity_graphs:
+  name: Reef ALK History
+  entities:
+    - input_number.reef_alkalinity
+  hours_to_show: 720
+  refresh: 300
+
+reef_iron_graphs:
+  name: Reef Iron History
+  entities:
+    - input_number.reef_iron
+  hours_to_show: 720
+  refresh: 300
+
+reef_nitrate_graphs:
+  name: Reef NO3 History
+  entities:
+    - input_number.reef_nitrate
+  hours_to_show: 720
+  refresh: 300
+
+reef_relative_density_graphs:
+  name: Reef Relative Density History
+  entities:
+    - input_number.reef_relative_density
+  hours_to_show: 720
+  refresh: 300
+
+reef_redfield_ratio_graphs:
+  name: Reef Redfield Ratio History
+  entities:
+    - sensor.redfield_ratio
+    - input_number.reef_redfield_ratio_minimum
+    - input_number.reef_redfield_ratio_target
+    - input_number.reef_redfield_ratio_maximum
+  hours_to_show: 720
+  refresh: 300
+
 amazon_temp_graph:
   name: Amazon Water Temp Sync
   entities:

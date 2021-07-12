@@ -341,9 +341,20 @@ binary_sensor.birdfeed_motion:
   icon: fas:crow
 binary_sensor.entry_motion:
   icon: fas:door-open
+binary_sensor.kiosk_motion:
+  icon: fas:door-open
 binary_sensor.tablet_motion:
   icon: fas:tablet-alt
 
+sensor.gabes_keys_room_presence:
+  friendly_name: Gabes Keys
+  icon: mdi:key-chain-variant
+sensor.ajs_keys_room_presence:
+  friendly_name: AJs Keys
+  icon: mdi:key-chain-variant
+sensor.gabes_wallet_room_presence:
+  friendly_name: Gabes Wallet
+  icon: mdi:cards-playing-outline
 
 script.radio_tune:
   friendly_name: Start Playing
@@ -382,6 +393,9 @@ person.gabe:
 person.aaron_2:
   entity_picture: /local/icons/badge_aj.jpg
 
+sensor.aj_status:
+  entity_picture: /local/icons/badge_aj.jpg
+
 person.mini_cooper:
   entity_picture: /local/icons/badge_mini.jpg
 
@@ -406,6 +420,8 @@ media_player.snapcast_client_12_42_bf_4f_88_4f:
 media_player.snapcast_client_b8_27_eb_31_93_b7:
   friendly_name: "BirdfeedSnapcastClient"
 media_player.snapcast_client_b8_27_eb_84_9d_15:
+  friendly_name: "LCDSnapcastClient"
+media_player.snapcast_client_b8_27_eb_e1_e2_66:
   friendly_name: "BathroomSnapcastClient"
 
 # Devices
@@ -436,7 +452,9 @@ device_tracker.philipshue:
 device_tracker.reefcam_pantilt:
   entity_picture: /local/images/devicepic_rpizero.png
 device_tracker.reefcontrolpi:
-  entity_picture: /local/images/devicepic_clownfish.png
+  entity_picture: /local/images/devicepic_reefpi.png
+device_tracker.reef_tank_3:
+  entity_picture: /local/images/devicepic_reefpi.png
 device_tracker.android_ac43312d0683f1c6:
   entity_picture: /local/images/device_entry_kiosk.jpg
 device_tracker.retropie:
@@ -447,6 +465,10 @@ device_tracker.esp_55f8c6:
   entity_picture: /local/images/devicepic_ferns.png
 device_tracker.gabes_macbook:
   entity_picture: /local/images/device_macbook.jpeg
+device_tracker.gabe_s_galaxy_note10:
+  entity_picture: /local/images/devicepic_note10.png
+device_tracker.gabe_s_galaxy_note10_2:
+  entity_picture: /local/images/devicepic_note10.png
 device_tracker.5re0217120001465:
   entity_picture: /local/images/devicepic_mate.png
 device_tracker.esp_25f89b:
@@ -455,9 +477,13 @@ sensor.ip_address:
   entity_picture: /local/images/devicepic_asus.png
 sensor.mariadb_database_size:
   entity_picture: /local/images/devicepic_hass.png
+sensor.reefcontrolpilightcolor:
+  entity_picture: /local/images/devicepic_kessil.png
+sensor.ReefControlPiLightBrightness:
+  entity_picture: /local/images/devicepic_kessil.png
 
 binary_sensor.people_home:
   templates:
     entity_picture: >
-      if (state === 'On') return '/local/icons/people_home.png';
+      if (state === 'on') return '/local/icons/people_home.png';
       return '/local/icons/insurance.png';

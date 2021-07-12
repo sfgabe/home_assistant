@@ -21,3 +21,41 @@
   vapid_pub_key: !secret firebase_pub_key
   vapid_prv_key: !secret firebase_priv_key
   vapid_email: !secret firebase_email
+
+- name: twilio_sms
+  platform: twilio_sms
+  from_number: !secret twilio_from_number
+  
+#Event looks like this
+# {
+#     "event_type": "twilio_data_received",
+#     "data": {
+#         "ToCountry": "US",
+#         "ToState": "FL",
+#         "SmsMessageSid": "SM14aab03e92aa6a790163ea8c23d13188",
+#         "NumMedia": "0",
+#         "ToCity": "",
+#         "FromZip": "94608",
+#         "SmsSid": "SM14aab03e92aa6a790163ea8c23d13188",
+#         "FromState": "CA",
+#         "SmsStatus": "received",
+#         "FromCity": "SAN FRANCISCO",
+#         "Body": "This is a test message",
+#         "FromCountry": "US",
+#         "To": "+13525413140",
+#         "ToZip": "",
+#         "NumSegments": "1",
+#         "MessageSid": "SM14aab03e92aa6a790163ea8c23d13188",
+#         "AccountSid": "ACd73768225f0a9c8ba22affc4184cd126",
+#         "From": "+15103931771",
+#         "ApiVersion": "2010-04-01",
+#         "webhook_id": "3eacd0f77d32f6513252ade7e851f8e78a6fa41e989f6fe2dd39d365e58fddab"
+#     },
+#     "origin": "LOCAL",
+#     "time_fired": "2021-07-10T04:22:02.342340+00:00",
+#     "context": {
+#         "id": "70cdd5a2e6828d7f4312b7195b694176",
+#         "parent_id": null,
+#         "user_id": null
+#     }
+# }
