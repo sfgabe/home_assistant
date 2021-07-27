@@ -17,6 +17,13 @@ home:
     - group.3dprinter
     - group.homecams
 
+family:
+  name: Family
+  entities:
+    - person.aj
+    - person.gabe
+  all: false
+
 reef:
   name: Reef Tank
   entities:

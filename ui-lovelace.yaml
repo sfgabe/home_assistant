@@ -2302,7 +2302,7 @@ views:
     cards:
       - aspect_ratio: 50%
         camera_view: live
-        entity: camera.mail_usps
+        entity: camera.mail_usps_camera
         name: Mail
         type: picture-entity
       - type: entity-filter

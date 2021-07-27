@@ -251,15 +251,15 @@
         "media_content_type": "game",
         "locked": false
     },
-    "CUSA05972": {
-        "media_title": "TEKKEN 7",
-        "media_image_url": "https://store.playstation.com/store/api/chihiro/00_09_000/titlecontainer/us/en/999/CUSA05972_00/image",
-        "media_content_type": "game",
-        "locked": false
-    },
     "CUSA08444": {
         "media_title": "Dead by Daylight",
         "media_image_url": "https://store.playstation.com/store/api/chihiro/00_09_000/titlecontainer/us/en/999/CUSA08444_00/image",
+        "media_content_type": "game",
+        "locked": false
+    },
+    "CUSA05972": {
+        "media_title": "TEKKEN 7",
+        "media_image_url": "https://store.playstation.com/store/api/chihiro/00_09_000/titlecontainer/us/en/999/CUSA05972_00/image",
         "media_content_type": "game",
         "locked": false
     }

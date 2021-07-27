@@ -20,15 +20,14 @@
   - service: frontend.set_theme
     data:
       name: ux_gabe
-
-- alias: 'Start HomeKit'
+  id: 4573bee121c64c6c99858ec229d57fd9
+- alias: Start HomeKit
   trigger:
   - platform: homeassistant
     event: start
   action:
   - delay: 00:05
   - service: homekit.start
-
   id: a17e9f13e20c4ec6aec93039e227cea7
 - alias: Occupancy On
   trigger:
@@ -120,7 +119,8 @@
       entity_id: input_boolean.bed_occupancy
       state: 'off'
     - condition: template
-      value_template: "{{ as_timestamp(now()) - as_timestamp(state_attr('automation.gabe_arrive_in_home_zone_welcome', 'last_triggered')) | int > 10800 }}"
+      value_template: '{{ as_timestamp(now()) - as_timestamp(state_attr(''automation.gabe_arrive_in_home_zone_welcome'',
+        ''last_triggered'')) | int > 10800 }}'
   action:
   - delay: 00:05:00
   - service: script.turn_on
@@ -133,20 +133,20 @@
     entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
   - service: media_player.volume_set
     data:
-      entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44 #living room snapcast
+      entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44
       volume_level: 0.8
   - service: media_player.volume_set
     data:
-      entity_id: media_player.snapcast_client_b8_27_eb_e1_e2_66 #bathroom snapcast
+      entity_id: media_player.snapcast_client_b8_27_eb_e1_e2_66
       volume_level: 0.8
   - service: media_player.volume_set
     data:
-      entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f #bedroom snapcast
+      entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
       volume_level: 0.8
   - service: media_player.play_media
     data:
       entity_id: media_player.mpd
-      media_content_id: "https://thisisgabes.asuscomm.com/local/sounds/good_place_theme.mp3"
+      media_content_id: https://thisisgabes.asuscomm.com/local/sounds/good_place_theme.mp3
       media_content_type: music
   - delay: 00:00:10
   - service: script.janet_speech_engine
@@ -186,10 +186,10 @@
 - id: aaron_arrive_in_home_zone_welcome
   alias: Aaron welcome
   trigger:
-  - entity_id: person.aaron_2
-    from: not_home
-    platform: state
-    to: home
+  - platform: zone
+    entity_id: person.aj
+    zone: zone.home
+    event: enter
   condition:
     condition: and
     conditions:
@@ -200,7 +200,8 @@
       entity_id: input_boolean.bed_occupancy
       state: 'off'
     - condition: template
-      value_template: "{{ as_timestamp(now()) - as_timestamp(state_attr('automation.aaron_arrive_in_home_zone_welcome', 'last_triggered')) | int > 10800 }}"
+      value_template: '{{ as_timestamp(now()) - as_timestamp(state_attr(''automation.aaron_arrive_in_home_zone_welcome'',
+        ''last_triggered'')) | int > 10800 }}'
   action:
   - delay: 00:02:30
   - service: script.turn_on
@@ -213,20 +214,20 @@
     entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
   - service: media_player.volume_set
     data:
-      entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44 #living room snapcast
+      entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44
       volume_level: 0.8
   - service: media_player.volume_set
     data:
-      entity_id: media_player.snapcast_client_b8_27_eb_e1_e2_66 #bathroom snapcast
+      entity_id: media_player.snapcast_client_b8_27_eb_e1_e2_66
       volume_level: 0.8
   - service: media_player.volume_set
     data:
-      entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f #bedroom snapcast
+      entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
       volume_level: 0.8
   - service: media_player.play_media
     data:
       entity_id: media_player.mpd
-      media_content_id: "https://thisisgabes.asuscomm.com/local/sounds/ff_victory.mp3"
+      media_content_id: https://thisisgabes.asuscomm.com/local/sounds/ff_victory.mp3
       media_content_type: music
   - delay: 00:00:06
   - service: script.janet_speech_engine
@@ -265,7 +266,8 @@
       entity_id: input_boolean.alarm_went_off
       state: 'on'
     - condition: template
-      value_template: "{{ as_timestamp(now()) - as_timestamp(state_attr('automation.morning_greeting', 'last_triggered')) | int > 10800 }}"
+      value_template: '{{ as_timestamp(now()) - as_timestamp(state_attr(''automation.morning_greeting'',
+        ''last_triggered'')) | int > 10800 }}'
   action:
   - service: script.turn_on
     entity_id: script.kiosk_good_morning
@@ -348,80 +350,8 @@
         type: tts
       target:
       - media_player.gabe_s_alexa
-      message: "Alexa Tee Tee Ess is Connected"
+      message: Alexa Tee Tee Ess is Connected
   id: cbb75c03910d4f2f903b86bacca488ac
-# - alias: ssl_expiry_notify
-#   trigger:
-#     platform: template
-#     value_template: "{{ as_timestamp(states('sensor.date_time').replace(',', '') ~\
-#       \ ':00')  -\n as_timestamp(states('sensor.cert_expiry_timestamp_thisisgabes_asuscomm_com'))\
-#       \  > -302400 }}\n"
-#   condition:
-#     condition: time
-#     after: '13:00:00'
-#   action:
-#   - service: notify.html5_push_gabes_note_10
-#     data:
-#       data:
-#         renotify: 1
-#         icon: https://thisisgabes.asuscomm.com/local/icons/ssl.png
-#         badge: https://thisisgabes.asuscomm.com/local/icons/badge_calendar.png
-#         timestamp: '%m'
-#         url: https://thisisgabes.asuscomm.com/lovelace/10
-#         vibrate: 700, 700, 700
-#       message: Your SSL cert expires at {{ states.cert_expiry_timestamp_thisisgabes_asuscomm_com.state
-#         }}.
-#       title: Beep! Boop!
-#   - service: script.janet_speech_engine
-#     data:
-#       message: Hey Gabe, I just want to let you know that your website SSL certificate
-#         expires at {{ states.sensor.cert_expiry_timestamp_thisisgabes_asuscomm_com.state
-#         }}, in less than 4 days. After that, I will self-destruct. I have saved instructions
-#         in your evernote app.
-#   - service: persistent_notification.create
-#     data:
-#       message: Your SSL cert expires in {{ states.sensor.ssl_certificate_expiry.state
-#         }} days.
-#       title: Beep! Boop!
-#   id: d1ba4e957b8446d3a149322481a83602
-# - alias: ssl_expiry_notify_1day
-#   trigger:
-#     platform: template
-#     value_template: "{{ as_timestamp(states('sensor.date_time').replace(',', '') ~\
-#       \ ':00')  -\n as_timestamp(states('sensor.cert_expiry_timestamp_thisisgabes_asuscomm_com'))\
-#       \  > -86400 }}\n"
-#   condition:
-#     condition: time
-#     after: '13:00:00'
-#   action:
-#   - service: notify.html5_push_gabes_note_10
-#     data:
-#       data:
-#         renotify: 1
-#         icon: https://thisisgabes.asuscomm.com/local/icons/ssl.png
-#         badge: https://thisisgabes.asuscomm.com/local/icons/badge_calendar.png
-#         timestamp: '%m'
-#         url: https://thisisgabes.asuscomm.com/lovelace/10
-#         vibrate: 700, 700, 700
-#       message: Your SSL cert expires in ONE DAY at {{ states.cert_expiry_timestamp_thisisgabes_asuscomm_com.state
-#         }}.
-#       title: Beep! Boop!
-#       target:
-#       - Gabes Mate
-#       - Gabes Note 10
-#       - Macbook
-#       - macbookpro
-#   - service: script.janet_speech_engine
-#     data:
-#       message: Hey Gabe, You have exactly one day to renew your website SSL certificate!
-#         If you do not renew it, I will self destruct. I have saved instructions in
-#         your evernote app.
-#   - service: persistent_notification.create
-#     data:
-#       message: Your SSL cert expires in ONE DAY, at {{ states.sensor.cert_expiry_timestamp_thisisgabes_asuscomm_com.state
-#         }}.
-#       title: Beep! Boop!
-#   id: 357b92c666b34a50a548037a0fec44fb
 - alias: Set Harmony activity
   trigger:
     platform: state
@@ -495,7 +425,8 @@
 - alias: Turn Off Reef Lights Outlet at Sunset
   trigger:
     platform: template
-    value_template: '{{ strptime(states.sensor.time.state,"%k:%M") == strptime(states.sensor.reeftime_sunset_adjustment.state,"%k:%M") }}'
+    value_template: '{{ strptime(states.sensor.time.state,"%k:%M") == strptime(states.sensor.reeftime_sunset_adjustment.state,"%k:%M")
+      }}'
   action:
   - service: script.turn_on
     entity_id: script.reeftank_evening_outlet_kessil
@@ -503,7 +434,8 @@
 - alias: Turn On Reef Lights Outlet at Sunrise
   trigger:
     platform: template
-    value_template: '{{ strptime(states.sensor.time.state,"%H:%M") == strptime(states.sensor.reeftime_sunrise_adjustment.state,"%H:%M") }}'
+    value_template: '{{ strptime(states.sensor.time.state,"%H:%M") == strptime(states.sensor.reeftime_sunrise_adjustment.state,"%H:%M")
+      }}'
   action:
   - service: script.turn_on
     entity_id: script.reeftank_morning_outlet_kessil
@@ -529,6 +461,7 @@
   action:
     service: switch.turn_on
     entity_id: switch.kessil_brightness_level
+  id: e0bee311d6734f978156f7f62374c5bc
 - alias: Refugium Brightness
   trigger:
     platform: state
@@ -539,6 +472,7 @@
   action:
     service: switch.turn_on
     entity_id: switch.kessil_brightness_level
+  id: bb6e70e82ee645619a48cfa4223ed5cf
 - alias: Garden Brightness
   trigger:
     platform: state
@@ -742,22 +676,6 @@
     service: switch.turn_off
     entity_id: switch.reef_ato_scheduled
   id: 41e0afd737384a08b1ad7adc359701bc
-# - alias: Nightly Doser On
-#   trigger:
-#   - platform: time
-#     at: '23:12:00'
-#   action:
-#     service: switch.turn_on
-#     entity_id: switch.doser_scheduled
-#   id: 08cdb5c8a2b34d838adb8b98d3f51289
-# - alias: Nightly Doser Off
-#   trigger:
-#   - platform: time
-#     at: '23:16:00'
-#   action:
-#     service: switch.turn_off
-#     entity_id: switch.doser_scheduled
-#   id: 3852fb9383e94fa88e9c09696e85ba2e
 - alias: download_noaa_temps
   trigger:
   - platform: time
@@ -816,7 +734,8 @@
       before: '22:30:00'
       after: 09:30:00
     - condition: template
-      value_template: "{{ as_timestamp(now()) - as_timestamp(state_attr('automation.ferns_needs_water', 'last_triggered')) | int > 43200 }}"
+      value_template: '{{ as_timestamp(now()) - as_timestamp(state_attr(''automation.ferns_needs_water'',
+        ''last_triggered'')) | int > 43200 }}'
   action:
   - service: notify.html5_push
     data:
@@ -857,7 +776,8 @@
       before: '22:30:00'
       after: 09:30:00
     - condition: template
-      value_template: "{{ as_timestamp(now()) - as_timestamp(state_attr('automation.plant_needs_water', 'last_triggered')) | int > 43200 }}"
+      value_template: '{{ as_timestamp(now()) - as_timestamp(state_attr(''automation.plant_needs_water'',
+        ''last_triggered'')) | int > 43200 }}'
   action:
   - service: notify.html5_push
     data:
@@ -896,7 +816,8 @@
       before: '22:30:00'
       after: 09:30:00
     - condition: template
-      value_template: "{{ as_timestamp(now()) - as_timestamp(state_attr('automation.empty_garden_drain', 'last_triggered')) | int > 43200 }}"
+      value_template: '{{ as_timestamp(now()) - as_timestamp(state_attr(''automation.empty_garden_drain'',
+        ''last_triggered'')) | int > 43200 }}'
   action:
   - service: notify.html5_push
     data:
@@ -988,22 +909,20 @@
   - service: automation.turn_off
     entity_id: automation.usps_mail_alert
   id: 8ae9fb8055424e45a271362e3ad38c1a
-
-- alias: "Update USPS Mail Camera"
+- alias: Update USPS Mail Camera
   trigger:
-    - platform: state
-      entity_id: sensor.mail_usps_mail
+  - platform: state
+    entity_id: sensor.mail_usps_mail
   action:
-    - service: local_file.update_file_path
-      data_template:
-        entity_id: camera.mail_usps
-        file_path: >
-          {% if state_attr('sensor.mail_usps_mail','image') == None  %}
-          /config/custom_components/mail_and_packages/mail_none.gif
-          {% else %}
-          /home/homeassistant/.homeassistant/images/mail_and_packages/{{ state_attr('sensor.mail_usps_mail','image') }}
-          {% endif %}
+  - service: local_file.update_file_path
+    data_template:
+      entity_id: camera.mail_usps
+      file_path: '{% if state_attr(''sensor.mail_usps_mail'',''image'') == None  %}
+        /config/custom_components/mail_and_packages/mail_none.gif {% else %} /home/homeassistant/.homeassistant/images/mail_and_packages/{{
+        state_attr(''sensor.mail_usps_mail'',''image'') }} {% endif %}
 
+        '
+  id: ce82d0829a1545039ef26f2ec1c2bf57
 - alias: octoprint_finished
   trigger:
     platform: numeric_state
@@ -1014,9 +933,10 @@
     conditions:
     - condition: time
       before: '23:30:00'
-      after: '09:30:00'
+      after: 09:30:00
     - condition: template
-      value_template: "{{ as_timestamp(now()) - as_timestamp(state_attr('automation.octoprint_finished', 'last_triggered')) | int > 3000 }}"
+      value_template: '{{ as_timestamp(now()) - as_timestamp(state_attr(''automation.octoprint_finished'',
+        ''last_triggered'')) | int > 3000 }}'
   action:
   - service: camera.snapshot
     data:
@@ -1586,7 +1506,6 @@
       entity_id: input_select.gabe_status_dropdown
       option: Extended Away
   id: 7b769d5334df4219be03cd3f63276bfa
-
 - alias: Mark AJ as in Bed
   trigger:
   - platform: state
@@ -1601,14 +1520,12 @@
       entity_id: sensor.bed_occupancy_load
       above: 250
       below: 600
-    # - condition: state
-    #   entity_id: person.gabe
-    #   state: not_home
   action:
   - service: input_select.select_option
     data:
       entity_id: input_select.aj_status_dropdown
       option: In Bed
+  id: 1647b5912b8a47d6b7fdc242f89ccb3a
 - alias: Mark AJ as no longer in Bed
   trigger:
   - platform: state
@@ -1625,28 +1542,21 @@
     data:
       entity_id: input_select.aj_status_dropdown
       option: Home
+  id: 0d1fa6b656d04c6bb158456941f1420b
 - alias: Mark AJ as away
   trigger:
-  - entity_id: person.aaron_2
-    platform: state
-    from: home
+  - platform: state
+    entity_id: sensor.ajs_keys_room_presence
     to: not_home
+    for:
+      minutes: 5
   action:
   - service: input_select.select_option
     data:
       entity_id: input_select.aj_status_dropdown
       option: Away
-- alias: Mark AJ as home
-  trigger:
-  - entity_id: person.aaron_2
-    from: not_home
-    platform: state
-    to: home
-  action:
-  - service: input_select.select_option
-    data:
-      entity_id: input_select.aj_status_dropdown
-      option: Home
+  id: b0541d89b60f49f386fc628c4f70ac3b
+
 - alias: Mark AJ as extended away
   trigger:
   - platform: state
@@ -1659,64 +1569,74 @@
     data_template:
       entity_id: input_select.aj_status_dropdown
       option: Extended Away
-
+  id: 3a7b3f4bc3da4c9190f2b01db95afce9
 - alias: Mark AJ as Playing PS4
   trigger:
   - platform: state
     entity_id: sensor.harmony_activity
-    to: 'Play PS4'
+    to: Play PS4
     for:
       minutes: 5
   condition:
     condition: and
     conditions:
     - condition: template
-      value_template: "{{ not state_attr('media_player.playstation_4','source') == 'Amazon Prime Video' }}"
+      value_template: '{{ not state_attr(''media_player.playstation_4'',''source'')
+        == ''Amazon Prime Video'' }}'
     - condition: template
-      value_template: "{{ not state_attr('media_player.playstation_4','source') == 'Disney+' }}"
+      value_template: '{{ not state_attr(''media_player.playstation_4'',''source'')
+        == ''Disney+'' }}'
     - condition: template
-      value_template: "{{ not state_attr('media_player.playstation_4','source') == 'Hulu' }}"
+      value_template: '{{ not state_attr(''media_player.playstation_4'',''source'')
+        == ''Hulu'' }}'
     - condition: template
-      value_template: "{{ not state_attr('media_player.playstation_4','source') == 'Netflix' }}"
+      value_template: '{{ not state_attr(''media_player.playstation_4'',''source'')
+        == ''Netflix'' }}'
     - condition: template
-      value_template: "{{ not state_attr('media_player.playstation_4','source') == 'Spotify' }}"
+      value_template: '{{ not state_attr(''media_player.playstation_4'',''source'')
+        == ''Spotify'' }}'
   action:
   - service: input_select.select_option
     data:
       entity_id: input_select.aj_status_dropdown
       option: Gaming
-
+  id: 5265a875e001418ea1841573ccc37ba3
 - alias: Mark AJ as Watching TV
   trigger:
   - platform: state
     entity_id: sensor.harmony_activity
-    to: 'Play PS4'
+    to: Play PS4
     for:
       minutes: 5
   condition:
     condition: and
     conditions:
     - condition: template
-      value_template: "{{ state_attr('media_player.playstation_4','source') == 'Amazon Prime Video' }}"
+      value_template: '{{ state_attr(''media_player.playstation_4'',''source'') ==
+        ''Amazon Prime Video'' }}'
     - condition: template
-      value_template: "{{ state_attr('media_player.playstation_4','source') == 'Disney+' }}"
+      value_template: '{{ state_attr(''media_player.playstation_4'',''source'') ==
+        ''Disney+'' }}'
     - condition: template
-      value_template: "{{ state_attr('media_player.playstation_4','source') == 'Hulu' }}"
+      value_template: '{{ state_attr(''media_player.playstation_4'',''source'') ==
+        ''Hulu'' }}'
     - condition: template
-      value_template: "{{ state_attr('media_player.playstation_4','source') == 'Netflix' }}"
+      value_template: '{{ state_attr(''media_player.playstation_4'',''source'') ==
+        ''Netflix'' }}'
     - condition: template
-      value_template: "{{ state_attr('media_player.playstation_4','source') == 'Spotify' }}"
+      value_template: '{{ state_attr(''media_player.playstation_4'',''source'') ==
+        ''Spotify'' }}'
   action:
   - service: input_select.select_option
     data:
       entity_id: input_select.aj_status_dropdown
       option: Watching TV
-
+  id: 3a8e14f7558949c49ecae15428b3ea6a
 - alias: Done Watching TV
   trigger:
   - platform: state
     entity_id: sensor.harmony_activity
-    to: 'PowerOff'
+    to: PowerOff
     for:
       minutes: 5
   action:
@@ -1724,7 +1644,7 @@
     data:
       entity_id: input_select.aj_status_dropdown
       option: Home
-
+  id: 3e5e836e6d444c4b9787420a6b3883fe
 - alias: Mark Gabe and AJ as in Bed
   trigger:
   - platform: state
@@ -1753,6 +1673,7 @@
     data:
       entity_id: input_select.gabe_status_dropdown
       option: In Bed
+  id: 3042d2507ccc4f94943b7a08dba2bde2
 - alias: Goldilocks in Bed
   trigger:
   - platform: state
@@ -1767,7 +1688,7 @@
       entity_id: sensor.bed_occupancy_load
       above: 700
     - condition: state
-      entity_id: person.aaron_2
+      entity_id: person.aj
       state: home
     - condition: state
       entity_id: person.gabe
@@ -1785,12 +1706,13 @@
         badge: https://thisisgabes.asuscomm.com/local/icons/badge_dog.png
         timestamp: '%m'
         vibrate: 700, 700, 700
-      message: ...has been sleeping in my bed
+      message: '...has been sleeping in my bed'
       title: Someone...
       target:
       - Gabes Note 10
       - Macbook
       - macbookpro
+  id: c00ce3bf444f4d6ca8ee4c7de22b66f0
 - alias: Request Mailbox Temp
   trigger:
   - platform: time_pattern
@@ -1871,7 +1793,6 @@
     data:
       entity_id: switch.birdfeed_flappy
   id: 44d6119d41b7401f9732d508d6f3a1c1
-
 - id: Hue Dimmer Switch 1 Click
   alias: Hue Dimmer Switch 1 Click
   trigger:
@@ -2502,51 +2423,24 @@
       message: The closet tank needs water soon
       title: Feeling Low
   id: 8bcb65a053614595a0e2bde9ad2ca91d
-
-# - alias: Turn On Reef Pi Fan
-#   trigger:
-#     platform: template
-#     value_template: >
-#       {% set fan_status = (states('sensor.reefsysinfo_template_cpu_temperature')) %}
-#       {% if fan_status >= '57' %}true
-#       {% else %}false
-#       {% endif %}
-#   action:
-#     service: switch.turn_on
-#     entity_id: switch.reef_enclosure_fan_switch
-#
-# - alias: Turn Off Reef Pi Fan
-#   trigger:
-#     platform: template
-#     value_template: >
-#       {% set fan_status = (states('sensor.reefsysinfo_template_cpu_temperature')) %}
-#       {% if fan_status <= '52' %}true
-#       {% else %}false
-#       {% endif %}
-#   action:
-#     service: switch.turn_off
-#     entity_id: switch.reef_enclosure_fan_switch
-
 - alias: Reef Notify Error Light On
   trigger:
     platform: template
-    value_template: '{{ (states.sensor.reefcontrolpierror.attributes.message) != "unknown" }}'
+    value_template: '{{ (states.sensor.reefcontrolpierror.attributes.message) != "unknown"
+      }}'
   action:
   - service: switch.turn_on
     entity_id: switch.reef_notify_error
-
+  id: 14f443e01f0340ed8e07a9980886f4f9
 - alias: Reef Notify Screen On
   trigger:
   - platform: state
     entity_id: binary_sensor.reef_notify_motion
     to: 'on'
   action:
-  # test for reaction time
-  # - service: switch.turn_on
-  #   entity_id: switch.reef_screen_on
   - service: switch.turn_on
     entity_id: switch.reef_screen_on
-
+  id: 347060dbfb6a4abbbbc3430356c8d807
 - alias: Reef Notify Screen Off
   trigger:
   - platform: state
@@ -2557,18 +2451,18 @@
     entity_id: switch.reef_screen_on
   - service: switch.turn_off
     entity_id: switch.reef_notify_error
-
+  id: 95dd9fde66db4f2cb7761c5378cc3aa7
 - alias: Reef Notify Clear Screen
   trigger:
     platform: time
-    at: '03:30:00'
+    at: 03:30:00
   action:
   - service: switch.turn_on
     entity_id: switch.reef_clear_screen
   - delay: 00:01:00
   - service: switch.turn_off
     entity_id: switch.reef_clear_screen
-
+  id: 40dddba6e5364a1abdd37e747bf2a08e
 - alias: Reef Notify Screen Update
   trigger:
   - platform: time_pattern
@@ -2577,30 +2471,36 @@
   - service: mqtt.publish
     data_template:
       topic: notifyscreen/line1
-      payload: >
-        Temp:{{ states.sensor.onlyreefcontrolpitemp.state }}F | {{ states.sensor.reefcontrolpifloat.state }} |
+      payload: 'Temp:{{ states.sensor.onlyreefcontrolpitemp.state }}F | {{ states.sensor.reefcontrolpifloat.state
+        }} |
+
+        '
       retain: true
   - service: mqtt.publish
     data_template:
       topic: notifyscreen/line3
-      payload: >
-        Lgt:{{ states.sensor.ReefControlPiLightBrightness.state | round(0) }} | Color:{{states.sensor.ReefControlPiLightColor.state | round(0)}} |
+      payload: 'Lgt:{{ states.sensor.ReefControlPiLightBrightness.state | round(0)
+        }} | Color:{{states.sensor.ReefControlPiLightColor.state | round(0)}} |
+
+        '
       retain: true
   - service: mqtt.publish
     data_template:
       topic: notifyscreen/line4
-      payload: >
-        pH:{{ states.sensor.ReefControlPipH.state }} | Na:{{ states.sensor.latest_reef_stats_salinity.state }} |
+      payload: 'pH:{{ states.sensor.ReefControlPipH.state }} | Na:{{ states.sensor.latest_reef_stats_salinity.state
+        }} |
+
+        '
       retain: true
   - service: mqtt.publish
     data_template:
       topic: notifyscreen/line2
-      payload: >
-        Sun: {{ states.sensor.reeftime_sunrise_adjustment.state }} - {{ states.sensor.reeftime_sunset_adjustment.state }}
+      payload: 'Sun: {{ states.sensor.reeftime_sunrise_adjustment.state }} - {{ states.sensor.reeftime_sunset_adjustment.state
+        }}
+
+        '
       retain: true
-
-
-#Notify box
+  id: 28d2ffa9e4b14edeba67415de3be2694
 - alias: Notify Box Twilio
   trigger:
     platform: event
@@ -2619,7 +2519,7 @@
       value: '{{ trigger.event.data.Body }}'
   - service: script.turn_on
     entity_id: script.notify_box_split_and_update
-
+  id: 622b40d5d0e445d5bdba0e7436ab4830
 - alias: Notify Box Line 1 Update
   trigger:
     platform: state
@@ -2631,10 +2531,11 @@
   - service: mqtt.publish
     data_template:
       topic: notify_box/line1
-      payload: >
-        {{ states.input_text.notify_box_line1.state }}
-      retain: true
+      payload: '{{ states.input_text.notify_box_line1.state }}
 
+        '
+      retain: true
+  id: 9c2c72619da2476f93cf95b477c45bf1
 - alias: Notify Box Line 2 Update
   trigger:
     platform: state
@@ -2646,10 +2547,11 @@
   - service: mqtt.publish
     data_template:
       topic: notify_box/line2
-      payload: >
-        {{ states.input_text.notify_box_line2.state }}
-      retain: true
+      payload: '{{ states.input_text.notify_box_line2.state }}
 
+        '
+      retain: true
+  id: afac558b35d847f7925435691ff5da2f
 - alias: Notify Box Line 3 Update
   trigger:
     platform: state
@@ -2661,10 +2563,11 @@
   - service: mqtt.publish
     data_template:
       topic: notify_box/line3
-      payload: >
-        {{ states.input_text.notify_box_line3.state }}
-      retain: true
+      payload: '{{ states.input_text.notify_box_line3.state }}
 
+        '
+      retain: true
+  id: 5d5553b593df47ae88eb47ae220f69be
 - alias: Notify Box Line 4 Update
   trigger:
     platform: state
@@ -2676,10 +2579,11 @@
   - service: mqtt.publish
     data_template:
       topic: notify_box/line4
-      payload: >
-        {{ states.input_text.notify_box_line4.state }}
-      retain: true
+      payload: '{{ states.input_text.notify_box_line4.state }}
 
+        '
+      retain: true
+  id: a895c8c2b6bb473498d6bd262824af81
 - alias: Notify Box Screen On
   trigger:
   - platform: state
@@ -2688,7 +2592,7 @@
   action:
   - service: switch.turn_on
     entity_id: switch.notify_box_screen_on
-
+  id: d12a2076477840e08a7e0afbed82abad
 - alias: Notify Box Screen Off
   trigger:
   - platform: state
@@ -2697,7 +2601,7 @@
   action:
   - service: switch.turn_off
     entity_id: switch.notify_box_screen_off
-
+  id: dd54efc1188c45e8ad041cb41c160ad6
 - alias: Numpad A Toggle
   trigger:
   - platform: mqtt
@@ -2881,20 +2785,20 @@
     entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
   - service: media_player.volume_set
     data:
-      entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44 #living room snapcast
+      entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44
       volume_level: 0.8
   - service: media_player.volume_set
     data:
-      entity_id: media_player.snapcast_client_b8_27_eb_e1_e2_66 #bathroom snapcast
+      entity_id: media_player.snapcast_client_b8_27_eb_e1_e2_66
       volume_level: 0.8
   - service: media_player.volume_set
     data:
-      entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f #bedroom snapcast
+      entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
       volume_level: 0.8
   - service: media_player.play_media
     data:
       entity_id: media_player.mpd
-      media_content_id: "https://thisisgabes.asuscomm.com/local/sounds/tiduss-laugh.mp3"
+      media_content_id: https://thisisgabes.asuscomm.com/local/sounds/tiduss-laugh.mp3
       media_content_type: music
   - delay: 00:00:08
   - service: snapcast.restore
@@ -2903,6 +2807,7 @@
     entity_id: media_player.snapcast_client_b8_27_eb_e1_e2_66
   - service: snapcast.restore
     entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+  id: 11c6b0d70d924f2da3f00325b6967ecf
 - alias: Numpad I Automation On
   trigger:
   - platform: state
@@ -3009,20 +2914,20 @@
     entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
   - service: media_player.volume_set
     data:
-      entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44 #living room snapcast
+      entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44
       volume_level: 0.8
   - service: media_player.volume_set
     data:
-      entity_id: media_player.snapcast_client_b8_27_eb_e1_e2_66 #bathroom snapcast
+      entity_id: media_player.snapcast_client_b8_27_eb_e1_e2_66
       volume_level: 0.8
   - service: media_player.volume_set
     data:
-      entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f #bedroom snapcast
+      entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
       volume_level: 0.8
   - service: media_player.play_media
     data:
       entity_id: media_player.mpd
-      media_content_id: "https://thisisgabes.asuscomm.com/local/sounds/spoken.mp3"
+      media_content_id: https://thisisgabes.asuscomm.com/local/sounds/spoken.mp3
       media_content_type: music
   - delay: 00:00:08
   - service: snapcast.restore
@@ -3031,6 +2936,7 @@
     entity_id: media_player.snapcast_client_b8_27_eb_e1_e2_66
   - service: snapcast.restore
     entity_id: media_player.snapcast_client_12_42_bf_4f_88_4f
+  id: 23c62bec1c0546b2b1c111125e1a05ea
 - alias: Numpad I Automation Off
   trigger:
   - platform: state
@@ -3249,11 +3155,6 @@
       - 115
       - 50
       - 168
-  # - service: browser_mod.navigate
-  #   data:
-  #     navigation_path: /lovelace/21
-  #     deviceID:
-  #     - browser_note_kiosk
   - service: media_player.volume_set
     data:
       entity_id: media_player.snapcast_client_b8_27_eb_79_e8_44
@@ -3481,7 +3382,7 @@
     condition: and
     conditions:
     - condition: template
-      value_template: '{{is_state("person.aaron_2","not_home")}}'
+      value_template: '{{is_state("person.aj","not_home")}}'
     - condition: time
       after: '20:00:00'
       before: 06:00:00
@@ -4544,8 +4445,7 @@
 - alias: Roomba - Stuck Notification
   trigger:
   - platform: template
-    value_template: '{%if is_state_attr("vacuum.roomba", "status", "Stuck")
-      %}true{%endif%}'
+    value_template: '{%if is_state_attr("vacuum.roomba", "status", "Stuck") %}true{%endif%}'
   condition:
     condition: state
     entity_id: input_boolean.disable_roomba
@@ -4556,8 +4456,7 @@
       data:
         renotify: 1
         icon_template: '{% set url = states("input_text.base_url") %} {% set path
-          = "/local/icons/"%} {% set icon = "roomba" %} {% set ext = ".png" %}
-          {{[url,path,icon,ext]|join}}
+          = "/local/icons/"%} {% set icon = "roomba" %} {% set ext = ".png" %} {{[url,path,icon,ext]|join}}
 
           '
         badge_template: '{% set url = states("input_text.base_url") %} {% set path
@@ -4566,8 +4465,8 @@
 
           '
         timestamp: '%m'
-        url_template: '{% set url = states("input_text.base_url") %} {% set path
-          = "/lovelace/"%} {% set page = "apartment" %} {{[url,path,page]|join}}
+        url_template: '{% set url = states("input_text.base_url") %} {% set path =
+          "/lovelace/"%} {% set page = "apartment" %} {{[url,path,page]|join}}
 
           '
         vibrate: 700, 700, 700
@@ -4915,34 +4814,19 @@
   - delay: 00:00:03
   - service: switch.turn_off
     entity_id: switch.ringaring_53_110
-- id: '1601930398828'
-  alias: Tell me when ajs home
-  description: ''
+  mode: single
+- alias: Mark AJ as home
   trigger:
   - platform: zone
-    entity_id: person.aaron_2
+    entity_id: person.aj
     zone: zone.home
     event: enter
-  condition: []
   action:
-  - service: notify.html5_push_gabes_note_10
+  - service: input_select.select_option
     data:
-      Message: AJ just checked in
-  mode: single
-- id: '1601930403268'
-  alias: Tell me when ajs home
-  description: ''
-  trigger:
-  - platform: zone
-    entity_id: person.aaron_2
-    zone: zone.home
-    event: enter
-  condition: []
-  action:
-  - service: notify.html5_push_gabes_note_10
-    data:
-      Message: AJ just checked in
-  mode: single
+      entity_id: input_select.aj_status_dropdown
+      option: Home
+  id: e69a0c21662e41048c3d0710d97c225a
 - id: '1602901102253'
   alias: Tag Desk Tag is scanned off
   description: ''
@@ -5027,55 +4911,11 @@
     data: {}
     entity_id: light.desk
   mode: single
-
-# - id: '1607495963700'
-#   alias: Macbook Pro Charger Off
-#   description: ''
-#   trigger:
-#   - platform: numeric_state
-#     entity_id: sensor.macbook_battery
-#     above: '99'
-#   condition:
-#   - condition: and
-#     conditions:
-#     - condition: zone
-#       entity_id: person.gabe
-#       zone: zone.home
-#     - condition: state
-#       entity_id: light.desk
-#       state: 'on'
-#   action:
-#   - service: switch.turn_off
-#     data: {}
-#     entity_id: switch.06200928600194a7ffbc_1
-#   mode: single
-# - alias: Macbook Pro Charger On
-#   description: ''
-#   trigger:
-#   - platform: numeric_state
-#     entity_id: sensor.macbook_battery
-#     below: '15'
-#   condition:
-#   - condition: and
-#     conditions:
-#     - condition: zone
-#       entity_id: person.gabe
-#       zone: zone.home
-#     - condition: state
-#       entity_id: light.desk
-#       state: 'on'
-#   action:
-#   - service: switch.turn_on
-#     data: {}
-#     entity_id: switch.06200928600194a7ffbc_1
-#   mode: single
-
-#twitch on air
 - alias: Gabe On Air
   trigger:
     platform: state
     entity_id: sensor.sfgabe
-    to: 'online'
+    to: online
   condition:
   - condition: and
     conditions:
@@ -5095,22 +4935,22 @@
       - 0
       - 0
       effect: solid
-
+  id: 715bd5c8b8984764baf136bf15026f6f
 - alias: Gabe Off Air
   trigger:
     platform: state
     entity_id: sensor.sfgabe
-    from: 'online'
-    to: 'offline'
+    from: online
+    to: offline
   action:
   - service: light.turn_off
     entity_id: light.on_air
-
+  id: 376b57f913a442ba884a0e0ddb8c7dd9
 - alias: AJ On Air
   trigger:
     platform: state
     entity_id: sensor.magickal_guy
-    to: 'online'
+    to: online
   action:
   - service: light.turn_on
     entity_id: light.on_air
@@ -5121,17 +4961,17 @@
       - 0
       - 0
       effect: solid
-
+  id: 471bbc456a8f44fe87c3296c1b90904b
 - alias: AJ Off Air
   trigger:
     platform: state
     entity_id: sensor.magickal_guy
-    from: 'online'
-    to: 'offline'
+    from: online
+    to: offline
   action:
   - service: light.turn_off
     entity_id: light.on_air
-
+  id: 73398a7ec8134d56bb5e76b586867a26
 - alias: On Air Light Switch On
   trigger:
     platform: state
@@ -5148,8 +4988,7 @@
       - 0
       - 0
       effect: solid
-
-#Bathroom Speaker
+  id: 6eb401cb5b6c4f9ea78ee84ad4c612de
 - alias: Bathroom Speaker Mute
   trigger:
   - platform: mqtt
@@ -5157,11 +4996,12 @@
     payload: VOL_DOWN_HELD
   condition:
     condition: template
-    value_template: '{{ states.media_player.snapcast_client_b8_27_eb_e1_e2_66.attributes.is_volume_muted == False }}'
+    value_template: '{{ states.media_player.snapcast_client_b8_27_eb_e1_e2_66.attributes.is_volume_muted
+      == False }}'
   action:
     service: media_player.volume_mute
     entity_id: media_player.snapcast_client_b8_27_eb_e1_e2_66
-
+  id: 4b9520c857104be18bc9d3610fe792d0
 - alias: Bathroom Speaker Unmute
   trigger:
   - platform: mqtt
@@ -5169,11 +5009,12 @@
     payload: VOL_UP_HELD
   condition:
     condition: template
-    value_template: '{{ states.media_player.snapcast_client_b8_27_eb_e1_e2_66.attributes.is_volume_muted == True }}'
+    value_template: '{{ states.media_player.snapcast_client_b8_27_eb_e1_e2_66.attributes.is_volume_muted
+      == True }}'
   action:
     service: media_player.volume_up
     entity_id: media_player.snapcast_client_b8_27_eb_e1_e2_66
-
+  id: 7247ce3b78cf4dd6a6d1c998b6c66cc0
 - alias: Bathroom Speaker Vol Up
   trigger:
   - platform: mqtt
@@ -5182,7 +5023,7 @@
   action:
     service: media_player.volume_up
     entity_id: media_player.snapcast_client_b8_27_eb_e1_e2_66
-
+  id: 4cad6df084874e538b5e92e4562ba2b9
 - alias: Bathroom Speaker Vol Down
   trigger:
   - platform: mqtt
@@ -5191,7 +5032,7 @@
   action:
     service: media_player.volume_down
     entity_id: media_player.snapcast_client_b8_27_eb_e1_e2_66
-
+  id: 85f9bc26e9474c8da7c84350938fb337
 - alias: Bathroom Speaker Next
   trigger:
   - platform: mqtt
@@ -5200,7 +5041,7 @@
   action:
     service: media_player.media_next_track
     entity_id: media_player.mpd
-
+  id: 7a55798381bc4d64a30c41bf728cf655
 - alias: Bathroom Speaker Prev
   trigger:
   - platform: mqtt
@@ -5209,7 +5050,7 @@
   action:
     service: media_player.media_previous_track
     entity_id: media_player.mpd
-
+  id: df61604f6a4841ce9eee4e60b04c67c9
 - alias: Bathroom Speaker Play
   trigger:
   - platform: mqtt
@@ -5218,25 +5059,32 @@
   action:
     service: media_player.media_play_pause
     entity_id: media_player.mpd
-
-#baby stuff
+  id: bcd95fba15914a62ae38ac82aef760de
 - id: pregnancy_week_updated
   alias: 'Baby: Week Updated'
   description: Triggered when the baby week changes
   trigger:
   - platform: template
-    value_template: >-
-      {{ (states('sensor.pregnancy_weeks') | int) >
-      (states('input_number.pregnancy_week') | int ) }}
+    value_template: '{{ (states(''sensor.pregnancy_weeks'') | int) > (states(''input_number.pregnancy_week'')
+      | int ) }}'
   condition: []
   action:
   - service: input_number.set_value
     data:
       entity_id: input_number.pregnancy_week
-      value: "{{ states('sensor.pregnancy_weeks') | int }}"
+      value: '{{ states(''sensor.pregnancy_weeks'') | int }}'
   - service: notify.mobile_app_courtney_phone
     data:
-      title: "It's Pregnancy week {{ states('sensor.pregnancy_weeks') }}!"
-      message: "Tap here to read all about what's up this week!"
+      title: It's Pregnancy week {{ states('sensor.pregnancy_weeks') }}!
+      message: Tap here to read all about what's up this week!
       data:
         clickAction: /lovelace-pregnancy/baby
+- id: '1626736866849'
+  alias: AJ Home Notify
+  description: ''
+  use_blueprint:
+    path: homeassistant/notify_leaving_zone.yaml
+    input:
+      person_entity: person.aj
+      zone_entity: zone.home
+      notify_device: ee868ce6bfb04291a4285ee64cdfb501

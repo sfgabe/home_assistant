@@ -17,7 +17,7 @@
                 "type": 3,
                 "description": "LED",
                 "values": {
-                    "2": "1"
+                    "2": "0"
                 }
             },
             "11": {

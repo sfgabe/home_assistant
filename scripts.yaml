@@ -1940,7 +1940,7 @@ alexa_connect_to_speaker:
         entity_id: media_player.gabe_s_alexa
 
 #Notify box split and update
-- alias: Notify Box Split and Update
+  alias: Notify Box Split and Update
   sequence:
     - service: switch.turn_on
       entity_id: switch.notify_box_screen_on
@@ -1973,3 +1973,13 @@ alexa_connect_to_speaker:
     - delay: 00:30:00
     - service: switch.turn_off
       entity_id: switch.notify_box_screen_on
+
+#Rotary Phone
+rotary_phone_short_ring:
+  alias: Rotary Phone Short Ring
+  sequence:
+    - service: shell_command.rotary_phone_short_ring
+rotary_phone_modem_ring:
+  alias: Rotary Phone Modem Ring
+  sequence:
+    - service: shell_command.rotary_phone_modem_ring
